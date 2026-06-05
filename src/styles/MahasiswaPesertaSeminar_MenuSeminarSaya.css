@@ -1,0 +1,82 @@
+.page-menu-seminar-saya-layout {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.back-icon {
+  font-size: 35px;
+  color: #1E293B;
+}
+
+.navbar-menu-seminar-saya {
+  height: 110px;
+  background: #FFFFFF;
+  display: flex;
+  position: relative;
+  align-items: center;
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
+  padding: 0 80px;
+}
+
+.navbar-menu-seminar-saya h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+}
+
+.menu-seminar-saya-container {
+  background: #FFFFFF;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;     
+  text-align: center;
+  padding-top:80px;
+}
+
+.no-calendar-icon {
+  font-size: 200px;
+  color: #E9EEF6;
+  margin-left: 60px;
+  margin-right: 60px;
+}
+
+.menu-seminar-saya-container h1 {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+  margin-left: 60px;
+  margin-right: 60px;
+  margin-top: 20px;
+}
+
+.menu-seminar-saya-container p {
+  font-family: 'Poppins', sans-serif;
+  margin-left: 60px;
+  margin-right: 60px;
+  color: #4B5563;
+  font-size: 18px;
+  font-style:italic;
+  margin-top: 10px;
+}
