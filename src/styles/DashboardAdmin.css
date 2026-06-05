@@ -1,0 +1,116 @@
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.dashboard-container {
+  background: #E9EEF6;
+  flex: 1;
+}
+
+.dashboard-title {
+    margin-top: 60px;
+    margin-left: 60px;
+    margin-right: 60px;
+    text-align: left;
+    font-size: 45px;
+    font-weight: 800;
+    color: #1E293B;
+    letter-spacing: 0.1px;
+}
+
+.dashboard-description {
+    margin-top: 20px;
+    margin-left: 60px;
+    margin-right: 60px;
+    text-align: left;
+    font-size: 18px;
+    color: #4B5563;
+    font-family: 'Poppins', sans-serif;
+}
+
+.menu-title {
+    margin-top: 50px;
+    margin-left: 60px;
+    margin-right: 60px;
+    text-align: left;
+    font-size: 45px;
+    font-weight: 800;
+    color: #1E293B;
+    letter-spacing: 0.1px;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin-left:60px;
+    margin-right: 150px;
+    margin-top:20px;
+}
+
+.menu-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    height:100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: #1E293B;
+}
+
+.student-icon {
+    font-size: 35px;
+    color: #2463EB;
+}
+
+.clipboard-icon {
+    font-size: 35px;
+    color: #DC2626;
+}
+
+.history-icon {
+    font-size: 35px;
+    color: #16A34A;
+}
+
+.card-content {
+    margin-top: 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #4B5563;
+    text-align: justify;
+}
+
+.detail-btn {
+    margin-top: auto;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #FFFFFF;
+    padding: 10px;
+    background: #2463EB;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.detail-btn:hover {
+  background: #1D4ED8;
+}
