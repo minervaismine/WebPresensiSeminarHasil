@@ -14,6 +14,7 @@ function MahasiswaPesertaSeminar_MenuSeminarSaya() {
             <h1>SEMINAR SAYA</h1>
         </nav>
 
+        {/* Content */}
         <div className="menu-seminar-saya-container">
             <Icon icon="boxicons:calendar-x-filled" className="no-calendar-icon"/>
             <h1>Belum ada seminar yang diajukan</h1>

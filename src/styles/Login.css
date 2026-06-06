@@ -88,8 +88,8 @@
 }
 
 .remember-password {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .remember-password input {

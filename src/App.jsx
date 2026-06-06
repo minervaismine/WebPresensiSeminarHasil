@@ -1,7 +1,7 @@
-import MahasiswaPesertaSeminar_MenuSeminarSaya from "./pages/MahasiswaPesertaSeminar_MenuSeminarSaya";
+import MahasiswaPenyelenggaraSeminar_MenuSeminarSaya from "./pages/MahasiswaPenyelenggaraSeminar_MenuSeminarSaya";
 
 function App() {
-  return <MahasiswaPesertaSeminar_MenuSeminarSaya />;
+  return <MahasiswaPenyelenggaraSeminar_MenuSeminarSaya/>;
 }
 
 export default App;
