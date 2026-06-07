@@ -1,0 +1,244 @@
+.page-lihat-daftar-hadir-layout {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.back-icon {
+  font-size: 35px;
+  color: #1E293B;
+}
+
+.navbar-menu-seminar-saya {
+  height: 110px;
+  background: #FFFFFF;
+  display: flex;
+  position: relative;
+  align-items: center;
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
+  padding: 0 80px;
+}
+
+.navbar-menu-seminar-saya h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  margin-left: 60px;
+  margin-right: 60px;
+  padding: 0 30px;
+}
+
+.page-title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+}
+
+.search-bar {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #E9EEF6;
+  transition: background 0.25s;
+}
+
+.search-bar-input {
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  color: #1E293B;
+  margin-left: 8px;
+  outline: none;
+  border: none;
+  background: transparent;
+  width: 400px;
+}
+
+.search-bar-input::-webkit-search-cancel-button {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.search-icon {
+  font-size: 30px;
+}
+
+.search-bar-input::placeholder {
+  color: #E9EEF6;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar {
+  font-family: "Poppins", sans-serif;
+  border-collapse: collapse;
+  margin: 10px 90px;
+  min-width: 400px;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar thead tr {
+  color: #1E293B;
+  text-align: center; 
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar th {
+  text-align: center;
+}
+
+.sort-thead {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.sort-icon {
+  font-size: 22px;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar th,
+.tabel-daftar-hadir-penyelenggara-seminar td {
+  padding: 5px 15px;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar tbody {
+  font-size: 14px;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar tbody tr {
+  color: #1E293B;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar tbody tr:nth-of-type(odd) {
+  background-color: rgba(36, 99, 235, 0.22);
+}
+
+.kolom-nama {
+  text-align: left;
+  width: 50%;
+}
+
+.kolom-nim {
+  width: 10%;
+}
+
+.kolom-waktu-scan {
+  width: 25%;
+}
+
+.kolom-jarak-lokasi {
+  width: 15%;
+}
+
+.status-lokasi {
+  display: inline-block;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 7px;
+  font-weight: 600;
+  width: 70px;
+}
+
+.dekat {
+  background-color: #DCFCE7;
+}
+
+.sedang {
+  background-color: #FEF3C7;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 90px;
+}
+
+.page-description {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #1E293B;
+  margin: 0;
+}
+
+.pagination {
+  display: flex;
+}
+
+.pagination a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  text-decoration: none;
+  border: 1px solid #2463EB;
+  color: #1E293B;
+  width: 35px;
+  height: 35px;
+}
+
+.pagination a:not(:first-child) {
+  border-left: none;
+}
+
+.pagination a:first-child {
+  border-radius: 7px 0 0 7px;
+  width: 45px;
+}
+
+.pagination a:last-child {
+  border-radius: 0 7px 7px 0;
+  width: 45px;
+}
+
+.pagination .active {
+  background-color: rgba(36, 99, 235, 0.22);
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #E9EEF6;
+}
+
+.previous-icon,
+.next-icon {
+  font-size: 18px;
+}
