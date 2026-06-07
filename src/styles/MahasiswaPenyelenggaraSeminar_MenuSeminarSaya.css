@@ -168,7 +168,8 @@
   cursor: pointer;
 }
 
-.actions-btn button:hover{
+.actions-btn button:hover,
+.aktifkan-qr-btn:hover {
   background: #1D4ED8;
   transform: translateY(-2px);
   box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
@@ -232,4 +233,97 @@
   font-size: 180px;
   color: #7384A7;
   opacity: 0.2;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.qr-modal {
+  position: relative;
+  width: 450px;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 25px;
+  color: #EF4444;
+}
+
+.scanner-icon-wrapper {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(36, 99, 235, 0.22);
+  border-radius: 100%;
+  margin: 0 auto 10px;
+}
+
+.scanner-icon {
+  font-size: 40px;
+  color: #2463EB;
+}
+
+.qr-modal h2 {
+  font-size: 22px;
+  font-weight: 700;
+  padding-top: 5px;
+  color: #1E293B;
+}
+
+.qr-code-container {
+  margin: 5px 0;
+}
+
+.qr-code-container img {
+  width: 250px;
+  height: 250px;
+}
+
+.modal-description {
+  font-family: "Poppins", sans-serif;
+  font-style: italic;
+  font-size: 16px;
+  color: #1E293B;
+  margin-bottom: 5px;
+}
+
+.aktifkan-qr-btn {
+  background: #2463EB;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 70px;
+  font-size: 20px;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.expired-time {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  color: #1E293B;
+  margin-bottom: 0;
 }

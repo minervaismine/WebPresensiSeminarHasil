@@ -1,7 +1,11 @@
 import "../styles/MahasiswaPenyelenggaraSeminar_MenuSeminarSaya.css";
 import { Icon } from '@iconify/react';
+import { useState } from "react";
+import qrSample from "../assets/qr_sample.png";
 
 function MahasiswaPenyelenggaraSeminar_MenuSeminarSaya() {
+    const [showQRModal, setShowQRModal] = useState(false);
+
   return (
     <div className="page-menu-seminar-saya-layout">
         {/* Navbar */}
@@ -58,7 +62,7 @@ function MahasiswaPenyelenggaraSeminar_MenuSeminarSaya() {
 
                 <div className="actions-btn">
                     <button className="lihat-daftar-hadir-btn">Lihat Daftar Hadir</button>
-                    <button className="generate-qr-code-btn">Generate QR Code</button>
+                    <button className="generate-qr-code-btn" onClick={() => setShowQRModal(true)}>Generate QR Code</button>
                 </div>
             </div>
 
@@ -98,6 +102,27 @@ function MahasiswaPenyelenggaraSeminar_MenuSeminarSaya() {
                 </div>
             </div>    
         </div>
+
+        {/* Modal Popup */}
+        {showQRModal && (
+            <div className="modal-overlay" onClick={() => setShowQRModal(false)}>
+                <div className="qr-modal" onClick={(e) => e.stopPropagation()}>
+                    <button className="close-modal-btn" onClick={() => setShowQRModal(false)}>
+                        <Icon icon="mingcute:close-fill" />
+                    </button>
+                    <div className="scanner-icon-wrapper">
+                        <Icon icon="mingcute:scan-line" className="scanner-icon"/>
+                    </div>
+                    <h2>Scan QR Code</h2>
+                    <div className="qr-code-container">
+                        <img src={qrSample} alt="QR Code Presensi"/>
+                    </div>
+                    <p className="modal-description">Tampilkan kode ini kepada peserta untuk dipindai</p>
+                    <button className="aktifkan-qr-btn">Aktifkan QR Code</button>
+                    <p className="expired-time">10:00 Menit</p>
+                </div>
+            </div>
+        )}
     </div>
   );
 }
