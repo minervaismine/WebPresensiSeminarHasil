@@ -110,15 +110,21 @@ function MahasiswaPenyelenggaraSeminar_MenuSeminarSaya() {
                     <button className="close-modal-btn" onClick={() => setShowQRModal(false)}>
                         <Icon icon="mingcute:close-fill" />
                     </button>
+
                     <div className="scanner-icon-wrapper">
                         <Icon icon="mingcute:scan-line" className="scanner-icon"/>
                     </div>
+
                     <h2>Scan QR Code</h2>
+
                     <div className="qr-code-container">
                         <img src={qrSample} alt="QR Code Presensi"/>
                     </div>
+
                     <p className="modal-description">Tampilkan kode ini kepada peserta untuk dipindai</p>
+
                     <button className="aktifkan-qr-btn">Aktifkan QR Code</button>
+                    
                     <p className="expired-time">10:00 Menit</p>
                 </div>
             </div>
