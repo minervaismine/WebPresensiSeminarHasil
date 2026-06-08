@@ -1,7 +1,7 @@
-import LaporanPresensi from "./pages/Admin_LaporanPresensi";
+import KelolaDataMahasiswa from "./pages/Admin_KelolaDataMahasiswa";
 
 function App() {
-  return <LaporanPresensi/>;
+  return <KelolaDataMahasiswa/>;
 }
 
 export default App;

@@ -1,4 +1,4 @@
-.page-menu-laporan-presensi-layout {
+.page-menu-kelola-data-mahasiswa-layout {
   display: flex;
   height: 100vh;
   flex-direction: column;
@@ -23,16 +23,17 @@
   color: #1E293B;
 }
 
-.navbar-menu-laporan-presensi {
+.navbar-menu-kelola-data-mahasiswa {
   height: 110px;
   background: #FFFFFF;
   display: flex;
   position: relative;
   align-items: center;
   padding: 0 80px;
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
 }
 
-.navbar-menu-laporan-presensi h1 {
+.navbar-menu-kelola-data-mahasiswa h1 {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -43,7 +44,7 @@
   color: #1E293B;
 }
 
-.header-laporan-presensi-wrapper {
+.header-kelola-data-mahasiswa-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -52,7 +53,7 @@
   margin-right: 90px;
 }
 
-.export-btn {
+.add-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -67,13 +68,13 @@
   cursor: pointer;
 }
 
-.export-btn:hover{
+.add-btn:hover{
   background: #1D4ED8;
   transform: translateY(-2px);
   box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.export-icon {
+.add-icon {
     font-size: 30px;
 }
 
@@ -158,21 +159,21 @@
   color: #1E293B;
 }
 
-.tabel-laporan-presensi {
+.tabel-mahasiswa {
   font-family: "Poppins", sans-serif;
   border-collapse: collapse;
   margin: 10px 90px;
   min-width: 400px;
 }
 
-.tabel-laporan-presensi thead tr {
+.tabel-mahasiswa thead tr {
   color: #1E293B;
   text-align: center; 
   font-weight: 700;
   font-size: 20px;
 }
 
-.tabel-laporan-presensi th {
+.tabel-mahasiswa th {
     text-align: center;
 }
 
@@ -195,46 +196,65 @@
   font-size: 22px;
 }
 
-.tabel-laporan-presensi th,
-.tabel-laporan-presensi td {
+.tabel-mahasiswa th,
+.tabel-mahasiswa td {
   padding: 5px 15px;
 }
 
-.tabel-laporan-presensi tbody {
+.tabel-mahasiswa tbody {
   font-size: 14px;
 }
 
-.tabel-laporan-presensi tbody tr {
+.tabel-mahasiswa tbody tr {
   color: #1E293B;
 }
 
-.tabel-laporan-presensi tbody tr:nth-of-type(odd) {
+.tabel-mahasiswa tbody tr:nth-of-type(odd) {
   background-color: rgba(36, 99, 235, 0.22);
 }
 
 .kolom-nama {
   text-align: left;
-  width: 45%;
+  width: 60%;
 }
 
 .kolom-nim {
   width: 10%;
 }
 
-.kolom-angkatan,
-.kolom-kehadiran,
-.kolom-status {
-  width: 15%;
+.kolom-angkatan {
+  width: 15%
 }
 
-.status-presensi {
-  display: inline-block;
-  padding: 5px 12px;
+.kolom-aksi {
+  width: 15%;
+  text-align: center;
+}
+
+.btn-aksi-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.aksi-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
-  border-radius: 7px;
-  font-weight: 600;
-  width: 100px;
-  background-color: #DCFCE7;
+  background: none;
+}
+
+.aksi-icon {
+  font-size:25px;
+}
+
+.edit-btn {
+  color: #22C55E;
+}
+
+.delete-btn {
+  color: #EF4444;
 }
 
 .pagination-wrapper {
