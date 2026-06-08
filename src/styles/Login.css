@@ -30,7 +30,7 @@
 }
 
 .form-group-username {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .form-group-password {
@@ -53,13 +53,13 @@
 }
 
 .icon-box {
-    background: #2463EB;
-    width: 50px;
-    height: 45px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    border-radius: 10px 0 0 10px;
+  background: #2463EB;
+  width: 50px;
+  height: 45px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-radius: 10px 0 0 10px;
 }
 
 .user-icon {

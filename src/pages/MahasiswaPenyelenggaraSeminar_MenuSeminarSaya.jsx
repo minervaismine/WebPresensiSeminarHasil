@@ -4,7 +4,7 @@ import { useState } from "react";
 import qrSample from "../assets/qr_sample.png";
 
 function MahasiswaPenyelenggaraSeminar_MenuSeminarSaya() {
-    const [showQRModal, setShowQRModal] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
 
   return (
     <div className="page-menu-seminar-saya-layout">

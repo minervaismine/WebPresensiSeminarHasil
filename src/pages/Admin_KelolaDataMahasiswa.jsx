@@ -1,8 +1,11 @@
 import "../styles/Admin_KelolaDataMahasiswa.css";
 import { Icon } from '@iconify/react';
+import { useState } from "react";
 
-function LaporanPresensi() {
-  return (
+function KelolaDataMahasiswa() {
+    const [showFormAddStudent, setShowFormAddStudent] = useState(false);
+  
+    return (
     <div className="page-menu-kelola-data-mahasiswa-layout">
         {/* Navbar */}
         <nav className="navbar-menu-kelola-data-mahasiswa">
@@ -16,7 +19,7 @@ function LaporanPresensi() {
 
         {/* Export, Search Bar, Filter */}
         <div className="header-kelola-data-mahasiswa-wrapper">
-            <button className="add-btn">
+            <button className="add-btn" onClick={() => setShowFormAddStudent(true)}>
                 <Icon icon="mingcute:add-fill" className="add-icon"/>
                 <span>Tambah Mahasiswa</span>
             </button>
@@ -247,8 +250,48 @@ function LaporanPresensi() {
                 </a>
             </div>
         </div>
+
+        {/* Modal Popup */}
+        {showFormAddStudent && (
+            <div className="modal-overlay" onClick={() => setShowFormAddStudent(false)}>
+                <div className="form-add-student" onClick={(e) => e.stopPropagation()}>
+                    <div className="form-header-wrapper">
+                        <div className="form-header">
+                            <Icon icon="ph:student-fill" className="student-icon"/>
+                            <span>Data Mahasiswa</span>
+                        </div>
+                        <button className="close-form-btn" onClick={() => setShowFormAddStudent(false)}>
+                            <Icon icon="mingcute:close-fill" />
+                        </button>
+                    </div>
+
+                    <div className="form-group-name">
+                        <label>Nama Lengkap</label>
+                        <input type="text" placeholder="Masukkan nama lengkap mahasiswa"/>
+                    </div>
+
+                    <div className="form-group-nim">
+                        <label>NIM</label>
+                        <input type="text" placeholder="Masukkan NIM mahasiswa"/>
+                    </div>
+
+                    <div className="form-group-angkatan">
+                        <label>Angkatan</label>
+                        <input type="number" placeholder="Masukkan tahun angkatan mahasiswa"/>
+                    </div>
+
+                    <div className="add-btn-wrapper">
+                        <button className="add-btn-form">
+                        <Icon icon="mingcute:add-fill" className="add-icon-form"/>
+                        <span>Tambah Mahasiswa</span>
+                    </button>
+                    </div>
+                    
+                </div>
+            </div>
+        )}
     </div>
   );
 }
 
-export default LaporanPresensi;
+export default KelolaDataMahasiswa;
