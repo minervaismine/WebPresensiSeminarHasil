@@ -1,7 +1,7 @@
-import Mahasiswa_RiwayatPresensi from "./pages/Mahasiswa_RiwayatPresensi";
+import LaporanPresensi from "./pages/Admin_LaporanPresensi";
 
 function App() {
-  return <Mahasiswa_RiwayatPresensi/>;
+  return <LaporanPresensi/>;
 }
 
 export default App;

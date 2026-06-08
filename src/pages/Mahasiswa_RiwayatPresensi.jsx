@@ -52,7 +52,7 @@ function RiwayatPresensiMahasiswa() {
             </div>
         </div>  
 
-        {/* Riwayat Presensi  */}
+        {/* Judul, Search Bar, Filter  */}
         <div className="header-riwayat-presensi-wrapper">
             <h1 className="riwayat-presensi-title">Riwayat Presensi</h1>
 
@@ -73,7 +73,6 @@ function RiwayatPresensiMahasiswa() {
                     <Icon icon="icon-park-outline:down" className="dropdown-icon"/>
                 </div>
             </div>
-
         </div>
 
         {/* Riwayat Presensi */}
