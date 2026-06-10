@@ -1,7 +1,7 @@
-import KelolaDataSeminar from "./pages/Admin_KelolaDataSeminar";
+import VerifikasiPresensi from "./pages/Verifikator_VerifikasiPresensi";
 
 function App() {
-  return <KelolaDataSeminar/>;
+  return <VerifikasiPresensi/>;
 }
 
 export default App;

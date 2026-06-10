@@ -1,4 +1,4 @@
-.page-menu-riwayat-presensi-layout {
+.page-menu-verifikasi-presensi-layout {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
@@ -23,16 +23,17 @@
   color: #1E293B;
 }
 
-.navbar-menu-riwayat-presensi {
+.navbar-menu-verifikasi-presensi {
   height: 110px;
   background: #FFFFFF;
   display: flex;
   position: relative;
   align-items: center;
   padding: 0 80px;
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
 }
 
-.navbar-menu-riwayat-presensi h1 {
+.navbar-menu-verifikasi-presensi h1 {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -43,79 +44,7 @@
   color: #1E293B;
 }
 
-.stats-card-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 10px;
-  margin-left: 90px;
-  margin-right: 320px;
-}
-
-.statistik-kehadiran-title {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 10px;
-  margin-left: 90px;
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: 0.1px;
-  color: #1E293B;
-}
-
-.stat-card {
-  background: #E9EEF6;
-  border-radius: 15px;
-  padding: 32px;
-  height: 160px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.stat-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  z-index: 2;
-}
-
-.stat-content h3 {
-  margin: 0;
-  padding-top: 10px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #1E293B;
-  font-family: "Poppins", sans-serif;
-}
-
-.stat-content h1 {
-  margin-top: 20px;
-  font-size: 80px;
-  font-weight: 800;
-  line-height: 1;
-  color: #1E293B;
-}
-
-.stat-icon-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.stat-icon {
-  position: absolute;
-  right: -15px;
-  bottom: -40px;;
-  font-size: 180px;
-  color: #7384A7;
-  opacity: 0.2;
-}
-
-.header-riwayat-presensi-wrapper {
+.daftar-seminar-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -124,7 +53,7 @@
   margin-right: 90px;
 }
 
-.riwayat-presensi-title {
+.daftar-seminar-title {
   display: flex;
   justify-content: flex-start;
   font-size: 40px;
@@ -147,8 +76,6 @@
   padding: 10px;
   border-radius: 10px;
   border: 2px solid #E9EEF6;
-  transition: background 0.25s;
-  box-sizing: border-box;
 }
 
 .search-bar-input {
@@ -214,7 +141,7 @@
   color: #1E293B;
 }
 
-.riwayat-list {
+.seminar-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -222,7 +149,7 @@
   margin-bottom: 20px;
 }
 
-.riwayat-card {
+.seminar-card {
   position: relative;
   display: flex;
   background: #E9EEF6;
@@ -268,34 +195,24 @@
   color: #1E293B;
 }
 
-.status-badge {
-  padding: 3px 30px;
-  border-radius: 8px;
+.lihat-daftar-hadir-btn {
+  border-radius: 7px;
+  border: none;
+  background: #2463EB;
+  color: #FFFFFF;
+  padding: 5px 5px;
   font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 500;
-  width: 110px;
+  width: 180px;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
-.pending {
-  background: #FEF3C7;
-  border: 1px solid #FACC15;
-  color: #1E293B;
-}
-
-.valid {
-  background: #DCFCE7;
-  border: 1px solid #22C55E;
-  color: #1E293B;
-}
-
-.invalid {
-  background: #FEE2E2;
-  border: 1px solid #EF4444;
-  color: #1E293B;
+.lihat-daftar-hadir-btn:hover {
+  background: #1D4ED8;
 }
 
 .informasi-seminar {

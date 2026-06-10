@@ -2,7 +2,7 @@ import "../styles/Admin_KelolaDataSeminar.css";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
 
-function KelolaDataMahasiswa() {
+function KelolaDataSeminar() {
     const [showFormAddSeminar, setShowFormAddSeminar] = useState(false);
     const [showFormDeleteSeminar, setShowFormDeleteSeminar] = useState(false);
   
@@ -412,4 +412,4 @@ function KelolaDataMahasiswa() {
   );
 }
 
-export default KelolaDataMahasiswa;
+export default KelolaDataSeminar;
