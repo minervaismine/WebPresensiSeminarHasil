@@ -30,7 +30,7 @@
   position: relative;
   align-items: center;
   padding: 0 80px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
 }
 
 .navbar-menu-kelola-data-seminar h1 {
@@ -158,16 +158,37 @@
 }
 
 .table-container {
-  width: 100%;
+  margin: 20px 90px;
+}
+
+.table-scrollbar {
   overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+/* Chrome, Edge, Safari */
+.table-scrollbar::-webkit-scrollbar {
+  height: 10px; /* scrollbar horizontal */
+}
+
+.table-scrollbar::-webkit-scrollbar-track {
+  background: #E9EEF6; /* warna background track */
+  border-radius: 999px;
+}
+
+.table-scrollbar::-webkit-scrollbar-thumb {
+  background: #2463EB; /* warna thumb */
+  border-radius: 999px;
+}
+
+.table-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #1D4ED8; /* warna saat hover */
 }
 
 .tabel-seminar {
   font-family: "Poppins", sans-serif;
   border-collapse: collapse;
-  margin: 10px 90px;
   width: max-content;
-  border: 1px solid black; /* hapus nanti */
 }
 
 .tabel-seminar thead tr {
@@ -175,7 +196,6 @@
   text-align: center; 
   font-weight: 700;
   font-size: 22px;
-  background-color: aquamarine;
 }
 
 .tabel-seminar th {
@@ -204,7 +224,6 @@
 .tabel-seminar th,
 .tabel-seminar td {
   padding: 5px 8px;
-  border: 1px solid black; /* hapus nanti */
 }
 
 .th-nama {
@@ -359,7 +378,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 5px 90px;
+  margin: 0 90px;
 }
 
 .page-description {

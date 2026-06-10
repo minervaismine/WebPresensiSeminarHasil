@@ -46,246 +46,248 @@ function KelolaDataMahasiswa() {
 
         {/* Tabel */}
         <div className="table-container">
-            <table className="tabel-seminar">
-                <thead>
-                    <tr>
-                        <th className="th-nama">
-                            <button className="sort-thead">
-                                <span>Nama</span>
-                                <Icon icon="uil:sort" className="sort-icon"/>
-                            </button>
-                        </th>
-                        <th className="th-judul">
-                            <button className="sort-thead">
-                                <span>Judul</span>
-                                <Icon icon="uil:sort" className="sort-icon"/>
-                            </button>
-                        </th>
-                        <th className="th-jadwal">
-                            <button className="sort-thead">
-                                <span>Jadwal</span>
-                                <Icon icon="uil:sort" className="sort-icon"/>
-                            </button>
-                        </th>
-                        <th className="th-lokasi">Lokasi</th>
-                        <th className="th-pembimbing">Pembimbing</th>
-                        <th className="th-penguji">Penguji</th>
-                        <th className="th-aksi">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td className="kolom-nama">
-                            <div className="kolom-nama-content">
-                                <p className="nama-mahasiswa">Karina Minerva Romeda</p>
-                                <p className="nim-mahasiswa">H071221034</p>
-                            </div>
-                        </td>
-                        <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
-                        <td className="kolom-jadwal">
-                            <div className="kolom-jadwal-content">
-                                <p>Senin, 13 April 2026</p>
-                                <p>13.00 - 14.30</p>
-                            </div>
-                        </td>
-                        <td className="kolom-lokasi">
-                            <div className="kolom-lokasi-content">
-                                <p>Lab RPL</p>
-                                <button className="lihat-peta-btn">
-                                    <Icon icon="weui:location-filled" className="location-icon"/>
-                                    <span>Lihat Peta</span>
+            <div className="table-scrollbar">
+                <table className="tabel-seminar">
+                    <thead>
+                        <tr>
+                            <th className="th-nama">
+                                <button className="sort-thead">
+                                    <span>Nama</span>
+                                    <Icon icon="uil:sort" className="sort-icon"/>
                                 </button>
-                            </div>
-                        </td>
-                        <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
-                        <td className="kolom-penguji">
-                            <div className="kolom-penguji-content">
-                                <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
-                                <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
-                            </div>
-                        </td>
-                        <td className="kolom-aksi">
-                            <div className="btn-aksi-wrapper">
-                                <button className=" aksi-btn edit-btn">
-                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
+                            </th>
+                            <th className="th-judul">
+                                <button className="sort-thead">
+                                    <span>Judul</span>
+                                    <Icon icon="uil:sort" className="sort-icon"/>
                                 </button>
+                            </th>
+                            <th className="th-jadwal">
+                                <button className="sort-thead">
+                                    <span>Jadwal</span>
+                                    <Icon icon="uil:sort" className="sort-icon"/>
+                                </button>
+                            </th>
+                            <th className="th-lokasi">Lokasi</th>
+                            <th className="th-pembimbing">Pembimbing</th>
+                            <th className="th-penguji">Penguji</th>
+                            <th className="th-aksi">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td className="kolom-nama">
+                                <div className="kolom-nama-content">
+                                    <p className="nama-mahasiswa">Karina Minerva Romeda</p>
+                                    <p className="nim-mahasiswa">H071221034</p>
+                                </div>
+                            </td>
+                            <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
+                            <td className="kolom-jadwal">
+                                <div className="kolom-jadwal-content">
+                                    <p>Senin, 13 April 2026</p>
+                                    <p>13.00 - 14.30</p>
+                                </div>
+                            </td>
+                            <td className="kolom-lokasi">
+                                <div className="kolom-lokasi-content">
+                                    <p>Lab RPL</p>
+                                    <button className="lihat-peta-btn">
+                                        <Icon icon="weui:location-filled" className="location-icon"/>
+                                        <span>Lihat Peta</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
+                            <td className="kolom-penguji">
+                                <div className="kolom-penguji-content">
+                                    <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
+                                    <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
+                                </div>
+                            </td>
+                            <td className="kolom-aksi">
+                                <div className="btn-aksi-wrapper">
+                                    <button className=" aksi-btn edit-btn">
+                                        <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
+                                    </button>
 
-                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
-                                    <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">
-                            <div className="kolom-nama-content">
-                                <p className="nama-mahasiswa">Karina Minerva Romeda</p>
-                                <p className="nim-mahasiswa">H071221034</p>
-                            </div>
-                        </td>
-                        <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
-                        <td className="kolom-jadwal">
-                            <div className="kolom-jadwal-content">
-                                <p>Senin, 13 April 2026</p>
-                                <p>13.00 - 14.30</p>
-                            </div>
-                        </td>
-                        <td className="kolom-lokasi">
-                            <div className="kolom-lokasi-content">
-                                <p>Lab RPL</p>
-                                <button className="lihat-peta-btn">
-                                    <Icon icon="weui:location-filled" className="location-icon"/>
-                                    <span>Lihat Peta</span>
-                                </button>
-                            </div>
-                        </td>
-                        <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
-                        <td className="kolom-penguji">
-                            <div className="kolom-penguji-content">
-                                <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
-                                <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
-                            </div>
-                        </td>
-                        <td className="kolom-aksi">
-                            <div className="btn-aksi-wrapper">
-                                <button className=" aksi-btn edit-btn">
-                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                                </button>
+                                    <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
+                                        <Icon icon="tabler:trash-filled" className="aksi-icon"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="kolom-nama">
+                                <div className="kolom-nama-content">
+                                    <p className="nama-mahasiswa">Karina Minerva Romeda</p>
+                                    <p className="nim-mahasiswa">H071221034</p>
+                                </div>
+                            </td>
+                            <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
+                            <td className="kolom-jadwal">
+                                <div className="kolom-jadwal-content">
+                                    <p>Senin, 13 April 2026</p>
+                                    <p>13.00 - 14.30</p>
+                                </div>
+                            </td>
+                            <td className="kolom-lokasi">
+                                <div className="kolom-lokasi-content">
+                                    <p>Lab RPL</p>
+                                    <button className="lihat-peta-btn">
+                                        <Icon icon="weui:location-filled" className="location-icon"/>
+                                        <span>Lihat Peta</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
+                            <td className="kolom-penguji">
+                                <div className="kolom-penguji-content">
+                                    <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
+                                    <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
+                                </div>
+                            </td>
+                            <td className="kolom-aksi">
+                                <div className="btn-aksi-wrapper">
+                                    <button className=" aksi-btn edit-btn">
+                                        <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
+                                    </button>
 
-                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
-                                    <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">
-                            <div className="kolom-nama-content">
-                                <p className="nama-mahasiswa">Karina Minerva Romeda</p>
-                                <p className="nim-mahasiswa">H071221034</p>
-                            </div>
-                        </td>
-                        <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
-                        <td className="kolom-jadwal">
-                            <div className="kolom-jadwal-content">
-                                <p>Senin, 13 April 2026</p>
-                                <p>13.00 - 14.30</p>
-                            </div>
-                        </td>
-                        <td className="kolom-lokasi">
-                            <div className="kolom-lokasi-content">
-                                <p>Lab RPL</p>
-                                <button className="lihat-peta-btn">
-                                    <Icon icon="weui:location-filled" className="location-icon"/>
-                                    <span>Lihat Peta</span>
-                                </button>
-                            </div>
-                        </td>
-                        <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
-                        <td className="kolom-penguji">
-                            <div className="kolom-penguji-content">
-                                <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
-                                <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
-                            </div>
-                        </td>
-                        <td className="kolom-aksi">
-                            <div className="btn-aksi-wrapper">
-                                <button className=" aksi-btn edit-btn">
-                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                                </button>
+                                    <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
+                                        <Icon icon="tabler:trash-filled" className="aksi-icon"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="kolom-nama">
+                                <div className="kolom-nama-content">
+                                    <p className="nama-mahasiswa">Karina Minerva Romeda</p>
+                                    <p className="nim-mahasiswa">H071221034</p>
+                                </div>
+                            </td>
+                            <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
+                            <td className="kolom-jadwal">
+                                <div className="kolom-jadwal-content">
+                                    <p>Senin, 13 April 2026</p>
+                                    <p>13.00 - 14.30</p>
+                                </div>
+                            </td>
+                            <td className="kolom-lokasi">
+                                <div className="kolom-lokasi-content">
+                                    <p>Lab RPL</p>
+                                    <button className="lihat-peta-btn">
+                                        <Icon icon="weui:location-filled" className="location-icon"/>
+                                        <span>Lihat Peta</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
+                            <td className="kolom-penguji">
+                                <div className="kolom-penguji-content">
+                                    <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
+                                    <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
+                                </div>
+                            </td>
+                            <td className="kolom-aksi">
+                                <div className="btn-aksi-wrapper">
+                                    <button className=" aksi-btn edit-btn">
+                                        <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
+                                    </button>
 
-                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
-                                    <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">
-                            <div className="kolom-nama-content">
-                                <p className="nama-mahasiswa">Karina Minerva Romeda</p>
-                                <p className="nim-mahasiswa">H071221034</p>
-                            </div>
-                        </td>
-                        <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
-                        <td className="kolom-jadwal">
-                            <div className="kolom-jadwal-content">
-                                <p>Senin, 13 April 2026</p>
-                                <p>13.00 - 14.30</p>
-                            </div>
-                        </td>
-                        <td className="kolom-lokasi">
-                            <div className="kolom-lokasi-content">
-                                <p>Lab RPL</p>
-                                <button className="lihat-peta-btn">
-                                    <Icon icon="weui:location-filled" className="location-icon"/>
-                                    <span>Lihat Peta</span>
-                                </button>
-                            </div>
-                        </td>
-                        <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
-                        <td className="kolom-penguji">
-                            <div className="kolom-penguji-content">
-                                <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
-                                <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
-                            </div>
-                        </td>
-                        <td className="kolom-aksi">
-                            <div className="btn-aksi-wrapper">
-                                <button className=" aksi-btn edit-btn">
-                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                                </button>
+                                    <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
+                                        <Icon icon="tabler:trash-filled" className="aksi-icon"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="kolom-nama">
+                                <div className="kolom-nama-content">
+                                    <p className="nama-mahasiswa">Karina Minerva Romeda</p>
+                                    <p className="nim-mahasiswa">H071221034</p>
+                                </div>
+                            </td>
+                            <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
+                            <td className="kolom-jadwal">
+                                <div className="kolom-jadwal-content">
+                                    <p>Senin, 13 April 2026</p>
+                                    <p>13.00 - 14.30</p>
+                                </div>
+                            </td>
+                            <td className="kolom-lokasi">
+                                <div className="kolom-lokasi-content">
+                                    <p>Lab RPL</p>
+                                    <button className="lihat-peta-btn">
+                                        <Icon icon="weui:location-filled" className="location-icon"/>
+                                        <span>Lihat Peta</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
+                            <td className="kolom-penguji">
+                                <div className="kolom-penguji-content">
+                                    <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
+                                    <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
+                                </div>
+                            </td>
+                            <td className="kolom-aksi">
+                                <div className="btn-aksi-wrapper">
+                                    <button className=" aksi-btn edit-btn">
+                                        <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
+                                    </button>
 
-                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
-                                    <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">
-                            <div className="kolom-nama-content">
-                                <p className="nama-mahasiswa">Karina Minerva Romeda</p>
-                                <p className="nim-mahasiswa">H071221034</p>
-                            </div>
-                        </td>
-                        <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
-                        <td className="kolom-jadwal">
-                            <div className="kolom-jadwal-content">
-                                <p>Senin, 13 April 2026</p>
-                                <p>13.00 - 14.30</p>
-                            </div>
-                        </td>
-                        <td className="kolom-lokasi">
-                            <div className="kolom-lokasi-content">
-                                <p>Lab RPL</p>
-                                <button className="lihat-peta-btn">
-                                    <Icon icon="weui:location-filled" className="location-icon"/>
-                                    <span>Lihat Peta</span>
-                                </button>
-                            </div>
-                        </td>
-                        <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
-                        <td className="kolom-penguji">
-                            <div className="kolom-penguji-content">
-                                <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
-                                <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
-                            </div>
-                        </td>
-                        <td className="kolom-aksi">
-                            <div className="btn-aksi-wrapper">
-                                <button className=" aksi-btn edit-btn">
-                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                                </button>
+                                    <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
+                                        <Icon icon="tabler:trash-filled" className="aksi-icon"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td className="kolom-nama">
+                                <div className="kolom-nama-content">
+                                    <p className="nama-mahasiswa">Karina Minerva Romeda</p>
+                                    <p className="nim-mahasiswa">H071221034</p>
+                                </div>
+                            </td>
+                            <td className="kolom-judul">Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa</td>
+                            <td className="kolom-jadwal">
+                                <div className="kolom-jadwal-content">
+                                    <p>Senin, 13 April 2026</p>
+                                    <p>13.00 - 14.30</p>
+                                </div>
+                            </td>
+                            <td className="kolom-lokasi">
+                                <div className="kolom-lokasi-content">
+                                    <p>Lab RPL</p>
+                                    <button className="lihat-peta-btn">
+                                        <Icon icon="weui:location-filled" className="location-icon"/>
+                                        <span>Lihat Peta</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td className="kolom-pembimbing">Dr. Hendra, S.Si., M.Kom.</td>
+                            <td className="kolom-penguji">
+                                <div className="kolom-penguji-content">
+                                    <p>Edy Saputra Rusdi, S.Si., M.Si.</p>
+                                    <p>Siti Rabiatul Adawiyah, S.Si., M.Kom.</p>
+                                </div>
+                            </td>
+                            <td className="kolom-aksi">
+                                <div className="btn-aksi-wrapper">
+                                    <button className=" aksi-btn edit-btn">
+                                        <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
+                                    </button>
 
-                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
-                                    <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                    <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
+                                        <Icon icon="tabler:trash-filled" className="aksi-icon"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         {/* Pagination */}
