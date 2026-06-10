@@ -4,7 +4,7 @@ import { useState } from "react";
 
 function KelolaDataMahasiswa() {
     const [showFormAddSeminar, setShowFormAddSeminar] = useState(false);
-    // const [showFormDeleteStudent, setShowFormDeleteStudent] = useState(false);
+    const [showFormDeleteSeminar, setShowFormDeleteSeminar] = useState(false);
   
     return (
     <div className="page-menu-kelola-data-seminar-layout">
@@ -110,7 +110,7 @@ function KelolaDataMahasiswa() {
                                     <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
                                 </button>
 
-                                <button className=" aksi-btn delete-btn">
+                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
                                     <Icon icon="tabler:trash-filled" className="aksi-icon"/>
                                 </button>
                             </div>
@@ -152,7 +152,7 @@ function KelolaDataMahasiswa() {
                                     <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
                                 </button>
 
-                                <button className=" aksi-btn delete-btn">
+                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
                                     <Icon icon="tabler:trash-filled" className="aksi-icon"/>
                                 </button>
                             </div>
@@ -194,7 +194,7 @@ function KelolaDataMahasiswa() {
                                     <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
                                 </button>
 
-                                <button className=" aksi-btn delete-btn">
+                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
                                     <Icon icon="tabler:trash-filled" className="aksi-icon"/>
                                 </button>
                             </div>
@@ -236,7 +236,7 @@ function KelolaDataMahasiswa() {
                                     <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
                                 </button>
 
-                                <button className=" aksi-btn delete-btn">
+                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
                                     <Icon icon="tabler:trash-filled" className="aksi-icon"/>
                                 </button>
                             </div>
@@ -278,7 +278,7 @@ function KelolaDataMahasiswa() {
                                     <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
                                 </button>
 
-                                <button className=" aksi-btn delete-btn">
+                                <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
                                     <Icon icon="tabler:trash-filled" className="aksi-icon"/>
                                 </button>
                             </div>
@@ -388,8 +388,8 @@ function KelolaDataMahasiswa() {
         )}
 
         {/* Modal Delete Data Seminar */}
-        {/* {showFormDeleteStudent && (
-            <div className="modal-overlay" onClick={() => setShowFormDeleteStudent(false)}>
+        {showFormDeleteSeminar && (
+            <div className="modal-overlay" onClick={() => setShowFormDeleteSeminar(false)}>
                 <div className="modal-delete" onClick={(e) => e.stopPropagation()}>
                     <div className="warning-icon-wrapper">
                         <Icon icon="ic:round-warning" className="warning-icon"/>
@@ -400,12 +400,12 @@ function KelolaDataMahasiswa() {
                     <p className="modal-description">Apakah Anda yakin ingin menghapus data ini?</p>
 
                     <div className="btn-wrapper">
-                        <button className="modal-batal-btn" onClick={() => setShowFormDeleteStudent(false)}>Batal</button>
+                        <button className="modal-batal-btn" onClick={() => setShowFormDeleteSeminar(false)}>Batal</button>
                         <button className="modal-delete-btn">Hapus</button>
                     </div>
                 </div>
             </div>
-        )} */}
+        )}
     </div>
   );
 }

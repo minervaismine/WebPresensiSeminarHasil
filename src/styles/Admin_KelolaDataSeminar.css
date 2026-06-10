@@ -656,3 +656,84 @@
 .add-icon-form {
   font-size: 20px;
 }
+
+.modal-delete {
+  position: relative;
+  width: 450px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.warning-icon-wrapper {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FEE2E2;
+  border-radius: 100%;
+  margin: 0 auto 10px;
+  padding-bottom: 6px;
+}
+
+.warning-icon {
+  font-size: 40px;
+  color: #EF4444;
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1E293B; 
+  text-align: center;
+}
+
+.modal-description {
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  font-size: 16px;
+  color: #1E293B;
+  margin: 10px 0;
+}
+
+.btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 60px 0 60px;
+}
+
+.modal-batal-btn {
+  border: none;
+  border-radius: 10px;
+  background: #E9EEF6;
+  width: 100px;
+  height: 35px;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.modal-batal-btn:hover {
+  background: #D8E2F0;
+}
+
+.modal-delete-btn {
+  border: none;
+  border-radius: 10px;
+  background: #EF4444;
+  width: 100px;
+  height: 35px;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #FFFFFF;
+}
+
+.modal-delete-btn:hover {
+  background: #DC2626;
+}
