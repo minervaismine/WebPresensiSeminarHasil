@@ -1,7 +1,7 @@
-import KelolaDataMahasiswa from "./pages/Admin_KelolaDataMahasiswa";
+import KelolaDataSeminar from "./pages/Admin_KelolaDataSeminar";
 
 function App() {
-  return <KelolaDataMahasiswa/>;
+  return <KelolaDataSeminar/>;
 }
 
 export default App;

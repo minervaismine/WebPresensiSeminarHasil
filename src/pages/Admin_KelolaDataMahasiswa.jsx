@@ -20,7 +20,7 @@ function KelolaDataMahasiswa() {
 
         {/* Export, Search Bar, Filter */}
         <div className="header-kelola-data-mahasiswa-wrapper">
-            <button className="add-btn" onClick={() => setShowFormAddStudent(true)}>
+            <button className="add-mahasiswa-btn" onClick={() => setShowFormAddStudent(true)}>
                 <Icon icon="mingcute:add-fill" className="add-icon"/>
                 <span>Tambah Mahasiswa</span>
             </button>
