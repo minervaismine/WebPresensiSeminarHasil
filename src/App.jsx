@@ -1,7 +1,7 @@
-import RiwayatVerifikasi from "./pages/Verifikator_RiwayatVerifikasi";
+import LihatDetail from "./pages/Verifikator_RiwayatVerifikasi_LihatDetail";
 
 function App() {
-  return <RiwayatVerifikasi/>;
+  return <LihatDetail/>;
 }
 
 export default App;

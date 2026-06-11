@@ -1,0 +1,453 @@
+.page-menu-lihat-detail-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.back-icon {
+  font-size: 35px;
+  color: #1E293B;
+}
+
+.navbar-menu-lihat-detail {
+  height: 110px;
+  background: #FFFFFF;
+  display: flex;
+  position: relative;
+  align-items: center;
+  padding: 0 80px;
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
+}
+
+.navbar-menu-lihat-detail h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+}
+
+.ringkasan-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  margin: 20px 90px;
+}
+
+.ringkasan-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.ringkasan-right {
+  display: flex;
+}
+
+.ringkasan-title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+}
+
+.summary-cards {
+  display: flex;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.summary-card {
+  width: 315px;
+  height: 160px;
+  background: #E9EEF6;
+  border: 1px solid #2463EB;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  gap: 30px;
+}
+
+.card-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #2563eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.people-icon,
+.clock-icon {
+  font-size: 50px;
+  color: #FFFFFF;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.card-label {
+  margin: 0;
+}
+
+.card-value {
+  margin: 0;
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.progress-card {
+  width: 250px;
+  height: 250px;
+  background: rgba(36, 99, 235, 0.22);
+  border: 1px solid #2463EB;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 15px;
+}
+
+.chart-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1E293B;
+  font-family: "Poppins", sans-serif;
+}
+
+.donut-wrapper {
+  width: 130px;
+  height: 130px;
+  margin-top: 20px;
+}
+
+.donut-wrapper .CircularProgressbar-text {
+  font-family: "Poppins", sans-serif;
+  font-weight: 800;
+}
+
+.progress-text {
+  margin-top: 20px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1E293B;
+  font-family: "Poppins", sans-serif;
+}
+
+.daftar-hadir-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-left: 90px;
+  margin-right: 90px;
+}
+
+.daftar-hadir-title {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.search-bar {
+  width: max-content;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #E9EEF6;
+}
+
+.search-bar-input {
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  color: #1E293B;
+  margin-left: 8px;
+  outline: none;
+  border: none;
+  background: transparent;
+  width: 400px;
+}
+
+.search-bar-input::-webkit-search-cancel-button {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.search-icon {
+  font-size: 30px;
+  color: #1E293B;
+}
+
+.search-bar-input::placeholder {
+  color: #E9EEF6;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.filter-dropdown {
+  width: 180px;
+  height: 53px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 2px solid #E9EEF6;
+  border-radius: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.filter-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-icon {
+  font-size: 30px;
+  color: #1E293B;
+}
+
+.filter-content span {
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.dropdown-icon {
+  font-size: 30px;
+  color: #1E293B;
+}
+
+.tabel-riwayat-daftar-hadir {
+  font-family: "Poppins", sans-serif;
+  border-collapse: collapse;
+  margin: 10px 90px;
+  /* min-width: 400px; */
+}
+
+.tabel-riwayat-daftar-hadir thead tr {
+  color: #1E293B;
+  text-align: center; 
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.tabel-riwayat-daftar-hadir th {
+  text-align: center;
+}
+
+.sort-thead {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.sort-icon {
+  font-size: 22px;
+}
+
+.tabel-riwayat-daftar-hadir th,
+.tabel-riwayat-daftar-hadir td {
+  padding: 5px 15px;
+}
+
+.tabel-riwayat-daftar-hadir tbody {
+  font-size: 14px;
+}
+
+.tabel-riwayat-daftar-hadir tbody tr {
+  color: #1E293B;
+}
+
+.tabel-riwayat-daftar-hadir tbody tr:nth-of-type(odd) {
+  background-color: rgba(36, 99, 235, 0.22);
+}
+
+.kolom-nama {
+  text-align: left;
+  width: 30%;
+}
+
+.kolom-nim {
+  width: 10%;
+}
+
+.kolom-waktu-scan {
+  width: 20%;
+}
+
+.kolom-jarak-lokasi {
+  width: 10%;
+}
+
+.kolom-status-presensi {
+  text-align: center;
+  width: 10%;
+}
+
+.kolom-waktu-verifikasi {
+  width: 20%;
+}
+
+.status-lokasi {
+  display: inline-block;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 7px;
+  font-weight: 600;
+  width: 70px;
+}
+
+.dekat {
+  background-color: #DCFCE7;
+}
+
+.sedang {
+  background-color: #FEF3C7;
+}
+
+.pilih-status-kehadiran-btn {
+  width: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 12px;
+  font-weight: 600;
+  color: #1E293B;
+  border: none;
+  border-radius: 7px;
+  margin: 0 auto;
+}
+
+.pending {
+  background: #FEF3C7;
+}
+
+.valid {
+  background: #DCFCE7;
+}
+
+.invalid {
+  background: #FEE2E2;
+}
+
+.pilih-status-icon {
+  font-size: 18px;
+  color: #1E293B;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  margin-left: 90px;
+  margin-right: 90px;
+}
+
+.page-description {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #1E293B;
+  margin: 0;
+}
+
+.pagination {
+  display: flex;
+}
+
+.pagination a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  text-decoration: none;
+  border: 1px solid #2463EB;
+  color: #1E293B;
+  width: 35px;
+  height: 35px;
+}
+
+.pagination a:not(:first-child) {
+  border-left: none;
+}
+
+.pagination a:first-child {
+  border-radius: 7px 0 0 7px;
+  width: 45px;
+}
+
+.pagination a:last-child {
+  border-radius: 0 7px 7px 0;
+  width: 45px;
+}
+
+.pagination .active {
+  background-color: rgba(36, 99, 235, 0.22);
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #E9EEF6;
+}
+
+.previous-icon,
+.next-icon {
+  font-size: 18px;
+}
