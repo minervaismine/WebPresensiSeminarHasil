@@ -1,4 +1,4 @@
-.page-menu-verifikasi-presensi-layout {
+.page-menu-riwayat-verifikasi-layout {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
@@ -23,16 +23,17 @@
   color: #1E293B;
 }
 
-.navbar-menu-verifikasi-presensi {
+.navbar-menu-riwayat-verifikasi {
   height: 110px;
   background: #FFFFFF;
   display: flex;
   position: relative;
   align-items: center;
   padding: 0 80px;
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
 }
 
-.navbar-menu-verifikasi-presensi h1 {
+.navbar-menu-riwayat-verifikasi h1 {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -47,7 +48,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 40px;
+  margin-top: 30px;
   margin-left: 90px;
   margin-right: 90px;
 }
@@ -166,7 +167,7 @@
 
 .card-content {
   flex: 1;
-  padding: 20px 28px;
+  padding: 15px 28px;
   text-align: left;
 }
 
@@ -185,16 +186,16 @@
   color: #1E293B;
 }
 
-.judul-skripsi {
-  margin-top: 10px;
-  max-width: 900px;
+.informasi-seminar {
+  margin-top: 5px;
+  display: flex;
+  gap: 15px;
   font-family: "Poppins", sans-serif;
   font-size: 15px;
-  font-style: italic;
   color: #1E293B;
 }
 
-.lihat-daftar-hadir-btn {
+.lihat-detail-btn {
   border-radius: 7px;
   border: none;
   background: #2463EB;
@@ -203,37 +204,56 @@
   font-family: "Poppins", sans-serif;
   font-size: 15px;
   font-weight: 500;
-  width: 180px;
+  width: 120px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
 }
 
-.lihat-daftar-hadir-btn:hover {
+.lihat-detail-btn:hover {
   background: #1D4ED8;
 }
 
-.informasi-seminar {
-  margin-top: 10px;
-  display: flex;
-  gap: 15px;
+.progress-verifikasi {
   font-family: "Poppins", sans-serif;
   font-size: 15px;
   color: #1E293B;
+  margin-top: 20px;
 }
 
-.dosen-info {
-  font-family: "Poppins", sans-serif;
-  font-size: 15px;
-  color: #1E293B;
-}
-
-.dosen-info p {
+.progress-verifikasi p {
   margin-top: 3px;
   margin-bottom: 0;
 }
 
-.separator {
-  margin: 0 15px;
+.angka-progress {
+  margin: 0 5px;
+}
+
+.status-verifikasi {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  font-family: "Poppins", sans-serif;
+  font-size: 15px;
+  color: #1E293B;
+}
+
+.sedang-diproses {
+  background: #FEF3C7;
+  border: 1px solid #FACC15;
+}
+
+.selesai-diproses {
+  background: #DCFCE7;
+  border: 1px solid #16A34A;
+}
+
+.belum-diproses {
+  background: #FEE2E2;
+  border: 1px solid #EF4444;
 }

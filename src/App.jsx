@@ -1,7 +1,7 @@
-import VerifikasiPresensi_LihatDaftarHadir from "./pages/Verifikator_VerifikasiPresensi_LihatDaftarHadir";
+import RiwayatVerifikasi from "./pages/Verifikator_RiwayatVerifikasi";
 
 function App() {
-  return <VerifikasiPresensi_LihatDaftarHadir/>;
+  return <RiwayatVerifikasi/>;
 }
 
 export default App;
