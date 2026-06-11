@@ -1,0 +1,451 @@
+.page-menu-verifikasi-presensi-layout {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.back-icon {
+  font-size: 35px;
+  color: #1E293B;
+}
+
+.navbar-menu-verifikasi-presensi {
+  height: 110px;
+  background: #FFFFFF;
+  display: flex;
+  position: relative;
+  align-items: center;
+  padding: 0 80px;
+  /* box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); */
+}
+
+.navbar-menu-verifikasi-presensi h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+}
+
+.detail-seminar-wrapper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 100px;
+  margin-top: 20px;
+  margin-left: 90px;
+  margin-right: 90px;
+}
+
+.left-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.content-seminar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.nama-mahasiswa {
+  font-weight: 800;
+  font-size: 40px;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+  text-align: left;
+}
+
+.jadwal-seminar {
+  display: flex;
+  gap: 20px;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  color: #1E293B;
+}
+
+.status-badge {
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.sedang-berlangsung {
+  background: #FEF3C7;
+  border: 1px solid #FACC15;
+  color: #1E293B;
+}
+
+.selesai {
+  background: #DCFCE7;
+  border: 1px solid #22C55E;
+  color: #1E293B;
+}
+
+.belum-dimulai {
+  background: #FEE2E2;
+  border: 1px solid #EF4444;
+  color: #1E293B;
+}
+
+.right-content {
+  width: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-left: 50px;
+}
+
+.stat-card {
+  background: #E9EEF6;
+  border-radius: 15px;
+  padding: 32px;
+  height: 160px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+.stat-content h3 {
+  margin: 0;
+  padding-top: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1E293B;
+  font-family: "Poppins", sans-serif;
+}
+
+.stat-content h1 {
+  margin-top: 20px;
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 1;
+  color: #1E293B;
+}
+
+.stat-icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.people-icon {
+  position: absolute;
+  right: -10px;
+  bottom: -30px;;
+  font-size: 180px;
+  color: #7384A7;
+  opacity: 0.2;
+}
+
+.daftar-hadir-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+  margin-left: 90px;
+  margin-right: 90px;
+}
+
+.daftar-hadir-title {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.search-bar {
+  width: max-content;
+  height: 53px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 2px solid #E9EEF6;
+}
+
+.search-bar-input {
+  font-size: 18px;
+  font-family: "Poppins", sans-serif;
+  color: #1E293B;
+  margin-left: 8px;
+  outline: none;
+  border: none;
+  background: transparent;
+  width: 400px;
+}
+
+.search-bar-input::-webkit-search-cancel-button {
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.search-icon {
+  font-size: 30px;
+  color: #1E293B;
+}
+
+.search-bar-input::placeholder {
+  color: #E9EEF6;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.filter-dropdown {
+  width: 180px;
+  height: 53px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 2px solid #E9EEF6;
+  border-radius: 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.filter-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-icon {
+  font-size: 30px;
+  color: #1E293B;
+}
+
+.filter-content span {
+  font-family: "Poppins", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.dropdown-icon {
+  font-size: 30px;
+  color: #1E293B;
+}
+
+.tabel-daftar-hadir-verifikator {
+  font-family: "Poppins", sans-serif;
+  border-collapse: collapse;
+  margin: 10px 90px;
+  /* min-width: 400px; */
+}
+
+.tabel-daftar-hadir-verifikator thead tr {
+  color: #1E293B;
+  text-align: center; 
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.tabel-daftar-hadir-penyelenggara-seminar th {
+  text-align: center;
+}
+
+.sort-thead {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.sort-icon {
+  font-size: 22px;
+}
+
+.tabel-daftar-hadir-verifikator th,
+.tabel-daftar-hadir-verifikator td {
+  padding: 5px 15px;
+}
+
+.tabel-daftar-hadir-verifikator tbody {
+  font-size: 14px;
+}
+
+.tabel-daftar-hadir-verifikator tbody tr {
+  color: #1E293B;
+}
+
+.tabel-daftar-hadir-verifikator tbody tr:nth-of-type(odd) {
+  background-color: rgba(36, 99, 235, 0.22);
+}
+
+.kolom-nama {
+  text-align: left;
+  width: 45%;
+}
+
+.kolom-nim {
+  width: 10%;
+}
+
+.kolom-waktu-scan {
+  width: 20%;
+}
+
+.kolom-jarak-lokasi {
+  width: 10%;
+}
+
+.kolom-status-presensi {
+  text-align: center;
+  width: 15%;
+}
+
+.status-lokasi {
+  display: inline-block;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 7px;
+  font-weight: 600;
+  width: 70px;
+}
+
+.dekat {
+  background-color: #DCFCE7;
+}
+
+.sedang {
+  background-color: #FEF3C7;
+}
+
+.pilih-status-kehadiran-btn {
+  width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 12px;
+  font-weight: 600;
+  color: #1E293B;
+  border: none;
+  border-radius: 7px;
+  margin: 0 auto;
+}
+
+.pending {
+  background: #FEF3C7;
+}
+
+.valid {
+  background: #DCFCE7;
+}
+
+.invalid {
+  background: #FEE2E2;
+}
+
+.pilih-status-icon {
+  font-size: 18px;
+  color: #1E293B;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 90px;
+}
+
+.page-description {
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
+  color: #1E293B;
+  margin: 0;
+}
+
+.pagination {
+  display: flex;
+}
+
+.pagination a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  text-decoration: none;
+  border: 1px solid #2463EB;
+  color: #1E293B;
+  width: 35px;
+  height: 35px;
+}
+
+.pagination a:not(:first-child) {
+  border-left: none;
+}
+
+.pagination a:first-child {
+  border-radius: 7px 0 0 7px;
+  width: 45px;
+}
+
+.pagination a:last-child {
+  border-radius: 0 7px 7px 0;
+  width: 45px;
+}
+
+.pagination .active {
+  background-color: rgba(36, 99, 235, 0.22);
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #E9EEF6;
+}
+
+.previous-icon,
+.next-icon {
+  font-size: 18px;
+}
