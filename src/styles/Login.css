@@ -18,15 +18,16 @@
   height: 500px;
   background: white;
   border-radius: 20px;
-  padding: 30px 40px;
+  padding: 30px 30px;
 }
 
 .sign-in-card h1 {
   text-align: center;
   color: #1E293B;
-  font-size: 29px;
+  font-size: 27px;
   font-weight: 800;
   margin-bottom: 30px;
+  letter-spacing: 0.1px;
 }
 
 .form-group-username {
