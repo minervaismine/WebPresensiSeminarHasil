@@ -12,17 +12,48 @@ function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
+    const [usernameError, setUsernameError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        if (
-            username === DUMMY_USER.username &&
-            password === DUMMY_USER.password
-        ) {
-            navigate("/dashboard-mahasiswa");
-        } else {
-            alert("Username atau password salah!");
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        setUsernameError("");
+        setPasswordError("");
+
+        let hasError = false;
+
+        //Jika username kosong
+        if (!username.trim()) {
+            setUsernameError("Username wajib diisi");
+            hasError = true;
         }
+        //Jika password kosong
+        if (!password.trim()) {
+            setPasswordError("Password wajib diisi");
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        //Validasi username
+        if (username !== DUMMY_USER.username) {
+            setUsernameError("Username salah");
+            hasError = true;
+        }
+
+        //Validasi password
+        if (password !== DUMMY_USER.password) {
+            setPasswordError("Password salah");
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        //Login berhasil
+        navigate("/dashboard-mahasiswa");
     };
 
     return (
@@ -31,46 +62,76 @@ function Login() {
                 {/* Title */}
                 <h1>WEB MONITORING SEMINAR</h1>
 
-                {/* Username & Password */}
-                <div className="form-group-username">
-                    <label>Username</label>
+                <form onSubmit={handleLogin}>
+                    {/* Username & Password */}
+                    <div className="form-group-username">
+                        <label>Username</label>
 
-                    <div className="input-wrapper">
-                        <div className="icon-box">
-                            <Icon icon="material-symbols:person-rounded" className="user-icon"/>
+                        <div className="input-wrapper">
+                            <div className="icon-box">
+                                <Icon icon="material-symbols:person-rounded" className="user-icon"/>
+                            </div>
+
+                            <input
+                                type="text"
+                                placeholder="Masukkan username"
+                                value={username}
+                                onChange={(e) => {
+                                    setUsername(e.target.value);
+                                    setUsernameError("");
+                                }}
+                            />
                         </div>
 
-                        <input type="text" placeholder="Masukkan username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                        {usernameError && (
+                            <p className="error-message">
+                                {usernameError}
+                            </p>
+                        )}
                     </div>
-                </div>
 
-                <div className="form-group-password">
-                    <label>Password</label>
+                    <div className="form-group-password">
+                        <label>Password</label>
 
-                    <div className="input-wrapper">
-                        <div className="icon-box">
-                            <Icon icon="majesticons:lock" className="password-icon"/>
+                        <div className="input-wrapper">
+                            <div className="icon-box">
+                                <Icon icon="majesticons:lock" className="password-icon"/>
+                            </div>
+
+                            <input
+                                type="password"
+                                placeholder="Masukkan password"
+                                value={password}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    setPasswordError("");
+                                }}
+                            />
                         </div>
 
-                        <input type="password" placeholder="Masukkan password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                        {passwordError && (
+                            <p className="error-message">
+                                {passwordError}
+                            </p>
+                        )}
                     </div>
-                </div>
 
-                {/* Remember Password */}
-                <div className="remember-password">
-                    <input type="checkbox" id="rememberPassword" />
-                    <label htmlFor="rememberPassword">Remember Password</label>
-                </div>
+                    {/* Remember Password */}
+                    <div className="remember-password">
+                        <input type="checkbox" id="rememberPassword" />
+                        <label htmlFor="rememberPassword">Remember Password</label>
+                    </div>
 
-                {/* Button Sign In */}
-                <button className="sign-in-btn" onClick={handleLogin}>Sign In</button>
+                    {/* Button Sign In */}
+                    <button className="sign-in-btn" onClick={handleLogin}>Sign In</button>
 
-                {/* Notes */}
-                <div className="divider">
-                    <span>Login Menggunakan</span>
-                </div>
+                    {/* Notes */}
+                    <div className="divider">
+                        <span>Login Menggunakan</span>
+                    </div>
 
-                <p className="info-text">Account APPS untuk Dosen atau Account Neosia untuk Mahasiswa</p>
+                    <p className="info-text">Account APPS untuk Dosen atau Account Neosia untuk Mahasiswa</p>
+                </form>
             </div>
         </div>
     );
