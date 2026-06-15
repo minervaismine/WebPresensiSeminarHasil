@@ -1,5 +1,5 @@
-import "../styles/Dashboard.css";
-import Navbar from "../components/Navbar";
+import "../../styles/verifikator/DashboardVerifikator.css";
+import Navbar from "../../components/Navbar";
 import { Icon } from '@iconify/react';
 
 function Dashboard() {

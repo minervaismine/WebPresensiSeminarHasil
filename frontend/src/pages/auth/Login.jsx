@@ -1,14 +1,9 @@
-import "../styles/Login.css";
+import "../../styles/auth/Login.css";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-    const DUMMY_USER = {
-        username: "H071221034",
-        password: "718686"
-    };
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -17,7 +12,7 @@ function Login() {
 
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
         setUsernameError("");
@@ -38,22 +33,53 @@ function Login() {
 
         if (hasError) return;
 
-        //Validasi username
-        if (username !== DUMMY_USER.username) {
-            setUsernameError("Username salah");
-            hasError = true;
+        try {
+            const response = await fetch (
+                "http://127.0.0.1:5000/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                    }),
+                }
+            );
+
+            const result = await response.json();
+
+            if (!result.success) {
+                //Login gagal di bagian username
+                if (result.field === "username") {
+                    setUsernameError(result.message);
+                }
+                //Login gagal di bagian password
+                if (result.field === "password") {
+                    setPasswordError(result.message);
+                }
+
+                return;
+            }
+
+            if (result.success) {
+                //Login berhasil sebagai mahasiswa
+                if (result.user.role === "mahasiswa") {
+                    navigate("/dashboard-mahasiswa");
+                }
+                //Login berhasil sebagai verifikator
+                else if (result.user.role === "verifikator") {
+                    navigate("/dashboard-verifikator");
+                }
+                else if (result.user.role === "admin") {
+                    navigate("/dashboard-admin");
+                }
+            }
+        } catch (error) {
+            console.error(error);
+            setPasswordError("Tidak dapat terhubung ke server");
         }
-
-        //Validasi password
-        if (password !== DUMMY_USER.password) {
-            setPasswordError("Password salah");
-            hasError = true;
-        }
-
-        if (hasError) return;
-
-        //Login berhasil
-        navigate("/dashboard-mahasiswa");
     };
 
     return (
@@ -123,7 +149,7 @@ function Login() {
                     </div>
 
                     {/* Button Sign In */}
-                    <button className="sign-in-btn" onClick={handleLogin}>Sign In</button>
+                    <button type="submit" className="sign-in-btn">Sign In</button>
 
                     {/* Notes */}
                     <div className="divider">

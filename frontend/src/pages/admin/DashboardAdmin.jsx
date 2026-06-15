@@ -1,5 +1,5 @@
-import "../styles/DashboardMahasiswa.css";
-import Navbar from "../components/Navbar";
+import "../../styles/admin/DashboardAdmin.css";
+import Navbar from "../../components/Navbar";
 import { Icon } from '@iconify/react';
 
 function Dashboard() {
@@ -9,8 +9,8 @@ function Dashboard() {
 
         <div className="dashboard-container">
             {/* Title */}
-            <h1 className="dashboard-title">Selamat Datang, H071221034</h1>
-            <p className="dashboard-description">Aplikasi ini digunakan sebagai presensi online sekaligus memantau kehadiran mahasiswa dalam mengikuti seminar, sebagai syarat mengajukan seminar hasil. Syarat minimal yang harus dipenuhi adalah minimal 3 kali mengikuti seminar.</p>
+            <h1 className="dashboard-title">Selamat Datang, Admin</h1>
+            <p className="dashboard-description">Dashboard ini digunakan untuk mengelola data mahasiswa yang ingin mengajukan seminar, data seminar, serta memantau rekapitulasi presensi peserta seminar.</p>
         
             {/* Menu */}
             <h1 className="menu-title">Menu</h1>
@@ -19,22 +19,22 @@ function Dashboard() {
             <div className="card-container">
                 <div className="menu-card">
                     <div className="card-header">
-                        <Icon icon="mingcute:clipboard-fill" className="clipboard-icon" />
-                        <span>Seminar Saya</span>
+                        <Icon icon="ph:student-fill" className="student-icon" />
+                        <span>Kelola Data Mahasiswa</span>
                     </div>
                     <div className="card-content">
-                        <p>Lihat informasi seminar Anda dan akses QR Code untuk presensi seminar</p>
+                        <p>Kelola data dan informasi mahasiswa yang ingin mengajukan seminar</p>
                     </div>
                     <button className="detail-btn">Lihat Detail</button>
                 </div>
 
                 <div className="menu-card">
                     <div className="card-header">
-                        <Icon icon="vaadin:qrcode" className="qrcode-icon" />
-                        <span>Presensi</span>
+                        <Icon icon="mingcute:clipboard-fill" className="clipboard-icon" />
+                        <span>Kelola Data Seminar</span>
                     </div>
                     <div className="card-content">
-                        <p>Scan QR Code dan validasi lokasi otomatis untuk mencatat kehadiran seminar</p>
+                        <p>Kelola data dan informasi seminar yang akan diajukan</p>
                     </div>
                     <button className="detail-btn">Lihat Detail</button>
                 </div>
@@ -42,10 +42,10 @@ function Dashboard() {
                 <div className="menu-card">
                     <div className="card-header">
                         <Icon icon="tabler:clock-filled" className="history-icon" />
-                        <span>Riwayat Presensi</span>
+                        <span>Laporan Presensi</span>
                     </div>
                     <div className="card-content">
-                        <p>Lihat daftar kehadiran seminar yang telah dihadiri</p>
+                        <p>Lihat dan rekap data presensi peserta seminar secara lengkap</p>
                     </div>
                     <button className="detail-btn">Lihat Detail</button>
                 </div>

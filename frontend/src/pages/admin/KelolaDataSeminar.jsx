@@ -360,7 +360,7 @@ function KelolaDataSeminar() {
                     <div className="form-group-lokasi">
                         <label className="lokasi-title">Lokasi Seminar</label>
                         <div className="map-picker-wrapper">
-                            <input type="text" placeholder="Masukkan nama lokasi"/>
+                            <input type="text" placeholder="Masukkan nama ruangan"/>
                             <button className="map-picker-btn">Pilih di Peta</button>
                         </div>
                     </div>
