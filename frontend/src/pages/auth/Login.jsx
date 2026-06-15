@@ -66,13 +66,25 @@ function Login() {
             if (result.success) {
                 //Login berhasil sebagai mahasiswa
                 if (result.user.role === "mahasiswa") {
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(result.user)
+                    );
                     navigate("/dashboard-mahasiswa");
                 }
                 //Login berhasil sebagai verifikator
                 else if (result.user.role === "verifikator") {
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(result.user)
+                    );
                     navigate("/dashboard-verifikator");
                 }
                 else if (result.user.role === "admin") {
+                    localStorage.setItem(
+                        "user",
+                        JSON.stringify(result.user)
+                    );
                     navigate("/dashboard-admin");
                 }
             }
