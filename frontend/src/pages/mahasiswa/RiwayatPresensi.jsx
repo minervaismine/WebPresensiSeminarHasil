@@ -1,4 +1,4 @@
-import "../styles/Mahasiswa_RiwayatPresensi.css";
+import "../../styles/mahasiswa/RiwayatPresensi.css";
 import { Icon } from '@iconify/react';
 
 function RiwayatPresensiMahasiswa() {

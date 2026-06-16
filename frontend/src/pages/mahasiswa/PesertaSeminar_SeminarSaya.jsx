@@ -1,4 +1,4 @@
-import "../styles/MahasiswaPesertaSeminar_MenuSeminarSaya.css";
+import "../../styles/mahasiswa/PesertaSeminar_SeminarSaya.css";
 import { Icon } from '@iconify/react';
 
 function MahasiswaPesertaSeminar_MenuSeminarSaya() {

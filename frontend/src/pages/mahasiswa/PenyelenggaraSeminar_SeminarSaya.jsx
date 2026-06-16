@@ -1,7 +1,7 @@
-import "../styles/MahasiswaPenyelenggaraSeminar_MenuSeminarSaya.css";
+import "../../styles/mahasiswa/PenyelenggaraSeminar_SeminarSaya.css";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
-import qrSample from "../assets/qr_sample.png";
+import qrSample from "../../assets/qr_sample.png";
 
 function MahasiswaPenyelenggaraSeminar_MenuSeminarSaya() {
   const [showQRModal, setShowQRModal] = useState(false);

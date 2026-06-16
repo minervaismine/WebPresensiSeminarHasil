@@ -5,6 +5,28 @@ from config import get_db_connection
 app = Flask(__name__)
 CORS(app)
 
+@app.route("/detail-seminar/<int:id_user>")
+def detail_seminar(id_user):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+        SELECT *
+        FROM seminar
+        WHERE id_mahasiswa = %s
+    """
+
+    cursor.execute(query, (id_user,))
+    seminar = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "memiliki_seminar": seminar is not None
+    })
+
+
 @app.route("/")
 def home():
     return "Backend Flask Berjalan!"
