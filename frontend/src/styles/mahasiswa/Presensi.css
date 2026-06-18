@@ -1,0 +1,103 @@
+.page-presensi-layout {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.back-btn-menu-presensi {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #1E293B;
+}
+
+.back-btn-menu-presensi-icon {
+  font-size: 35px;
+  color: #1E293B;
+}
+
+.navbar-menu-presensi {
+  height: 110px;
+  background: #FFFFFF;
+  display: flex;
+  position: relative;
+  align-items: center;
+  padding: 0 60px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-menu-presensi h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    font-size: 40px;
+    font-weight: 800;
+    letter-spacing: 0.1px;
+    color: #1E293B;
+}
+
+.presensi-content {
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
+    margin: 0 60px;
+    background:#FFFFFF;
+}
+
+.scanner-card{
+    width:650px;
+    height:420px;
+    background:#000;
+    border-radius:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.start-camera-btn{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 30px;
+    background:#2463EB;
+    color:#FFFFFF;
+    border: 1px solid #FFFFFF;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:20px;
+    font-family:"Poppins", sans-serif;
+    transition:.3s;
+}
+
+.start-camera-btn:hover{
+    background:#1D4ED8;
+}
+
+.camera-icon{
+    font-size: 30px;
+}
+
+.scanner-info{
+    font-size:18px;
+    color:#4B5563;
+    font-family: "Poppins", sans-serif;
+    font-style:italic;
+}
+
+#reader{
+    width:500px;
+    border-radius: 20px;
+    overflow:hidden;
+}

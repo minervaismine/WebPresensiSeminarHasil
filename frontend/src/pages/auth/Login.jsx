@@ -67,6 +67,11 @@ function Login() {
                 //Login berhasil sebagai mahasiswa
                 if (result.user.role === "mahasiswa") {
                     localStorage.setItem(
+                        "token",
+                        result.token
+                    );
+                    
+                    localStorage.setItem(
                         "user",
                         JSON.stringify(result.user)
                     );
@@ -75,12 +80,22 @@ function Login() {
                 //Login berhasil sebagai verifikator
                 else if (result.user.role === "verifikator") {
                     localStorage.setItem(
+                        "token",
+                        result.token
+                    );
+                    
+                    localStorage.setItem(
                         "user",
                         JSON.stringify(result.user)
                     );
                     navigate("/dashboard-verifikator");
                 }
                 else if (result.user.role === "admin") {
+                    localStorage.setItem(
+                        "token",
+                        result.token
+                    );
+                    
                     localStorage.setItem(
                         "user",
                         JSON.stringify(result.user)

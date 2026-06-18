@@ -1,13 +1,13 @@
 import "../../styles/mahasiswa/PesertaSeminar_SeminarSaya.css";
 import { Icon } from '@iconify/react';
 
-function MahasiswaPesertaSeminar_MenuSeminarSaya() {
+function PesertaSeminar_SeminarSaya() {
   return (
-    <div className="page-menu-seminar-saya-layout">
+    <div className="page-menu-seminar-saya-peserta-layout">
         {/* Navbar */}
-        <nav className="navbar-menu-seminar-saya">
-            <button className="back-btn">
-                <Icon icon="weui:back-filled" className="back-icon"/>
+        <nav className="navbar-menu-seminar-saya-peserta">
+            <button className="back-btn-menu-seminar-saya-peserta">
+                <Icon icon="weui:back-filled" className="back-btn-menu-seminar-saya-peserta-icon"/>
                 <span>Kembali</span>
             </button>
 
@@ -15,13 +15,16 @@ function MahasiswaPesertaSeminar_MenuSeminarSaya() {
         </nav>
 
         {/* Content */}
-        <div className="menu-seminar-saya-container">
+        <div className="menu-seminar-saya-peserta-container">
             <Icon icon="boxicons:calendar-x-filled" className="no-calendar-icon"/>
-            <h1>Belum ada seminar yang diajukan</h1>
-            <p>Anda belum mengajukan seminar hasil. Pastikan Anda telah memenuhi syarat kehadiran minimal 3 kali sebagai peserta seminar sebelum mengajukan jadwal.</p>
+
+            <div className="empty-state-content">
+                <h1>Belum ada seminar yang diajukan</h1>
+                <p>Anda belum mengajukan seminar hasil. Pastikan Anda telah memenuhi syarat kehadiran minimal 3 kali sebagai peserta seminar sebelum mengajukan jadwal.</p>
+            </div>
         </div>
     </div>
   );
 }
 
-export default MahasiswaPesertaSeminar_MenuSeminarSaya;
+export default PesertaSeminar_SeminarSaya;

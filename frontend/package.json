@@ -12,6 +12,7 @@
   "dependencies": {
     "@iconify/react": "^6.0.2",
     "bootstrap": "^5.3.8",
+    "html5-qrcode": "^2.3.8",
     "react": "^19.2.6",
     "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.2.6",

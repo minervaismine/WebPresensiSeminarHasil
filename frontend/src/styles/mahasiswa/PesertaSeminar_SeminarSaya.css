@@ -1,10 +1,10 @@
-.page-menu-seminar-saya-layout {
+.page-menu-seminar-saya-peserta-layout {
   display: flex;
   height: 100vh;
   flex-direction: column;
 }
 
-.back-btn {
+.back-btn-menu-seminar-saya-peserta {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -18,21 +18,21 @@
   color: #1E293B;
 }
 
-.back-icon {
+.back-btn-menu-seminar-saya-peserta-icon {
   font-size: 35px;
   color: #1E293B;
 }
 
-.navbar-menu-seminar-saya {
+.navbar-menu-seminar-saya-peserta {
   height: 110px;
   background: #FFFFFF;
   display: flex;
   position: relative;
   align-items: center;
-  padding: 0 80px;
+  padding: 0 60px;
 }
 
-.navbar-menu-seminar-saya h1 {
+.navbar-menu-seminar-saya-peserta h1 {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -43,7 +43,7 @@
   color: #1E293B;
 }
 
-.menu-seminar-saya-container {
+.menu-seminar-saya-peserta-container {
   background: #FFFFFF;
   flex: 1;
   display: flex;
@@ -60,20 +60,23 @@
   margin-right: 60px;
 }
 
-.menu-seminar-saya-container h1 {
+.empty-state-content {
+  width: 100%;
+  padding: 0 60px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.empty-state-content h1 {
   font-size: 30px;
   font-weight: 800;
   letter-spacing: 0.1px;
   color: #1E293B;
-  margin-left: 60px;
-  margin-right: 60px;
   margin-top: 20px;
 }
 
-.menu-seminar-saya-container p {
+.empty-state-content p {
   font-family: 'Poppins', sans-serif;
-  margin-left: 60px;
-  margin-right: 60px;
   color: #4B5563;
   font-size: 18px;
   font-style:italic;

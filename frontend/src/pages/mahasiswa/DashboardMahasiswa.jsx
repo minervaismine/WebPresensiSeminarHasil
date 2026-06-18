@@ -17,13 +17,18 @@ function Dashboard() {
     }, []);
 
     const handleSeminarSaya = async () => {
-        console.log("Button Seminar Saya diklik");
-
         const user = JSON.parse(localStorage.getItem("user"));
 
         try {
+            const token = localStorage.getItem("token");
+
             const response = await fetch(
-                `http://127.0.0.1:5000/detail-seminar/${user.id_user}`
+                `http://127.0.0.1:5000/cek-seminar/${user.id_mahasiswa}`,
+                {
+                    headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                }
             );
 
             const result = await response.json();
