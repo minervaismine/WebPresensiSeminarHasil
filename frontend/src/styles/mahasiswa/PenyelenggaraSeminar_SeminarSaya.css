@@ -351,3 +351,7 @@
   color: #1E293B;
   margin-bottom: 0;
 }
+
+.aktifkan-qr-btn:disabled {
+  background: #E9EEF6;
+}

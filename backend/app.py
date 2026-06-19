@@ -121,6 +121,87 @@ def generate_qr():
             "message": "Token tidak valid"
         }), 401
 
+#Mengaktifkan QR Code
+@app.route("/activate-qr", methods=["POST"])
+def activate_qr():
+    data = request.get_json()
+
+    id_seminar = data.get("id_seminar")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Memastikan QR ada
+    cursor.execute("""
+        SELECT *
+        FROM qr_codes
+        WHERE id_seminar = %s
+        """, (id_seminar,))
+    
+    qr = cursor.fetchone()
+
+    if not qr:
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "message": "QR Code belum dibuat"
+        }), 404
+    
+    now = datetime.datetime.now()
+    expired = now + datetime.timedelta(minutes=10)
+
+    cursor.execute("""
+        UPDATE qr_codes
+        SET
+            status_qr = 'active',
+            activated_at = %s,
+            expired_at = %s
+        WHERE id_seminar = %s           
+    """, (
+        now,
+        expired,
+        id_seminar
+    ))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify ({
+        "success": True,
+        "message": "QR Code berhasil diaktifkan",
+        "expired_at": expired.isoformat()
+    })
+
+#Menonaktifkan QR Code ketika waktu 10 menit selesai
+@app.route("/deactivate-qr", methods=["POST"])
+def deactivate_qr():
+    data = request.get_json()
+
+    id_seminar = data.get("id_seminar")
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        UPDATE qr_codes
+        SET
+            status_qr = 'inactive'
+        WHERE id_seminar = %s               
+    """, (id_seminar,))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "message": "QR Code telah dinonaktifkan"
+    })
+
 #Menghubungkan data nama di halaman seminar saya (penyelenggara)
 @app.route("/detail-seminar/<int:id_user>")
 def detail_seminar(id_user):

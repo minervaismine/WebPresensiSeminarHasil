@@ -8,6 +8,10 @@ function PenyelenggaraSeminar_SeminarSaya() {
     const [showQRModal, setShowQRModal] = useState(false);
     const [seminarData, setSeminarData] = useState(null);
     const [qrCode, setQrCode] = useState("");
+    const [expiredAt, setExpiredAt] = useState(null);
+    const [countdown, setCountdown] = useState("10:00");
+    const [isExpired, setIsExpired] = useState(false);
+    const [isActivated, setIsActivated] = useState(false);
 
     const navigate = useNavigate();
 
@@ -37,6 +41,35 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
         fetchSeminar();
     }, []);
+
+    useEffect(() => {
+        if (!expiredAt) return;
+
+        const timer = setInterval(() => {
+            const now = new Date();
+            const expire = new Date(expiredAt);
+
+            const different = expire - now;
+
+            if (different <= 0) {
+                setCountdown("00:00");
+                setIsExpired(true);
+                setIsActivated(false);
+                
+                clearInterval(timer);
+                return;
+            }
+
+            const minutes = Math.floor(different / 1000 / 60);
+            const seconds = Math.floor((different / 1000) % 60);
+
+            setCountdown(
+                `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+            );
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [expiredAt]);
 
     if (!seminarData) {
         return <h2 className="loading-page-menu-seminar-saya-penyelenggara">Loading...</h2>;
@@ -138,6 +171,46 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
     const statusSeminar = getStatusSeminar();
 
+    const activateQRCode = async () => {
+        try {
+            const response = await fetch(
+                "http://127.0.0.1:5000/activate-qr",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id_seminar: seminarData.id_seminar
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            console.log(result);
+
+            if (!response.ok) {
+                alert(result.message);
+                return;
+            }
+
+            setExpiredAt(result.expired_at);
+            setIsActivated(true);
+
+            alert(result.message);
+        } catch(err) {
+            console.log(err);
+        }
+    };
+
+    const closeQRModal = () => {
+        setShowQRModal(false);
+        setCountdown("10:00");
+        setIsExpired(false);
+        setQrCode("");
+    };
+
     return (
         <div className="page-menu-seminar-saya-penyelenggara-layout">
             {/* Navbar */}
@@ -194,7 +267,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
                     <div className="actions-btn-menu-seminar-saya">
                         <button className="lihat-daftar-hadir-btn" onClick={() => navigate("/lihat-daftar-hadir")}>Lihat Daftar Hadir</button>
-                        <button className="generate-qr-code-btn" onClick={generateQRCode}>Generate QR Code</button>
+                        <button className="generate-qr-code-btn" onClick={generateQRCode} disabled={showQRModal}>Generate QR Code</button>
                     </div>
                 </div>
 
@@ -237,9 +310,9 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
             {/* Modal Popup */}
             {showQRModal && (
-                <div className="modal-overlay-menu-seminar-saya" onClick={() => setShowQRModal(false)}>
+                <div className="modal-overlay-menu-seminar-saya" onClick={closeQRModal}>
                     <div className="qr-modal" onClick={(e) => e.stopPropagation()}>
-                        <button className="close-modal-btn-menu-seminar-saya" onClick={() => setShowQRModal(false)}>
+                        <button className="close-modal-btn-menu-seminar-saya" onClick={closeQRModal}>
                             <Icon icon="mingcute:close-fill" />
                         </button>
 
@@ -257,9 +330,9 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
                         <p className="modal-description">Tampilkan kode ini kepada peserta untuk dipindai</p>
 
-                        <button className="aktifkan-qr-btn">Aktifkan QR Code</button>
+                        <button className="aktifkan-qr-btn" onClick={activateQRCode} disabled={isActivated || isExpired}>{isActivated ? "QR Code Sedang Aktif" : isExpired ? "QR Code Kedaluwarsa" : "Aktifkan QR Code"}</button>
                         
-                        <p className="expired-time">10:00 Menit</p>
+                        <p className="expired-time">{countdown} Menit</p>
                     </div>
                 </div>
             )}
