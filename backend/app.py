@@ -41,16 +41,16 @@ def generate_qr():
 
         seminar = cursor.fetchone()
 
-        cursor.close()
-        conn.close()
-
         if not seminar:
+            cursor.close()
+            conn.close()
+
             return jsonify({
                 "success": False,
                 "message": "Data seminar tidak ditemukan"
             }), 404
 
-        #Membuat payload QR
+        #Membuat JWT QR
         qr_payload = {
             "id_user": payload["id_user"],
             "id_seminar": seminar["id_seminar"],
@@ -63,6 +63,46 @@ def generate_qr():
             SECRET_KEY,
             algorithm="HS256"
         )
+
+        # Cek apakah QR sudah ada
+        cursor.execute("""
+            SELECT *
+            FROM qr_codes
+            WHERE id_seminar = %s
+        """, (seminar["id_seminar"],))
+
+        existing_qr = cursor.fetchone()
+
+        #Kalau QR belum ada, masukkan data ke tabel qr_codes
+        if existing_qr is None:
+            cursor.execute("""
+                INSERT INTO qr_codes (
+                    id_seminar,
+                    qr_code
+                )
+                VALUES (%s, %s)    
+            """,
+            (
+                seminar["id_seminar"], qr_token
+            ))
+        else:
+            cursor.execute("""
+                UPDATE qr_codes
+                SET
+                    qr_code = %s,
+                    status_qr = 'inactive',
+                    activated_at = NULL,
+                        expired_at = NULL
+                WHERE id_seminar = %s
+            """,
+            (
+                qr_token, seminar["id_seminar"]
+            ))
+
+        conn.commit()
+
+        cursor.close()
+        conn.close()
 
         return jsonify({
             "success": True,
