@@ -9,6 +9,7 @@ from flask import request, jsonify
 app = Flask(__name__)
 CORS(app)
 
+#Menghubungkan data QR Code dengan data seminar
 @app.route("/generate-qr", methods=["POST"])
 def generate_qr():
     token = request.headers.get("Authorization")
@@ -28,8 +29,31 @@ def generate_qr():
             algorithms=["HS256"]
         )
 
+        #Mengambil data seminar dari database
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT *
+            FROM seminar
+            WHERE id_mahasiswa = %s
+        """, (payload["id_user"],))
+
+        seminar = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if not seminar:
+            return jsonify({
+                "success": False,
+                "message": "Data seminar tidak ditemukan"
+            }), 404
+
+        #Membuat payload QR
         qr_payload = {
             "id_user": payload["id_user"],
+            "id_seminar": seminar["id_seminar"],
             "role": payload["role"],
             "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
         }
