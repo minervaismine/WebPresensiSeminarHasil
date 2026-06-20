@@ -202,6 +202,159 @@ def deactivate_qr():
         "message": "QR Code telah dinonaktifkan"
     })
 
+#Menghubungkan scanner ke backend
+@app.route("/scan-qr", methods=["POST"])
+def scan_qr():
+    #Mengambil token login peserta seminar
+    token = request.headers.get("Authorization")
+
+    if not token:
+        return jsonify({
+            "success": False,
+            "message": "Token tidak ditemukan"
+        }), 401
+    
+    token = token.replace("Bearer ", "")
+
+    #Mengambil data QR Code
+    data = request.get_json()
+
+    qr_token = data.get("qr_code")
+
+    if not qr_token:
+        return jsonify({
+            "success": False,
+            "message": "QR Code tidak ditemukan"
+        }), 400
+    
+    try:
+        #Decode token login peserta seminar
+        peserta = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+
+        #Mengecek agar hanya mahasiswa yang bisa melakukan presensi
+        if peserta["role"] != "mahasiswa":
+            return jsonify({
+                "success": False,
+                "code": "INVALID_ROLE",
+                "message": "Hanya mahasiswa yang dapat melakukan presensi"
+            }), 403
+
+        #Decode QR Code
+        qr_payload = jwt.decode(
+            qr_token,
+            SECRET_KEY,
+            algorithms=["HS256"]
+        )
+
+        #Mengecek QR di database
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT *
+            FROM qr_codes
+            WHERE id_seminar = %s
+        """, (qr_payload["id_seminar"],))
+
+        qr = cursor.fetchone()
+
+        if not qr:
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "code": "QR_NOT_FOUND",
+                "message": "QR Code tidak ditemukan"
+            }), 404
+        
+        #Memastikan QR tersebut aktif
+        if qr["status_qr"] != "active":
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "code": "QR_NOT_ACTIVE",
+                "message": "QR Code belum diaktifkan"
+            }), 400
+        
+        #Mengecek apakah penyelenggara mencoba scan qr seminar miliknya sendiri
+        if peserta["id_user"] == qr_payload["id_user"]:
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "code": "PENYELENGGARA",
+                "message": "Penyelenggara seminar tidak dapat melakukan presensi"
+            }), 400
+        
+        now = datetime.datetime.now()
+
+        #Mengecek apakah qr yang akan di scan sudah kedaluwarsa atau belum
+        if qr["expired_at"] is not None and now > qr["expired_at"]:
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+            "success": False,
+            "code": "QR_EXPIRED",
+            "message": "QR Code sudah kedaluwarsa"
+        }), 400
+
+        #Mengecek apakah peserta sudah pernah melakukan presensi sebelumnya
+        cursor.execute("""
+            SELECT *
+            FROM presensi
+            WHERE id_mahasiswa = %s
+            AND id_seminar = %s       
+        """, (
+            peserta["id_user"],
+            qr_payload["id_seminar"]
+        ))
+
+        existing = cursor.fetchone()
+        if existing:
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "code": "ALREADY_ATTENDED",
+                "message": "Anda sudah melakukan presensi"
+            }), 400
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "success": True,
+            "code": "SCAN_SUCCESS",
+            "message": "QR berhasil dibaca",
+            "peserta_id": peserta["id_user"],
+            "seminar_id": qr_payload["id_seminar"],
+            "role": peserta["role"]
+        })
+    
+    except jwt.ExpiredSignatureError:
+        return jsonify({
+            "success": False,
+            "code": "QR_EXPIRED",
+            "message": "QR Code sudah kedaluwarsa"
+        }), 401
+    
+    except jwt.InvalidTokenError:
+        return jsonify({
+            "success": False,
+            "code": "QR_INVALID",
+            "message": "QR Code tidak valid"
+        }), 401
+    
 #Menghubungkan data nama di halaman seminar saya (penyelenggara)
 @app.route("/detail-seminar/<int:id_user>")
 def detail_seminar(id_user):

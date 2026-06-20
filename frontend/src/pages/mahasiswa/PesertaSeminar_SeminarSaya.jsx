@@ -1,30 +1,33 @@
 import "../../styles/mahasiswa/PesertaSeminar_SeminarSaya.css";
 import { Icon } from '@iconify/react';
+import { useNavigate } from "react-router-dom";
 
 function PesertaSeminar_SeminarSaya() {
-  return (
-    <div className="page-menu-seminar-saya-peserta-layout">
-        {/* Navbar */}
-        <nav className="navbar-menu-seminar-saya-peserta">
-            <button className="back-btn-menu-seminar-saya-peserta">
-                <Icon icon="weui:back-filled" className="back-btn-menu-seminar-saya-peserta-icon"/>
-                <span>Kembali</span>
-            </button>
+    const navigate = useNavigate();
 
-            <h1>SEMINAR SAYA</h1>
-        </nav>
+    return (
+        <div className="page-menu-seminar-saya-peserta-layout">
+            {/* Navbar */}
+            <nav className="navbar-menu-seminar-saya-peserta">
+                <button className="back-btn-menu-seminar-saya-peserta" onClick={() => navigate(-1)}>
+                    <Icon icon="weui:back-filled" className="back-btn-menu-seminar-saya-peserta-icon"/>
+                    <span>Kembali</span>
+                </button>
 
-        {/* Content */}
-        <div className="menu-seminar-saya-peserta-container">
-            <Icon icon="boxicons:calendar-x-filled" className="no-calendar-icon"/>
+                <h1>SEMINAR SAYA</h1>
+            </nav>
 
-            <div className="empty-state-content">
-                <h1>Belum ada seminar yang diajukan</h1>
-                <p>Anda belum mengajukan seminar hasil. Pastikan Anda telah memenuhi syarat kehadiran minimal 3 kali sebagai peserta seminar sebelum mengajukan jadwal.</p>
+            {/* Content */}
+            <div className="menu-seminar-saya-peserta-container">
+                <Icon icon="boxicons:calendar-x-filled" className="no-calendar-icon"/>
+
+                <div className="empty-state-content">
+                    <h1>Belum ada seminar yang diajukan</h1>
+                    <p>Anda belum mengajukan seminar hasil. Pastikan Anda telah memenuhi syarat kehadiran minimal 3 kali sebagai peserta seminar sebelum mengajukan jadwal.</p>
+                </div>
             </div>
         </div>
-    </div>
-  );
+    );
 }
 
 export default PesertaSeminar_SeminarSaya;

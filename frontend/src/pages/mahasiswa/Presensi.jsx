@@ -1,6 +1,6 @@
 import "../../styles/mahasiswa/Presensi.css";
 import { Html5Qrcode } from "html5-qrcode";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,26 +8,30 @@ function Presensi() {
     const navigate = useNavigate();
 
     const [cameraStarted, setCameraStarted] = useState(false);
-    const [scanner, setScanner] = useState(null);
+    const scannerRef = useRef(null);
 
     const startCamera = async () => {
         setCameraStarted(true);
     };
 
-    useEffect(()=>{
-        return ()=>{
-            if(scanner){
-                scanner.stop().catch(()=>{});
+    useEffect(() => {
+        return () => {
+            if (scannerRef.current) {
+                scannerRef.current
+                .stop()
+                .catch(() => {})
+                .finally(() => {
+                    scannerRef.current = null;
+                });
             }
-        }
-    },[scanner]);
+        };
+    }, []);
 
     useEffect(() => {
         if (!cameraStarted) return;
 
         const html5QrCode = new Html5Qrcode("reader");
-
-        setScanner(html5QrCode);
+        scannerRef.current = html5QrCode;
 
         html5QrCode.start(
             {
@@ -38,18 +42,77 @@ function Presensi() {
                 qrbox: 250
             },
             async (decodedText) => {
-                console.log(decodedText);
-                //nanti kirim ke backend
-                await html5QrCode.stop();
+                try {
+                    const token = localStorage.getItem("token");
 
-                setCameraStarted(false);
+                    const response = await fetch (
+                        "http://127.0.0.1:5000/scan-qr",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                qr_code: decodedText
+                            })
+                        }
+                    );
+
+                    const result = await response.json();
+                    console.log(result);
+
+                    //Menghentikan scanner agar tidak melakukan scan berkali-kali
+                    try {
+                        await html5QrCode.stop();
+                    } catch (e) {
+                        console.log(e);
+                    } finally {
+                        scannerRef.current = null;
+                        setCameraStarted(false);
+                    }
+
+                    if (result.success) {
+                        navigate("/presensi-berhasil", {
+                            state: result
+                        });
+                        return;
+                    }
+
+                    if (result.code === "PENYELENGGARA" || result.code === "INVALID_ROLE") {
+                        navigate("/presensi-gagal-role", {
+                            state: {
+                                code: result.code
+                            }
+                        });
+                    } else {
+                        navigate("/presensi-gagal", {
+                            state: {
+                                code: result.code
+                            }
+                        });
+                    }
+                } catch(err) {
+                    console.log(err);
+
+                    try {
+                        await html5QrCode.stop();
+                    } catch {}
+
+                    scannerRef.current = null;
+                    setCameraStarted(false);
+
+                    navigate("/presensi-gagal", {
+                        state: {
+                            code: "SERVER_ERROR"
+                        }
+                    });
+                }
             },
             (error) => {
-                //abaikan error scan
-            }
-        ).catch(err => {
-            console.error(err);
-        });
+                //Abaikan error scan
+            } 
+        );
     }, [cameraStarted]);
 
     return (

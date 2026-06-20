@@ -234,7 +234,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
                         <div className="informasi-seminar-wrapper-menu-seminar-saya">
                             <div className="informasi-jadwal-seminar">
-                                <Icon icon="line-md:calendar" className="informasi-icon"/>
+                                <Icon icon="mdi:calendar" className="informasi-icon"/>
                                 <span>{formatTanggal(seminarData.tanggal)}</span>
                             </div>
 
