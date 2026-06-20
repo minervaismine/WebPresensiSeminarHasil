@@ -24,9 +24,6 @@ function PresensiGagal() {
         case "QR_INVALID":
             message = "QR Code tidak valid";
             break;
-        case "ALREADY_ATTENDED":
-            message = "Anda sudah melakukan presensi";
-            break;
         default:
             message = "Terjadi kesalahan saat melakukan presensi";
     }

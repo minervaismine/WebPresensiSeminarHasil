@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import get_db_connection
-from datetime import timedelta
+from datetime import datetime, timedelta
 import jwt
-import datetime
-from flask import request, jsonify
+# from flask import request, jsonify
 
 app = Flask(__name__)
 CORS(app)
@@ -55,7 +54,7 @@ def generate_qr():
             "id_user": payload["id_user"],
             "id_seminar": seminar["id_seminar"],
             "role": payload["role"],
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
+            "exp": datetime.utcnow() + timedelta(minutes=10)
         }
 
         qr_token = jwt.encode(
@@ -149,8 +148,8 @@ def activate_qr():
             "message": "QR Code belum dibuat"
         }), 404
     
-    now = datetime.datetime.now()
-    expired = now + datetime.timedelta(minutes=10)
+    now = datetime.now()
+    expired = now + timedelta(minutes=10)
 
     cursor.execute("""
         UPDATE qr_codes
@@ -294,7 +293,7 @@ def scan_qr():
                 "message": "Penyelenggara seminar tidak dapat melakukan presensi"
             }), 400
         
-        now = datetime.datetime.now()
+        now = datetime.now()
 
         #Mengecek apakah qr yang akan di scan sudah kedaluwarsa atau belum
         if qr["expired_at"] is not None and now > qr["expired_at"]:
@@ -328,6 +327,26 @@ def scan_qr():
                 "code": "ALREADY_ATTENDED",
                 "message": "Anda sudah melakukan presensi"
             }), 400
+        
+        #Menyimpan data presensi
+        cursor.execute("""
+            INSERT INTO presensi(
+                id_mahasiswa,
+                id_seminar,
+                waktu_scan,
+                latitude,
+                longitude
+            )
+            VALUES(%s,%s,%s,%s,%s)
+        """,(
+            peserta["id_user"],
+            qr_payload["id_seminar"],
+            now,
+            None,
+            None
+        ))
+
+        conn.commit()
 
         cursor.close()
         conn.close()
@@ -457,7 +476,7 @@ def login():
         "id_user": user["id_user"],
         "username": user["username"],
         "role": user["role"],
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=3)
+        "exp": datetime.utcnow() + timedelta(hours=3)
     }
 
     token = jwt.encode(

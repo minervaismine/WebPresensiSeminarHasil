@@ -18,6 +18,9 @@ function PresensiGagal_Role() {
         case 'INVALID_ROLE' :
             message = "Hanya mahasiswa yang dapat melakukan presensi";
             break;
+        case "ALREADY_ATTENDED":
+            message = "Anda sudah melakukan presensi";
+            break;
         case 'SERVER_ERROR' :
             message = "Tidak dapat terhubung ke server";
             break;

@@ -79,7 +79,7 @@ function Presensi() {
                         return;
                     }
 
-                    if (result.code === "PENYELENGGARA" || result.code === "INVALID_ROLE") {
+                    if (result.code === "PENYELENGGARA" || result.code === "INVALID_ROLE" || result.code === "ALREADY_ATTENDED") {
                         navigate("/presensi-gagal-role", {
                             state: {
                                 code: result.code
