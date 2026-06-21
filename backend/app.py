@@ -17,13 +17,26 @@ def get_data_mahasiswa():
     page = int(request.args.get("page", 1))
     limit = int(request.args.get("limit", 10))
     search = request.args.get("search", "").strip()
+    keyword = f"%{search}%"
+
+    #Parameter sorting
+    sort_by = request.args.get("sort_by", "nama")
+    sort_order = request.args.get("sort_order", "asc").lower()
+
+    #Validasi agar aman dari SQL Injection
+    allowed_columns = ["nama", "nim", "angkatan"]
+    allowed_orders = ["asc", "desc"]
+
+    if sort_by not in allowed_columns:
+        sort_by = "nama"
+    
+    if sort_order not in allowed_orders:
+        sort_order = "asc"
 
     offset = (page - 1) * limit
 
     if search:
-        keyword = f"%{search}%"
-
-        #Kalau data ada yang cocok dengan keyword yang dimasukkan, sistem menghitung total hasil pencarian
+       #Kalau data ada yang cocok dengan keyword yang dimasukkan, sistem menghitung total hasil pencarian
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM mahasiswa
@@ -32,37 +45,36 @@ def get_data_mahasiswa():
         """, (keyword, keyword))
 
         total_data = cursor.fetchone()["total"]
-
-        #Ambil data hasil pencarian
-        cursor.execute("""
-            SELECT
-                id_user,
-                nama,
-                nim,
-                angkatan
-            FROM mahasiswa
-            WHERE nama LIKE %s
-            OR nim LIKE %s
-            ORDER BY nama ASC
-            LIMIT %s OFFSET %s
-        """, (keyword, keyword, limit, offset))
     else:
         #Kalau tidak ada data yang cocok dengan keyword yang dimasukkan, sistem menghitung keseluruhan data
         cursor.execute("SELECT COUNT(*) AS total FROM mahasiswa")
         total_data = cursor.fetchone()["total"]
 
-        #Ambil seluruh data
-        cursor.execute("""
-            SELECT
-                id_user,
-                nama,
-                nim,
-                angkatan
-            FROM mahasiswa
-            ORDER BY nama ASC
-            LIMIT %s OFFSET %s
-        """, (limit, offset))
+    query = """
+    SELECT
+        id_user,
+        nama,
+        nim,
+        angkatan
+    FROM mahasiswa
+    """
+    params = []
 
+    if search:
+        query += """
+        WHERE nama LIKE %s
+        OR nim LIKE %s
+        """
+        params.extend([keyword, keyword])
+
+    query += f"""
+    ORDER BY {sort_by} {sort_order.upper()}
+    LIMIT %s OFFSET %s
+    """
+
+    params.extend([limit, offset])
+
+    cursor.execute(query, tuple(params))
     mahasiswa = cursor.fetchall()
 
     cursor.close()

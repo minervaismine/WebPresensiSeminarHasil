@@ -14,6 +14,9 @@ function KelolaDataMahasiswa() {
     const [totalData, setTotalData] = useState(0);
     const [search, setSearch] = useState("");
 
+    const [sortBy, setSortBy] = useState("nama");
+    const [sortOrder, setSortOrder] = useState("asc");
+
     const dataPerPage = 10;
 
     const startData = totalData === 0 ? 0 : (currentPage - 1) * dataPerPage + 1;
@@ -21,7 +24,7 @@ function KelolaDataMahasiswa() {
 
     useEffect(() => {
         fetchMahasiswa(currentPage);
-    }, [currentPage]);
+    }, [currentPage, search, sortBy, sortOrder]);
 
     const fetchMahasiswa = async (page = 1, searchKeyword = search) => {
         try {
@@ -32,6 +35,8 @@ function KelolaDataMahasiswa() {
                     page,
                     limit: dataPerPage,
                     search: searchKeyword,
+                    sort_by: sortBy,
+                    sort_order: sortOrder,
                 },
             }
         );
@@ -43,6 +48,19 @@ function KelolaDataMahasiswa() {
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            // Klik kolom yang sama -> ubah asc ke desc
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+        } else {
+            // Klik kolom berbeda
+            setSortBy(column);
+            setSortOrder("asc");
+        }
+
+        setCurrentPage(1);
     };
   
     return (
@@ -68,7 +86,7 @@ function KelolaDataMahasiswa() {
                 <form>
                     <div className="search-bar-kelola-data-mahasiswa">
                         <Icon icon="radix-icons:magnifying-glass" className="search-icon-kelola-data-mahasiswa"/>
-                        <input className="search-bar-input-kelola-data-mahasiswa" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => {setSearch(e.target.value); fetchMahasiswa(1, e.target.value);}}></input>
+                        <input className="search-bar-input-kelola-data-mahasiswa" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => {setSearch(e.target.value); setCurrentPage(1);}}></input>
                     </div>
                 </form>
 
@@ -88,19 +106,19 @@ function KelolaDataMahasiswa() {
             <thead>
                 <tr>
                     <th>
-                        <button className="sort-thead-kelola-data-mahasiswa">
+                        <button className="sort-thead-kelola-data-mahasiswa" onClick={() => handleSort("nama")}>
                             <span>Nama</span>
                             <Icon icon="uil:sort" className="sort-icon-kelola-data-mahasiswa"/>
                         </button>
                     </th>
                     <th>
-                        <button className="sort-thead-kelola-data-mahasiswa">
+                        <button className="sort-thead-kelola-data-mahasiswa" onClick={() => handleSort("nim")}>
                             <span>NIM</span>
                             <Icon icon="uil:sort" className="sort-icon-kelola-data-mahasiswa"/>
                         </button>
                     </th>
                     <th>
-                        <button className="sort-thead-kelola-data-mahasiswa">
+                        <button className="sort-thead-kelola-data-mahasiswa" onClick={() => handleSort("angkatan")}>
                             <span>Angkatan</span>
                             <Icon icon="uil:sort" className="sort-icon-kelola-data-mahasiswa"/>
                         </button>
