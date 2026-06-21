@@ -5,21 +5,41 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function KelolaDataMahasiswa() {
+    const navigate = useNavigate();
     const [showFormAddStudent, setShowFormAddStudent] = useState(false);
     const [showFormDeleteStudent, setShowFormDeleteStudent] = useState(false);
     const [dataMahasiswa, setDataMahasiswa] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalData, setTotalData] = useState(0);
+    const [search, setSearch] = useState("");
 
-    const navigate = useNavigate();
+    const dataPerPage = 10;
+
+    const startData = totalData === 0 ? 0 : (currentPage - 1) * dataPerPage + 1;
+    const endData = totalData === 0 ? 0 : Math.min(currentPage * dataPerPage, totalData);
 
     useEffect(() => {
-        fetchMahasiswa();
-    }, []);
+        fetchMahasiswa(currentPage);
+    }, [currentPage]);
 
-    const fetchMahasiswa = async () => {
+    const fetchMahasiswa = async (page = 1, searchKeyword = search) => {
         try {
-            const response = await axios.get("http://localhost:5000/data-mahasiswa");
+            const response = await axios.get(
+                "http://localhost:5000/data-mahasiswa",
+            {
+                params: {
+                    page,
+                    limit: dataPerPage,
+                    search: searchKeyword,
+                },
+            }
+        );
 
-            setDataMahasiswa(response.data);
+        setDataMahasiswa(response.data.data);
+        setCurrentPage(response.data.page);
+        setTotalPages(response.data.total_pages);
+        setTotalData(response.data.total);
         } catch (error) {
             console.log(error);
         }
@@ -48,7 +68,7 @@ function KelolaDataMahasiswa() {
                 <form>
                     <div className="search-bar-kelola-data-mahasiswa">
                         <Icon icon="radix-icons:magnifying-glass" className="search-icon-kelola-data-mahasiswa"/>
-                        <input className="search-bar-input-kelola-data-mahasiswa" type="search" placeholder="Cari mahasiswa atau NIM"></input>
+                        <input className="search-bar-input-kelola-data-mahasiswa" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => {setSearch(e.target.value); fetchMahasiswa(1, e.target.value);}}></input>
                     </div>
                 </form>
 
@@ -112,20 +132,22 @@ function KelolaDataMahasiswa() {
 
         {/* Pagination */}
         <div className="pagination-wrapper-kelola-data-mahasiswa">
-            <p className="page-description-kelola-data-mahasiswa">Menampilkan 1-10 dari 50 data</p>
+            <p className="page-description-kelola-data-mahasiswa">Menampilkan {startData}-{endData} dari {totalData} data</p>
 
             <div className="pagination-kelola-data-mahasiswa">
-                <a href="#">
+                <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
                     <Icon icon="ooui:previous-ltr" className="previous-icon-kelola-data-mahasiswa"/>
-                </a>
-                <a href="#" className="active">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">
+                </button>
+
+                {[...Array(totalPages)].map((_, index) => (
+                    <button key={index + 1} className={currentPage === index + 1 ? "active" : ""} onClick={() => setCurrentPage(index + 1)}>
+                        {index + 1}
+                    </button>
+                ))}
+
+                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
                     <Icon icon="ooui:next-ltr" className="next-icon-kelola-data-mahasiswa"/>
-                </a>
+                </button>
             </div>
         </div>
 

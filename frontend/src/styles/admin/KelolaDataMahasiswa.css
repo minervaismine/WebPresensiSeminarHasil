@@ -268,39 +268,45 @@
   display: flex;
 }
 
-.pagination-kelola-data-mahasiswa a {
+.pagination-kelola-data-mahasiswa button {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
   font-family: "Poppins", sans-serif;
-  text-decoration: none;
   border: 1px solid #2463EB;
   color: #1E293B;
   width: 35px;
   height: 35px;
+  cursor: pointer;
+  background: #FFFFFF;
 }
 
-.pagination-kelola-data-mahasiswa a:not(:first-child) {
+.pagination-kelola-data-mahasiswa button:not(:first-child) {
   border-left: none;
 }
 
-.pagination-kelola-data-mahasiswa a:first-child {
+.pagination-kelola-data-mahasiswa button:first-child {
   border-radius: 7px 0 0 7px;
   width: 45px;
 }
 
-.pagination-kelola-data-mahasiswa a:last-child {
+.pagination-kelola-data-mahasiswa button:last-child {
   border-radius: 0 7px 7px 0;
   width: 45px;
 }
 
-.pagination-kelola-data-mahasiswa .active {
+.pagination-kelola-data-mahasiswa button.active {
   background-color: rgba(36, 99, 235, 0.22);
 }
 
-.pagination-kelola-data-mahasiswa a:hover:not(.active) {
+.pagination-kelola-data-mahasiswa button:hover:not(.active):not(:disabled) {
   background-color: #E9EEF6;
+}
+
+.pagination-kelola-data-mahasiswa button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .previous-icon-kelola-data-mahasiswa,

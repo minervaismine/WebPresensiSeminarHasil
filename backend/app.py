@@ -14,22 +14,67 @@ def get_data_mahasiswa():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
-        SELECT
-            id_user,
-            nama,
-            nim,
-            angkatan
-        FROM mahasiswa
-        ORDER BY nama ASC
-    """)
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+    search = request.args.get("search", "").strip()
+
+    offset = (page - 1) * limit
+
+    if search:
+        keyword = f"%{search}%"
+
+        #Kalau data ada yang cocok dengan keyword yang dimasukkan, sistem menghitung total hasil pencarian
+        cursor.execute("""
+            SELECT COUNT(*) AS total
+            FROM mahasiswa
+            WHERE nama LIKE %s
+            OR nim LIKE %s
+        """, (keyword, keyword))
+
+        total_data = cursor.fetchone()["total"]
+
+        #Ambil data hasil pencarian
+        cursor.execute("""
+            SELECT
+                id_user,
+                nama,
+                nim,
+                angkatan
+            FROM mahasiswa
+            WHERE nama LIKE %s
+            OR nim LIKE %s
+            ORDER BY nama ASC
+            LIMIT %s OFFSET %s
+        """, (keyword, keyword, limit, offset))
+    else:
+        #Kalau tidak ada data yang cocok dengan keyword yang dimasukkan, sistem menghitung keseluruhan data
+        cursor.execute("SELECT COUNT(*) AS total FROM mahasiswa")
+        total_data = cursor.fetchone()["total"]
+
+        #Ambil seluruh data
+        cursor.execute("""
+            SELECT
+                id_user,
+                nama,
+                nim,
+                angkatan
+            FROM mahasiswa
+            ORDER BY nama ASC
+            LIMIT %s OFFSET %s
+        """, (limit, offset))
 
     mahasiswa = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
-    return jsonify(mahasiswa)
+    return jsonify({
+        "data": mahasiswa,
+        "total": total_data,
+        "page": page,
+        "limit": limit,
+        "total_pages": (total_data + limit - 1) // limit
+    })
 
 #Menghubungkan data QR Code dengan data seminar
 @app.route("/generate-qr", methods=["POST"])
