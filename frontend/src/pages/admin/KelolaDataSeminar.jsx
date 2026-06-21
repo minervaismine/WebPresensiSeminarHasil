@@ -1,10 +1,12 @@
-import "../styles/Admin_KelolaDataSeminar.css";
+import "../../styles/admin/KelolaDataSeminar.css";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
+import PilihLokasi from "../../components/PilihLokasi";
 
 function KelolaDataSeminar() {
     const [showFormAddSeminar, setShowFormAddSeminar] = useState(false);
     const [showFormDeleteSeminar, setShowFormDeleteSeminar] = useState(false);
+    const [showMapModal, setShowMapModal] = useState(false);
   
     return (
     <div className="page-menu-kelola-data-seminar-layout">
@@ -311,12 +313,12 @@ function KelolaDataSeminar() {
 
         {/* Form Tambah Seminar */}
         {showFormAddSeminar && (
-            <div className="modal-overlay" onClick={() => setShowFormAddSeminar(false)}>
+            <div className="form-overlay" onClick={() => setShowFormAddSeminar(false)}>
                 <div className="form-add-seminar" onClick={(e) => e.stopPropagation()}>
                     <div className="form-header-wrapper">
                         <div className="form-header">
                             <Icon icon="ph:student-fill" className="student-icon"/>
-                            <span>Data Mahasiswa</span>
+                            <span>Data Seminar</span>
                         </div>
                         <button className="close-form-btn" onClick={() => setShowFormAddSeminar(false)}>
                             <Icon icon="mingcute:close-fill" />
@@ -361,7 +363,7 @@ function KelolaDataSeminar() {
                         <label className="lokasi-title">Lokasi Seminar</label>
                         <div className="map-picker-wrapper">
                             <input type="text" placeholder="Masukkan nama ruangan"/>
-                            <button className="map-picker-btn">Pilih di Peta</button>
+                            <button className="map-picker-btn" onClick={() => setShowMapModal (true)}>Pilih di Peta</button>
                         </div>
                     </div>
 
@@ -407,6 +409,11 @@ function KelolaDataSeminar() {
                     </div>
                 </div>
             </div>
+        )}
+
+        {/* Modal Map */}
+        {showMapModal && (
+            <PilihLokasi onClose={() => setShowMapModal(false)}/>
         )}
     </div>
   );

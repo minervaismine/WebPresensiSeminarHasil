@@ -1,4 +1,4 @@
-import "../styles/Admin_LaporanPresensi.css";
+import "../../styles/admin/LaporanPresensi.css";
 import { Icon } from '@iconify/react';
 
 function LaporanPresensi() {

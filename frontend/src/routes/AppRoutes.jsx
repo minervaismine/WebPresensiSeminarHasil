@@ -1,17 +1,19 @@
 import { Routes, Route } from "react-router-dom";
-
 import Login from "../pages/auth/Login";
 import DashboardMahasiswa from "../pages/mahasiswa/DashboardMahasiswa";
 import PesertaSeminarSaya from "../pages/mahasiswa/PesertaSeminar_SeminarSaya";
 import PenyelenggaraSeminarSaya from "../pages/mahasiswa/PenyelenggaraSeminar_SeminarSaya";
-import LihatDaftarHadir from "../pages/mahasiswa/LihatDaftarHadir.jsx";
-import PresensiBerhasil from "../pages/mahasiswa/PresensiBerhasil.jsx";
-import PresensiGagal from "../pages/mahasiswa/PresensiGagal.jsx";
-import PresensiGagalRole from "../pages/mahasiswa/PresensiGagal_Role.jsx";
+import LihatDaftarHadir from "../pages/mahasiswa/LihatDaftarHadir";
+import PresensiBerhasil from "../pages/mahasiswa/PresensiBerhasil";
+import PresensiGagal from "../pages/mahasiswa/PresensiGagal";
+import PresensiGagalRole from "../pages/mahasiswa/PresensiGagal_Role";
 import Presensi from "../pages/mahasiswa/Presensi";
 import RiwayatPresensi from "../pages/mahasiswa/RiwayatPresensi";
 import DashboardVerifikator from "../pages/verifikator/DashboardVerifikator";
 import DashboardAdmin from "../pages/admin/DashboardAdmin";
+import KelolaDataMahasiswa from "../pages/admin/KelolaDataMahasiswa";
+import KelolaDataSeminar from "../pages/admin/KelolaDataSeminar";
+import LaporanPresensi from "../pages/admin/LaporanPresensi";
 
 function AppRoutes() {
   return (
@@ -35,6 +37,9 @@ function AppRoutes() {
       
       {/* Admin */}
       <Route path="/dashboard-admin" element={<DashboardAdmin />}/>
+      <Route path="/kelola-data-mahasiswa" element={<KelolaDataMahasiswa />}/>
+      <Route path="/kelola-data-seminar" element={<KelolaDataSeminar />}/>
+      <Route path="/laporan-presensi" element={<LaporanPresensi />}/>
     </Routes>
   );
 }

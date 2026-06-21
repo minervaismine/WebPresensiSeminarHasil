@@ -8,6 +8,29 @@ import jwt
 app = Flask(__name__)
 CORS(app)
 
+#Menampilkan data mahasiswa di halaman Kelola Data Mahasiswa - Admin
+@app.route("/data-mahasiswa", methods=["GET"])
+def get_data_mahasiswa():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            id_user,
+            nama,
+            nim,
+            angkatan
+        FROM mahasiswa
+        ORDER BY nama ASC
+    """)
+
+    mahasiswa = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(mahasiswa)
+
 #Menghubungkan data QR Code dengan data seminar
 @app.route("/generate-qr", methods=["POST"])
 def generate_qr():

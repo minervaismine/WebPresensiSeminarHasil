@@ -1,16 +1,35 @@
-import "../styles/Admin_KelolaDataMahasiswa.css";
+import "../../styles/admin/KelolaDataMahasiswa.css";
 import { Icon } from '@iconify/react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function KelolaDataMahasiswa() {
     const [showFormAddStudent, setShowFormAddStudent] = useState(false);
     const [showFormDeleteStudent, setShowFormDeleteStudent] = useState(false);
+    const [dataMahasiswa, setDataMahasiswa] = useState([]);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchMahasiswa();
+    }, []);
+
+    const fetchMahasiswa = async () => {
+        try {
+            const response = await axios.get("http://localhost:5000/data-mahasiswa");
+
+            setDataMahasiswa(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
   
     return (
     <div className="page-menu-kelola-data-mahasiswa-layout">
         {/* Navbar */}
         <nav className="navbar-menu-kelola-data-mahasiswa">
-            <button className="back-btn">
+            <button className="back-btn" onClick={() => navigate(-1)}>
                 <Icon icon="weui:back-filled" className="back-icon"/>
                 <span>Kembali</span>
             </button>
@@ -21,225 +40,83 @@ function KelolaDataMahasiswa() {
         {/* Export, Search Bar, Filter */}
         <div className="header-kelola-data-mahasiswa-wrapper">
             <button className="add-mahasiswa-btn" onClick={() => setShowFormAddStudent(true)}>
-                <Icon icon="mingcute:add-fill" className="add-icon"/>
+                <Icon icon="mingcute:add-fill" className="add-mahasiswa-icon"/>
                 <span>Tambah Mahasiswa</span>
             </button>
 
-            <div className="search-filter">
+            <div className="search-filter-kelola-data-mahasiswa">
                 <form>
-                    <div className="search-bar">
-                        <Icon icon="radix-icons:magnifying-glass" className="search-icon"/>
-                        <input className="search-bar-input" type="search" placeholder="Cari mahasiswa atau NIM"></input>
+                    <div className="search-bar-kelola-data-mahasiswa">
+                        <Icon icon="radix-icons:magnifying-glass" className="search-icon-kelola-data-mahasiswa"/>
+                        <input className="search-bar-input-kelola-data-mahasiswa" type="search" placeholder="Cari mahasiswa atau NIM"></input>
                     </div>
                 </form>
 
-                <div className="filter-dropdown">
-                    <div className="filter-content">
-                        <Icon icon="mi:filter" className="filter-icon"/>
+                <div className="filter-dropdown-kelola-data-mahasiswa">
+                    <div className="filter-content-kelola-data-mahasiswa">
+                        <Icon icon="mi:filter" className="filter-icon-kelola-data-mahasiswa"/>
                         <span>Filter</span>
                     </div>
 
-                    <Icon icon="icon-park-outline:down" className="dropdown-icon"/>
+                    <Icon icon="icon-park-outline:down" className="dropdown-icon-kelola-data-mahasiswa"/>
                 </div>
             </div>
         </div>
 
         {/* Tabel */}
-        <table className="tabel-mahasiswa">
+        <table className="tabel-mahasiswa-kelola-data-mahasiswa">
             <thead>
                 <tr>
                     <th>
-                        <button className="sort-thead">
+                        <button className="sort-thead-kelola-data-mahasiswa">
                             <span>Nama</span>
-                            <Icon icon="uil:sort" className="sort-icon"/>
+                            <Icon icon="uil:sort" className="sort-icon-kelola-data-mahasiswa"/>
                         </button>
                     </th>
                     <th>
-                        <button className="sort-thead">
+                        <button className="sort-thead-kelola-data-mahasiswa">
                             <span>NIM</span>
-                            <Icon icon="uil:sort" className="sort-icon"/>
+                            <Icon icon="uil:sort" className="sort-icon-kelola-data-mahasiswa"/>
                         </button>
                     </th>
                     <th>
-                        <button className="sort-thead">
+                        <button className="sort-thead-kelola-data-mahasiswa">
                             <span>Angkatan</span>
-                            <Icon icon="uil:sort" className="sort-icon"/>
+                            <Icon icon="uil:sort" className="sort-icon-kelola-data-mahasiswa"/>
                         </button>
                     </th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
+                {dataMahasiswa.map((item) => (
+                    <tr key={item.id_user}>
+                        <td className="kolom-nama-kelola-data-mahasiswa">{item.nama}</td>
+                        <td className="kolom-nim-kelola-data-mahasiswa">{item.nim}</td>
+                        <td className="kolom-angkatan-kelola-data-mahasiswa">{item.angkatan}</td>
+                        <td className="kolom-aksi-kelola-data-mahasiswa">
+                            <div className="btn-aksi-wrapper-kelola-data-mahasiswa">
+                                <button className="aksi-btn-kelola-data-mahasiswa edit-btn">
+                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-mahasiswa"/>
+                                </button>
 
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-aksi">
-                        <div className="btn-aksi-wrapper">
-                            <button className=" aksi-btn edit-btn">
-                                <Icon icon="boxicons:pencil-filled" className="aksi-icon"/>
-                            </button>
-
-                            <button className=" aksi-btn delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                <Icon icon="tabler:trash-filled" className="aksi-icon"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                                <button className=" aksi-btn-kelola-data-mahasiswa delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
+                                    <Icon icon="tabler:trash-filled" className="aksi-icon-kelola-data-mahasiswa"/>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                ))}
             </tbody>
         </table>
 
         {/* Pagination */}
-        <div className="pagination-wrapper">
-            <p className="page-description">Menampilkan 1-10 dari 50 data</p>
+        <div className="pagination-wrapper-kelola-data-mahasiswa">
+            <p className="page-description-kelola-data-mahasiswa">Menampilkan 1-10 dari 50 data</p>
 
-            <div className="pagination">
+            <div className="pagination-kelola-data-mahasiswa">
                 <a href="#">
-                    <Icon icon="ooui:previous-ltr" className="previous-icon"/>
+                    <Icon icon="ooui:previous-ltr" className="previous-icon-kelola-data-mahasiswa"/>
                 </a>
                 <a href="#" className="active">1</a>
                 <a href="#">2</a>
@@ -247,7 +124,7 @@ function KelolaDataMahasiswa() {
                 <a href="#">4</a>
                 <a href="#">5</a>
                 <a href="#">
-                    <Icon icon="ooui:next-ltr" className="next-icon"/>
+                    <Icon icon="ooui:next-ltr" className="next-icon-kelola-data-mahasiswa"/>
                 </a>
             </div>
         </div>
@@ -281,7 +158,7 @@ function KelolaDataMahasiswa() {
                         <input type="number" placeholder="Masukkan tahun angkatan mahasiswa"/>
                     </div>
 
-                    <div className="add-btn-wrapper">
+                    <div className="add-btn-wrapper-kelola-data-mahasiswa">
                         <button className="add-btn-form">
                         <Icon icon="mingcute:add-fill" className="add-icon-form"/>
                         <span>Tambah Mahasiswa</span>
@@ -294,18 +171,18 @@ function KelolaDataMahasiswa() {
         {/* Modal Delete Data Mahasiswa */}
         {showFormDeleteStudent && (
             <div className="modal-overlay" onClick={() => setShowFormDeleteStudent(false)}>
-                <div className="modal-delete" onClick={(e) => e.stopPropagation()}>
-                    <div className="warning-icon-wrapper">
-                        <Icon icon="ic:round-warning" className="warning-icon"/>
+                <div className="modal-delete-kelola-data-mahasiswa" onClick={(e) => e.stopPropagation()}>
+                    <div className="warning-icon-wrapper-kelola-data-mahasiswa">
+                        <Icon icon="ic:round-warning" className="warning-icon-kelola-data-mahasiswa"/>
                     </div>
 
-                    <h2 className="modal-title">Hapus Data</h2>
+                    <h2 className="modal-delete-title-kelola-data-mahasiswa">Hapus Data</h2>
 
-                    <p className="modal-description">Apakah Anda yakin ingin menghapus data ini?</p>
+                    <p className="modal-delete-description-kelola-data-mahasiswa">Apakah Anda yakin ingin menghapus data ini?</p>
 
-                    <div className="btn-wrapper">
-                        <button className="modal-batal-btn" onClick={() => setShowFormDeleteStudent(false)}>Batal</button>
-                        <button className="modal-delete-btn">Hapus</button>
+                    <div className="btn-wrapper-modal-delete-kelola-data-mahasiswa">
+                        <button className="modal-batal-btn-kelola-data-mahasiswa" onClick={() => setShowFormDeleteStudent(false)}>Batal</button>
+                        <button className="modal-delete-btn-kelola-data-mahasiswa">Hapus</button>
                     </div>
                 </div>
             </div>
