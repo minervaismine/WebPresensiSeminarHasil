@@ -8,7 +8,25 @@ import jwt
 app = Flask(__name__)
 CORS(app)
 
-#Menampilkan data mahasiswa di halaman Kelola Data Mahasiswa - Admin
+@app.route("/data-angkatan", methods=["GET"])
+def get_data_angkatan():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT DISTINCT angkatan
+        FROM mahasiswa
+        ORDER BY angkatan asc
+    """)
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(data)
+
+#Menampilkan data mahasiswa, fitur search, fitur sort dan fitur filter di halaman Kelola Data Mahasiswa - Admin
 @app.route("/data-mahasiswa", methods=["GET"])
 def get_data_mahasiswa():
     conn = get_db_connection()
@@ -16,6 +34,8 @@ def get_data_mahasiswa():
 
     page = int(request.args.get("page", 1))
     limit = int(request.args.get("limit", 10))
+    offset = (page - 1) * limit
+
     search = request.args.get("search", "").strip()
     keyword = f"%{search}%"
 
@@ -33,48 +53,55 @@ def get_data_mahasiswa():
     if sort_order not in allowed_orders:
         sort_order = "asc"
 
-    offset = (page - 1) * limit
+    #Filter angkatan
+    angkatan = request.args.get("angkatan", "")
+    angkatan_list = []
 
-    if search:
-       #Kalau data ada yang cocok dengan keyword yang dimasukkan, sistem menghitung total hasil pencarian
-        cursor.execute("""
-            SELECT COUNT(*) AS total
-            FROM mahasiswa
-            WHERE nama LIKE %s
-            OR nim LIKE %s
-        """, (keyword, keyword))
+    if angkatan:
+        angkatan_list = angkatan.split(",")
 
-        total_data = cursor.fetchone()["total"]
-    else:
-        #Kalau tidak ada data yang cocok dengan keyword yang dimasukkan, sistem menghitung keseluruhan data
-        cursor.execute("SELECT COUNT(*) AS total FROM mahasiswa")
-        total_data = cursor.fetchone()["total"]
-
-    query = """
-    SELECT
-        id_user,
-        nama,
-        nim,
-        angkatan
-    FROM mahasiswa
-    """
+    where_clause = []
     params = []
 
     if search:
-        query += """
-        WHERE nama LIKE %s
-        OR nim LIKE %s
-        """
+        where_clause.append("(nama LIKE %s OR nim LIKE %s)")
         params.extend([keyword, keyword])
 
-    query += f"""
-    ORDER BY {sort_by} {sort_order.upper()}
-    LIMIT %s OFFSET %s
+    if angkatan_list:
+        placeholders = ",".join(["%s"] * len(angkatan_list))
+        where_clause.append(f"angkatan IN ({placeholders})")
+        params.extend(angkatan_list)
+
+    where_sql = ""
+    if where_clause:
+        where_sql = "WHERE " + " AND ".join(where_clause)
+    
+    count_query = f"""
+        SELECT COUNT(*) AS total
+        FROM mahasiswa
+        {where_sql}
     """
 
-    params.extend([limit, offset])
+    cursor.execute(count_query, tuple(params))
+    total_data = cursor.fetchone()["total"]
 
-    cursor.execute(query, tuple(params))
+    #Ambil data
+    data_query = f"""
+        SELECT
+            id_user,
+            nama,
+            nim,
+            angkatan
+        FROM mahasiswa
+        {where_sql}
+        ORDER BY {sort_by} {sort_order.upper()}
+        LIMIT %s OFFSET %s
+    """
+
+    data_params = params.copy()
+    data_params.extend([limit, offset])
+
+    cursor.execute(data_query, tuple(data_params))
     mahasiswa = cursor.fetchall()
 
     cursor.close()

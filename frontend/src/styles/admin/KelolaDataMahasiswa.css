@@ -115,17 +115,24 @@
   font-size: 20px;
 }
 
+.filter-dropdown-kelola-data-mahasiswa-wrapper {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
 .filter-dropdown-kelola-data-mahasiswa {
   width: 180px;
   height: 48px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
   border: 2px solid #E9EEF6;
-  border-radius: 10px;
+  border-radius: 10px; 
+  background: #FFFFFF;
   cursor: pointer;
-  box-sizing: border-box;
+  padding: 10px 15px;
+  font-family: "Poppins", sans-serif;
 }
 
 .filter-content-kelola-data-mahasiswa {
@@ -149,6 +156,44 @@
 .dropdown-icon-kelola-data-mahasiswa {
   font-size: 27px;
   color: #1E293B;
+}
+
+.filter-menu-kelola-data-mahasiswa {
+  position:absolute;
+  top:55px;
+  right:0;
+  width:180px;
+  background:#fff;
+  border:2px solid #E9EEF6;
+  border-radius:10px;
+  padding:20px 25px 10px 25px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+  z-index:999;
+}
+
+.filter-menu-kelola-data-mahasiswa h3{
+  margin:0 0 18px;
+  text-align:left;
+  font-size:20px;
+  font-weight:700;
+  color:#1E293B;
+}
+
+.filter-menu-kelola-data-mahasiswa label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+  font-size:16px;
+  font-family:"Poppins", sans-serif;
+  color:#1E293B;
+  cursor:pointer;
+}
+
+.filter-menu-kelola-data-mahasiswa input[type="checkbox"]{
+  width:19px;
+  height:19px;
+  cursor:pointer;
 }
 
 .tabel-mahasiswa-kelola-data-mahasiswa {

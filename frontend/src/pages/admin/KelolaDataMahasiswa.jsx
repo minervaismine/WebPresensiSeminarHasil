@@ -17,6 +17,10 @@ function KelolaDataMahasiswa() {
     const [sortBy, setSortBy] = useState("nama");
     const [sortOrder, setSortOrder] = useState("asc");
 
+    const [showFilter, setShowFilter] = useState(false);
+    const [selectedYears, setSelectedYears] = useState([]);
+    const [angkatanList, setAngkatanList] = useState([]);
+
     const dataPerPage = 10;
 
     const startData = totalData === 0 ? 0 : (currentPage - 1) * dataPerPage + 1;
@@ -24,7 +28,11 @@ function KelolaDataMahasiswa() {
 
     useEffect(() => {
         fetchMahasiswa(currentPage);
-    }, [currentPage, search, sortBy, sortOrder]);
+    }, [currentPage, search, sortBy, sortOrder, selectedYears]);
+
+    useEffect(() => {
+        fetchAngkatan();
+    }, []);
 
     const fetchMahasiswa = async (page = 1, searchKeyword = search) => {
         try {
@@ -37,6 +45,7 @@ function KelolaDataMahasiswa() {
                     search: searchKeyword,
                     sort_by: sortBy,
                     sort_order: sortOrder,
+                    angkatan:selectedYears.join(",")
                 },
             }
         );
@@ -60,6 +69,31 @@ function KelolaDataMahasiswa() {
             setSortOrder("asc");
         }
 
+        setCurrentPage(1);
+    };
+
+    const fetchAngkatan = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:5000/data-angkatan"
+            );
+            setAngkatanList(response.data);
+        } catch(error){
+            console.log(error);
+        }
+    }
+
+    const handleYearChange = (year) => {
+        if (selectedYears.includes(year)) {
+            setSelectedYears(
+                selectedYears.filter(y => y !== year)
+            );
+        } else {
+            setSelectedYears([
+                ...selectedYears,
+                year
+            ]);
+        }
         setCurrentPage(1);
     };
   
@@ -90,13 +124,33 @@ function KelolaDataMahasiswa() {
                     </div>
                 </form>
 
-                <div className="filter-dropdown-kelola-data-mahasiswa">
-                    <div className="filter-content-kelola-data-mahasiswa">
-                        <Icon icon="mi:filter" className="filter-icon-kelola-data-mahasiswa"/>
-                        <span>Filter</span>
-                    </div>
+                <div className="filter-dropdown-kelola-data-mahasiswa-wrapper">
+                    <button type="button" className="filter-dropdown-kelola-data-mahasiswa" onClick={() => setShowFilter(!showFilter)}> 
+                        <div className="filter-content-kelola-data-mahasiswa">
+                            <Icon icon="mi:filter" className="filter-icon-kelola-data-mahasiswa"/>
+                            <span>Filter</span>
+                        </div>
 
-                    <Icon icon="icon-park-outline:down" className="dropdown-icon-kelola-data-mahasiswa"/>
+                        <Icon icon="icon-park-outline:down" className="dropdown-icon-kelola-data-mahasiswa"/>
+                    </button>   
+
+                    {showFilter && (
+                        <div className="filter-menu-kelola-data-mahasiswa">
+                            <h3>Angkatan</h3>
+
+                            <label>
+                                <input type="checkbox" checked={selectedYears.length === 0} onChange={() => setSelectedYears([])}></input>
+                                Semua
+                            </label>
+
+                            {angkatanList.map((item) => (
+                                <label key={item.angkatan}>
+                                    <input type="checkbox" checked={selectedYears.includes(item.angkatan)} onChange={() => handleYearChange(item.angkatan)}></input>
+                                    {item.angkatan}
+                                </label>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
