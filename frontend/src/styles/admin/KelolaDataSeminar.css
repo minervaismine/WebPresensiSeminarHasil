@@ -4,7 +4,7 @@
   flex-direction: column;
 }
 
-.back-btn {
+.back-btn-kelola-data-seminar {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -18,7 +18,7 @@
   color: #1E293B;
 }
 
-.back-icon {
+.back-icon-kelola-data-seminar {
   font-size: 35px;
   color: #1E293B;
 }
@@ -29,7 +29,7 @@
   display: flex;
   position: relative;
   align-items: center;
-  padding: 0 80px;
+  padding: 0 60px;
 }
 
 .navbar-menu-kelola-data-seminar h1 {
@@ -47,9 +47,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  margin-left: 90px;
-  margin-right: 90px;
+  margin: 20px 60px 0 60px;
 }
 
 .add-seminar-btn {
@@ -60,32 +58,30 @@
   color: #FFFFFF;
   border: none;
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: 10px 15px;
   font-size: 20px;
-  font-weight: 500;
   font-family: "Poppins", sans-serif;
   cursor: pointer;
+  height: 48px;
 }
 
 .add-seminar-btn:hover{
   background: #1D4ED8;
-  transform: translateY(-2px);
-  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-.add-icon {
-  font-size: 25px;
+.add-seminar-icon {
+  font-size: 27px;
 }
 
-.search-filter {
+.search-filter-kelola-data-seminar {
   display: flex;
   align-items: center;
   gap: 40px;
 }
 
-.search-bar {
+.search-bar-kelola-data-seminar {
   width: max-content;
-  height: 53px;
+  height: 48px;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -93,7 +89,7 @@
   border: 2px solid #E9EEF6;
 }
 
-.search-bar-input {
+.search-bar-input-kelola-data-seminar {
   font-size: 18px;
   font-family: "Poppins", sans-serif;
   color: #1E293B;
@@ -104,60 +100,60 @@
   width: 400px;
 }
 
-.search-bar-input::-webkit-search-cancel-button {
+.search-bar-input-kelola-data-seminar::-webkit-search-cancel-button {
   margin-left: 20px;
   cursor: pointer;
 }
 
-.search-icon {
-  font-size: 30px;
+.search-bar-input-kelola-data-seminar::placeholder {
+  color: #E9EEF6;
+  font-size: 20px;
+}
+
+.search-seminar-icon {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.search-bar-input::placeholder {
-  color: #E9EEF6;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.filter-dropdown {
+.filter-dropdown-kelola-data-seminar {
   width: 180px;
-  height: 53px;
+  height: 48px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
   border: 2px solid #E9EEF6;
   border-radius: 10px;
+  background: #FFFFFF;
   cursor: pointer;
-  box-sizing: border-box;
+  padding: 10px 15px;
+  font-family: "Poppins", sans-serif;
 }
 
-.filter-content {
+.filter-content-kelola-data-seminar {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.filter-icon {
-  font-size: 30px;
+.filter-seminar-icon {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.filter-content span {
+.filter-content-kelola-data-seminar span {
   font-family: "Poppins", sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: #1E293B;
 }
 
-.dropdown-icon {
-  font-size: 30px;
+.dropdown-icon-kelola-data-seminar {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.table-container {
-  margin: 20px 90px;
+.table-container-kelola-data-seminar {
+  margin: 25px 60px 10px 60px;
 }
 
 .table-scrollbar {
@@ -201,7 +197,7 @@
   text-align: center;
 }
 
-.sort-thead {
+.sort-thead-kelola-data-seminar {
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -216,7 +212,7 @@
   color: #1E293B;
 }
 
-.sort-icon {
+.sort-seminar-icon {
   font-size: 22px;
 }
 
@@ -265,24 +261,24 @@
   background-color: rgba(36, 99, 235, 0.22);
 }
 
-.kolom-nama-content {
+.kolom-nama-content-kelola-data-seminar {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
 }
 
-.kolom-nama-content p {
+.kolom-nama-content-kelola-data-seminar p {
   margin: 0;
 }
 
-.nama-mahasiswa {
+.nama-mahasiswa-kelola-data-seminar {
   text-align: justify;
   font-weight: 700;
   color: #1E293B;
 }
 
-.nim-mahasiswa {
+.nim-mahasiswa-kelola-data-seminar {
   font-style: italic;
   color: #1E293B;
   font-size: 14px;
@@ -347,13 +343,14 @@
   margin: 0;
 }
 
-.btn-aksi-wrapper {
+.btn-aksi-wrapper-kelola-data-seminar {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 15px;
 }
 
-.aksi-btn {
+.aksi-btn-kelola-data-seminar {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -361,7 +358,7 @@
   background: none;
 }
 
-.aksi-icon {
+.aksi-icon-kelola-data-seminar {
   font-size:25px;
 }
 
@@ -373,25 +370,25 @@
   color: #EF4444;
 }
 
-.pagination-wrapper {
+.pagination-wrapper-kelola-data-seminar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 90px;
+  margin: 10px 60px 20px 60px;
 }
 
-.page-description {
+.page-description-kelola-data-seminar {
   font-family: "Poppins", sans-serif;
   font-size: 13px;
   color: #1E293B;
   margin: 0;
 }
 
-.pagination {
+.pagination-kelola-data-seminar {
   display: flex;
 }
 
-.pagination a {
+.pagination-kelola-data-seminar a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -404,30 +401,30 @@
   height: 35px;
 }
 
-.pagination a:not(:first-child) {
+.pagination-kelola-data-seminar a:not(:first-child) {
   border-left: none;
 }
 
-.pagination a:first-child {
+.pagination-kelola-data-seminar a:first-child {
   border-radius: 7px 0 0 7px;
   width: 45px;
 }
 
-.pagination a:last-child {
+.pagination-kelola-data-seminar a:last-child {
   border-radius: 0 7px 7px 0;
   width: 45px;
 }
 
-.pagination .active {
+.pagination-kelola-data-seminar .active {
   background-color: rgba(36, 99, 235, 0.22);
 }
 
-.pagination a:hover:not(.active) {
+.pagination-kelola-data-seminar a:hover:not(.active) {
   background-color: #E9EEF6;
 }
 
-.previous-icon,
-.next-icon {
+.previous-icon-kelola-data-seminar,
+.next-icon-kelola-data-seminar {
   font-size: 18px;
 }
 

@@ -6,20 +6,32 @@ import axios from "axios";
 
 function KelolaDataMahasiswa() {
     const navigate = useNavigate();
-    const [showFormAddStudent, setShowFormAddStudent] = useState(false);
+
+    // Modal
+    const [showFormEditStudent, setShowFormEditStudent] = useState(false);
     const [showFormDeleteStudent, setShowFormDeleteStudent] = useState(false);
+    // Tabel
     const [dataMahasiswa, setDataMahasiswa] = useState([]);
+    // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalData, setTotalData] = useState(0);
+    // Search
     const [search, setSearch] = useState("");
-
+    // Sort
     const [sortBy, setSortBy] = useState("nama");
     const [sortOrder, setSortOrder] = useState("asc");
-
+    // Filter
     const [showFilter, setShowFilter] = useState(false);
     const [selectedYears, setSelectedYears] = useState([]);
     const [angkatanList, setAngkatanList] = useState([]);
+    // Data yang diedit pada form edit
+    const [selectedMahasiswa, setSelectedMahasiswa] = useState({
+        id_user: "",
+        nama: "",
+        nim: "",
+        angkatan: "",
+    });
 
     const dataPerPage = 10;
 
@@ -96,13 +108,42 @@ function KelolaDataMahasiswa() {
         }
         setCurrentPage(1);
     };
+
+    const openEditForm = (mahasiswa) => {
+        setSelectedMahasiswa(mahasiswa);
+        setShowFormEditStudent(true);
+    };
+
+    const handleUpdateMahasiswa = async () => {
+        try {
+            await axios.put(
+                `http://localhost:5000/edit-mahasiswa/${selectedMahasiswa.id_user}`,
+                selectedMahasiswa
+            );
+
+            alert("Data berhasil diperbarui");
+            setShowFormEditStudent(false);
+            fetchMahasiswa(currentPage);
+        } catch(error) {
+            console.log(error);
+        }
+    };
+
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+
+        setSelectedMahasiswa(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
   
     return (
     <div className="page-menu-kelola-data-mahasiswa-layout">
         {/* Navbar */}
         <nav className="navbar-menu-kelola-data-mahasiswa">
-            <button className="back-btn" onClick={() => navigate(-1)}>
-                <Icon icon="weui:back-filled" className="back-icon"/>
+            <button className="back-btn-kelola-data-mahasiswa" onClick={() => navigate(-1)}>
+                <Icon icon="weui:back-filled" className="back-icon-kelola-data-mahasiswa"/>
                 <span>Kembali</span>
             </button>
 
@@ -111,11 +152,6 @@ function KelolaDataMahasiswa() {
 
         {/* Export, Search Bar, Filter */}
         <div className="header-kelola-data-mahasiswa-wrapper">
-            <button className="add-mahasiswa-btn" onClick={() => setShowFormAddStudent(true)}>
-                <Icon icon="mingcute:add-fill" className="add-mahasiswa-icon"/>
-                <span>Tambah Mahasiswa</span>
-            </button>
-
             <div className="search-filter-kelola-data-mahasiswa">
                 <form>
                     <div className="search-bar-kelola-data-mahasiswa">
@@ -134,6 +170,7 @@ function KelolaDataMahasiswa() {
                         <Icon icon="icon-park-outline:down" className="dropdown-icon-kelola-data-mahasiswa"/>
                     </button>   
 
+                    {/* Filter Dropdown */}
                     {showFilter && (
                         <div className="filter-menu-kelola-data-mahasiswa">
                             <h3>Angkatan</h3>
@@ -188,7 +225,7 @@ function KelolaDataMahasiswa() {
                         <td className="kolom-angkatan-kelola-data-mahasiswa">{item.angkatan}</td>
                         <td className="kolom-aksi-kelola-data-mahasiswa">
                             <div className="btn-aksi-wrapper-kelola-data-mahasiswa">
-                                <button className="aksi-btn-kelola-data-mahasiswa edit-btn">
+                                <button className="aksi-btn-kelola-data-mahasiswa edit-btn" onClick={() => openEditForm(item)}>
                                     <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-mahasiswa"/>
                                 </button>
 
@@ -223,40 +260,37 @@ function KelolaDataMahasiswa() {
             </div>
         </div>
 
-        {/* Form Tambah Mahasiswa */}
-        {showFormAddStudent && (
-            <div className="modal-overlay" onClick={() => setShowFormAddStudent(false)}>
-                <div className="form-add-student" onClick={(e) => e.stopPropagation()}>
+        {/* Form Edit Mahasiswa */}
+        {showFormEditStudent && (
+            <div className="modal-overlay" onClick={() => setShowFormEditStudent(false)}>
+                <div className="form-edit-student" onClick={(e) => e.stopPropagation()}>
                     <div className="form-header-wrapper">
                         <div className="form-header">
                             <Icon icon="ph:student-fill" className="student-icon"/>
                             <span>Data Mahasiswa</span>
                         </div>
-                        <button className="close-form-btn" onClick={() => setShowFormAddStudent(false)}>
+                        <button className="close-form-btn" onClick={() => setShowFormEditStudent(false)}>
                             <Icon icon="mingcute:close-fill" />
                         </button>
                     </div>
 
                     <div className="form-group-name">
                         <label>Nama Lengkap</label>
-                        <input type="text" placeholder="Masukkan nama lengkap mahasiswa"/>
+                        <input name="nama" value={selectedMahasiswa.nama} onChange={handleEditChange} placeholder="Masukkan nama lengkap mahasiswa"/>
                     </div>
 
                     <div className="form-group-nim">
                         <label>NIM</label>
-                        <input type="text" placeholder="Masukkan NIM mahasiswa"/>
+                        <input name="nim" value={selectedMahasiswa.nim} onChange={handleEditChange} placeholder="Masukkan NIM mahasiswa"/>
                     </div>
 
                     <div className="form-group-angkatan">
                         <label>Angkatan</label>
-                        <input type="number" placeholder="Masukkan tahun angkatan mahasiswa"/>
+                        <input name="angkatan" value={selectedMahasiswa.angkatan} onChange={handleEditChange} placeholder="Masukkan tahun angkatan mahasiswa"/>
                     </div>
 
-                    <div className="add-btn-wrapper-kelola-data-mahasiswa">
-                        <button className="add-btn-form">
-                        <Icon icon="mingcute:add-fill" className="add-icon-form"/>
-                        <span>Tambah Mahasiswa</span>
-                    </button>
+                    <div className="edit-btn-wrapper-kelola-data-mahasiswa">
+                        <button className="edit-btn-form" onClick={handleUpdateMahasiswa}>Simpan Perubahan</button>
                     </div>
                 </div>
             </div>

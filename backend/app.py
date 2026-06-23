@@ -3,11 +3,145 @@ from flask_cors import CORS
 from config import get_db_connection
 from datetime import datetime, timedelta
 import jwt
-# from flask import request, jsonify
+import locale
 
 app = Flask(__name__)
 CORS(app)
 
+try:
+    locale.setlocale(locale.LC_TIME, "id_ID.UTF-8")   # Linux/Mac
+except:
+    try:
+        locale.setlocale(locale.LC_TIME, "Indonesian_Indonesia.1252")   # Windows
+    except:
+        pass
+
+def format_waktu(waktu):
+    if isinstance(waktu, timedelta):
+        total = int(waktu.total_seconds())
+        jam = total // 3600
+        menit = (total % 3600) // 60
+        return f"{jam:02d}.{menit:02d}"
+    else:
+        return waktu.strftime("%H.%M")
+
+#Menampilkan data seminar
+@app.route("/data-seminar", methods=["GET"])
+def get_data_seminar():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            s.id_seminar,
+            s.judul_penelitian,
+            s.tanggal,
+            s.waktu_mulai,
+            s.waktu_selesai,
+            s.lokasi,
+            s.latitude,
+            s.longitude,
+            s.radius_meter,
+            s.dosen_pembimbing,
+            s.dosen_penguji_1,
+            s.dosen_penguji_2,
+
+            m.id_user,
+            m.nama,
+            m.nim,
+            m.angkatan
+
+        FROM seminar s
+        JOIN mahasiswa m
+        ON s.id_mahasiswa = m.id_user
+
+        ORDER BY s.tanggal DESC, s.waktu_mulai ASC
+    """)
+
+    data = cursor.fetchall()
+
+    for item in data:
+        #Format tanggal
+        item["tanggal"] = item["tanggal"].strftime("%A, %d %B %Y")
+
+        #Format jam
+        item["waktu_mulai"] = format_waktu(item["waktu_mulai"])
+        item["waktu_selesai"] = format_waktu(item["waktu_selesai"])
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(data)
+
+#Untuk form edit data mahasiswa
+@app.route("/edit-mahasiswa/<int:id_user>", methods=["PUT"])
+def edit_mahasiswa(id_user):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    data = request.json
+
+    nama = data["nama"]
+    nim = data["nim"]
+    angkatan = data["angkatan"]
+
+    try:
+        #Mengecek apakah data mahasiswa ada
+        cursor.execute(
+            "SELECT * FROM mahasiswa WHERE id_user=%s",
+            (id_user,)
+        )
+
+        if not cursor.fetchone():
+            return jsonify({
+                "message": "Data mahasiswa tidak ditemukan"
+            }), 404
+        
+        #Mengecek apakah NIM sudah dipakai mahasiswa lain
+        cursor.execute(
+            """
+            SELECT id_user
+            FROM mahasiswa
+            WHERE nim=%s AND id_user<>%s
+            """,
+            (nim, id_user)
+        )
+
+        if cursor.fetchone():
+            return jsonify({
+                "message": "NIM sudah digunakan oleh mahasiswa lain"
+            }), 400
+        
+        #Update data
+        cursor.execute(
+            """
+            UPDATE mahasiswa
+            SET
+                nama=%s,
+                nim=%s,
+                angkatan=%s
+            WHERE id_user=%s
+            """,
+            (nama, nim, angkatan, id_user)
+        )
+
+        conn.commit()
+
+        return jsonify({
+            "message": "Data mahasiswa berhasil diperbarui"
+        }), 200
+    
+    except Exception as e:
+        conn.rollback()
+        return jsonify({
+            "message": str(e)
+        }), 500
+    
+    finally:
+        cursor.close()
+        conn.close()
+
+#Menampilkan data angkatan untuk masuk ke filter
 @app.route("/data-angkatan", methods=["GET"])
 def get_data_angkatan():
     conn = get_db_connection()

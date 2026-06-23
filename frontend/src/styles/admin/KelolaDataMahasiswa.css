@@ -4,7 +4,7 @@
   flex-direction: column;
 }
 
-.back-btn {
+.back-btn-kelola-data-mahasiswa {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -18,7 +18,7 @@
   color: #1E293B;
 }
 
-.back-icon {
+.back-icon-kelola-data-mahasiswa {
   font-size: 35px;
   color: #1E293B;
 }
@@ -45,32 +45,9 @@
 
 .header-kelola-data-mahasiswa-wrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin: 20px 60px 0 60px;
-}
-
-.add-mahasiswa-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #2463EB;
-  color: #FFFFFF;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 15px;
-  font-size: 17px;
-  font-family: "Poppins", sans-serif;
-  cursor: pointer;
-  height: 48px;
-}
-
-.add-mahasiswa-btn:hover{
-  background: #1D4ED8;
-}
-
-.add-mahasiswa-icon {
-  font-size: 22px;
 }
 
 .search-filter-kelola-data-mahasiswa {
@@ -167,7 +144,6 @@
   border:2px solid #E9EEF6;
   border-radius:10px;
   padding:20px 25px 10px 25px;
-  box-shadow:0 8px 20px rgba(0,0,0,.15);
   z-index:999;
 }
 
@@ -239,7 +215,7 @@
 }
 
 .tabel-mahasiswa-kelola-data-mahasiswa tbody {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .tabel-mahasiswa-kelola-data-mahasiswa tbody tr {
@@ -299,7 +275,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 20px 60px 20px 60px;
+  margin: 10px 60px 20px 60px;
 }
 
 .page-description-kelola-data-mahasiswa {
@@ -372,7 +348,7 @@
   z-index: 1000;
 }
 
-.form-add-student {
+.form-edit-student {
   position: relative;
   width: 450px;
   background: white;
@@ -454,12 +430,12 @@
   font-size: 18px;
 }
 
-.add-btn-wrapper-kelola-data-mahasiswa {
+.edit-btn-wrapper-kelola-data-mahasiswa {
   display: flex;
   justify-content: flex-end;
 }
 
-.add-btn-form {
+.edit-btn-form {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -474,12 +450,8 @@
   cursor: pointer;
 }
 
-.add-btn-form:hover{
+.edit-btn-form:hover{
   background: #1D4ED8;
-}
-
-.add-icon-form {
-  font-size: 23px;
 }
 
 .modal-delete-kelola-data-mahasiswa {
