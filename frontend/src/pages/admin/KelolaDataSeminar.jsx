@@ -7,26 +7,68 @@ import PilihLokasi from "../../components/PilihLokasi";
 
 function KelolaDataSeminar() {
     const navigate = useNavigate();
-
+    // Tabel
     const [dataSeminar, setDataSeminar] = useState([]);
-
+    // Pagination
+    const [page, setPage] = useState(1);
+    const [limit] = useState(5);
+    const [totalPage, setTotalPage] = useState(1);
+    const [totalData, setTotalData] = useState(0);
+    // Modal
     const [showFormAddSeminar, setShowFormAddSeminar] = useState(false);
     const [showFormDeleteSeminar, setShowFormDeleteSeminar] = useState(false);
     const [showMapModal, setShowMapModal] = useState(false);
 
     useEffect(() => {
         fetchSeminar();
-    }, []);
+    }, [page]);
 
     const fetchSeminar = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:5000/data-seminar"
+                `http://localhost:5000/data-seminar?page=${page}&limit=${limit}`
             );
-            setDataSeminar(response.data);
+            setDataSeminar(response.data.data);
+            setTotalPage(response.data.total_page);
+            setTotalData(response.data.total);
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const getPagination = () => {
+        const pages = [];
+
+        if (totalPage <= 7) {
+            for (let i = 1; i <= totalPage; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (page <= 4) {
+                pages.push(1, 2, 3, 4, 5, "...", totalPage);
+            } else if (page >= totalPage - 3) {
+                pages.push(
+                    1,
+                    "...",
+                    totalPage - 4,
+                    totalPage - 3,
+                    totalPage - 2,
+                    totalPage - 1,
+                    totalPage
+                );
+            } else {
+                pages.push(
+                    1,
+                    "...",
+                    page - 1,
+                    page,
+                    page + 1,
+                    "...",
+                    totalPage
+                );
+            }
+        }
+        return pages;
     };
   
     return (
@@ -149,20 +191,31 @@ function KelolaDataSeminar() {
 
         {/* Pagination */}
         <div className="pagination-wrapper-kelola-data-seminar">
-            <p className="page-description-kelola-data-seminar">Menampilkan 1-5 dari 50 data</p>
+            <p className="page-description-kelola-data-seminar">
+                Menampilkan {(page - 1) * limit + 1}-{Math.min(page * limit, totalData)} dari {totalData} data</p>
 
             <div className="pagination-kelola-data-seminar">
-                <a href="#">
+                <button disabled={page === 1} onClick={() => setPage((prev) => prev -1)}>
                     <Icon icon="ooui:previous-ltr" className="previous-icon-kelola-data-seminar"/>
-                </a>
-                <a href="#" className="active">1</a>
-                <a href="#">2</a>
-                <a href="#">...</a>
-                <a href="#">9</a>
-                <a href="#">10</a>
-                <a href="#">
+                </button>
+
+                {getPagination().map((item, index) => {
+                    if (item === "...") {
+                        return (
+                            <span key={index} className="pagination-dots-kelola-data-seminar">...</span>
+                        )
+                    }
+
+                    return (
+                        <button key={index} className={page === item ? "active" : ""} onClick={() => setPage(item)}>
+                            {item}
+                        </button>
+                    );
+                })}
+
+                <button disabled={page === totalPage} onClick={() => setPage((prev) => prev +1)}>
                     <Icon icon="ooui:next-ltr" className="next-icon-kelola-data-seminar"/>
-                </a>
+                </button>
             </div>
         </div>
 

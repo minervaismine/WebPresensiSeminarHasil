@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import get_db_connection
 from datetime import datetime, timedelta
+from math import ceil
 import jwt
 import locale
 
@@ -31,6 +32,16 @@ def get_data_seminar():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    #Pagination
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 5))
+    offset = (page - 1) * limit
+
+    #Hitung total data
+    cursor.execute("SELECT COUNT(*) AS total FROM seminar")
+    total = cursor.fetchone()["total"]
+
+    #Ambil data sesuai halaman
     cursor.execute("""
         SELECT
             s.id_seminar,
@@ -45,18 +56,18 @@ def get_data_seminar():
             s.dosen_pembimbing,
             s.dosen_penguji_1,
             s.dosen_penguji_2,
-
+                   
             m.id_user,
             m.nama,
             m.nim,
             m.angkatan
-
         FROM seminar s
         JOIN mahasiswa m
         ON s.id_mahasiswa = m.id_user
-
+        
         ORDER BY s.tanggal DESC, s.waktu_mulai ASC
-    """)
+        LIMIT %s OFFSET %s
+    """, (limit, offset))
 
     data = cursor.fetchall()
 
@@ -71,7 +82,13 @@ def get_data_seminar():
     cursor.close()
     conn.close()
 
-    return jsonify(data)
+    return jsonify({
+        "data": data,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "total_page": ceil(total / limit)
+    })
 
 #Untuk form edit data mahasiswa
 @app.route("/edit-mahasiswa/<int:id_user>", methods=["PUT"])
@@ -166,6 +183,7 @@ def get_data_mahasiswa():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
+    #Pagination
     page = int(request.args.get("page", 1))
     limit = int(request.args.get("limit", 10))
     offset = (page - 1) * limit
