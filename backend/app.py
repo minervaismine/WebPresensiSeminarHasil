@@ -25,6 +25,25 @@ def format_waktu(waktu):
         return f"{jam:02d}.{menit:02d}"
     else:
         return waktu.strftime("%H.%M")
+    
+@app.route("/filter/lokasi", methods=["GET"])
+def get_lokasi():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT DISTINCT lokasi
+        FROM seminar
+        WHERE lokasi IS NOT NULL
+        ORDER BY lokasi ASC
+    """)
+
+    lokasi = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(lokasi)
 
 #Menampilkan data seminar
 @app.route("/data-seminar", methods=["GET"])
@@ -37,12 +56,57 @@ def get_data_seminar():
     limit = int(request.args.get("limit", 5))
     offset = (page - 1) * limit
 
+    #Search
+    search = request.args.get("search", "").strip()
+    keyword = f"%{search}%"
+
+    #Filter Lokasi
+    lokasi = request.args.get("lokasi", "Semua")
+    tanggal_filter = request.args.get("tanggal", "Semua")
+    tanggal_awal = request.args.get("tanggal_awal")
+    tanggal_akhir = request.args.get("tanggal_akhir")
+
+    conditions =[
+        "(m.nama LIKE %s OR m.nim LIKE %s)"
+    ]
+
+    params = [keyword, keyword]
+
+    if lokasi != "Semua":
+        conditions.append("s.lokasi = %s")
+        params.append(lokasi)
+
+    #Kondisi untuk filter tanggal
+    if tanggal_filter == "Hari Ini":
+        conditions.append("DATE(s.tanggal) = CURDATE()")
+    elif tanggal_filter == "Minggu Ini":
+        conditions.append("YEARWEEK(s.tanggal,1)=YEARWEEK(CURDATE(),1)")
+    elif tanggal_filter == "Bulan Ini":
+        conditions.append("""
+            MONTH(s.tanggal)=MONTH(CURDATE())
+            AND YEAR(s.tanggal)=YEAR(CURDATE())
+        """)
+    #Kondisi filter tanggal (rentang tanggal)
+    elif tanggal_awal and tanggal_akhir:
+        conditions.append("DATE(s.tanggal) BETWEEN %s AND %s")
+        params.extend([tanggal_awal, tanggal_akhir])
+
+    where = "WHERE " + " AND ".join(conditions) 
+
     #Hitung total data
-    cursor.execute("SELECT COUNT(*) AS total FROM seminar")
+    count_query = f"""
+        SELECT COUNT(*) AS total
+        FROM seminar s
+        JOIN mahasiswa m
+        ON s.id_mahasiswa = m.id_user
+        {where}
+    """
+
+    cursor.execute(count_query, tuple(params))
     total = cursor.fetchone()["total"]
 
     #Ambil data sesuai halaman
-    cursor.execute("""
+    data_query = f"""
         SELECT
             s.id_seminar,
             s.judul_penelitian,
@@ -64,11 +128,16 @@ def get_data_seminar():
         FROM seminar s
         JOIN mahasiswa m
         ON s.id_mahasiswa = m.id_user
+        {where}
         
         ORDER BY s.tanggal DESC, s.waktu_mulai ASC
         LIMIT %s OFFSET %s
-    """, (limit, offset))
+    """
 
+    data_params = params.copy()
+    data_params.extend([limit, offset])
+
+    cursor.execute(data_query, tuple(data_params))
     data = cursor.fetchall()
 
     for item in data:
@@ -87,7 +156,7 @@ def get_data_seminar():
         "page": page,
         "limit": limit,
         "total": total,
-        "total_page": ceil(total / limit)
+        "total_page": max(1, ceil(total / limit))
     })
 
 #Untuk form edit data mahasiswa

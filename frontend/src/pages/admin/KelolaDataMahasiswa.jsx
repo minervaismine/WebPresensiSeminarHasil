@@ -137,6 +137,43 @@ function KelolaDataMahasiswa() {
             [name]: value
         }));
     };
+
+    const getPagination = () => {
+        const pages = [];
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage <= 4) {
+                pages.push(1,2,3,4,5, "...", totalPages);
+            }
+            else if (currentPage >= totalPages - 3) {
+                pages.push(
+                    1,
+                    "...",
+                    totalPage - 4,
+                    totalPage - 3,
+                    totalPage - 2,
+                    totalPage - 1,
+                    totalPage
+                );
+            }
+            else {
+                pages.push(
+                    1,
+                    "...",
+                    currentPage - 1,
+                    currentPage,
+                    currentPage + 1,
+                    "...",
+                    totalPages
+                );
+            }
+        }
+        return pages;
+    };
   
     return (
     <div className="page-menu-kelola-data-mahasiswa-layout">
@@ -244,17 +281,21 @@ function KelolaDataMahasiswa() {
             <p className="page-description-kelola-data-mahasiswa">Menampilkan {startData}-{endData} dari {totalData} data</p>
 
             <div className="pagination-kelola-data-mahasiswa">
-                <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
+                <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)}>
                     <Icon icon="ooui:previous-ltr" className="previous-icon-kelola-data-mahasiswa"/>
                 </button>
 
-                {[...Array(totalPages)].map((_, index) => (
-                    <button key={index + 1} className={currentPage === index + 1 ? "active" : ""} onClick={() => setCurrentPage(index + 1)}>
-                        {index + 1}
-                    </button>
-                ))}
+                {getPagination().map((item, index) =>
+                    item === "..." ? (
+                        <span key={index} className="pagination-dots-kelola-data-mahasiswa">...</span>
+                    ) : (
+                        <button key={index} className={currentPage === item ? "active" : ""} onClick={() => setCurrentPage(item)}>
+                            {item}
+                        </button>
+                    )
+                )}
 
-                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
+                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)}>
                     <Icon icon="ooui:next-ltr" className="next-icon-kelola-data-mahasiswa"/>
                 </button>
             </div>

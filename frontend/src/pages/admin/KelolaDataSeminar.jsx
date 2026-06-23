@@ -14,25 +14,71 @@ function KelolaDataSeminar() {
     const [limit] = useState(5);
     const [totalPage, setTotalPage] = useState(1);
     const [totalData, setTotalData] = useState(0);
+    // Search
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+    //Filter
+    const [showFilter, setShowFilter] = useState(false);
+    const [lokasiList, setLokasiList] = useState([]);
+    const [selectedLokasi, setSelectedLokasi] = useState("Semua");
+    const [selectedTanggal, setSelectedTanggal] = useState("Semua");
+    const [tanggalAwal, setTanggalAwal] = useState("");
+    const [tanggalAkhir, setTanggalAkhir] = useState("");
     // Modal
     const [showFormAddSeminar, setShowFormAddSeminar] = useState(false);
     const [showFormDeleteSeminar, setShowFormDeleteSeminar] = useState(false);
     const [showMapModal, setShowMapModal] = useState(false);
 
+    const startData = totalData === 0 ? 0 : (page - 1) * limit + 1;
+    const endData = totalData === 0 ? 0 : Math.min(page * limit, totalData);
+
     useEffect(() => {
         fetchSeminar();
-    }, [page]);
+    }, [page, debouncedSearch, selectedLokasi, selectedTanggal, tanggalAwal, tanggalAkhir]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [search]);
+
+    useEffect(() => {
+        fetchLokasi();
+    }, []);
 
     const fetchSeminar = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:5000/data-seminar?page=${page}&limit=${limit}`
+                "http://localhost:5000/data-seminar",
+                {
+                    params: {
+                        page,
+                        limit,
+                        search: debouncedSearch,
+                        lokasi: selectedLokasi,
+                        tanggal: selectedTanggal,
+                        tanggal_awal: tanggalAwal,
+                        tanggal_akhir: tanggalAkhir,
+                    }
+                }
             );
             setDataSeminar(response.data.data);
             setTotalPage(response.data.total_page);
             setTotalData(response.data.total);
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const fetchLokasi = async () => {
+        try{
+            const res = await axios.get("http://localhost:5000/filter/lokasi");
+            setLokasiList(res.data);
+        } catch(err) {
+            console.log(err);
         }
     };
 
@@ -70,6 +116,16 @@ function KelolaDataSeminar() {
         }
         return pages;
     };
+
+    const handleTanggalFilter = (value) => {
+        setSelectedTanggal(value);
+
+        //Menghapus input rentang tanggal
+        setTanggalAwal("");
+        setTanggalAkhir("");
+
+        setPage(1);
+    };
   
     return (
     <div className="page-menu-kelola-data-seminar-layout">
@@ -94,17 +150,76 @@ function KelolaDataSeminar() {
                 <form>
                     <div className="search-bar-kelola-data-seminar">
                         <Icon icon="radix-icons:magnifying-glass" className="search-seminar-icon"/>
-                        <input className="search-bar-input-kelola-data-seminar" type="search" placeholder="Cari mahasiswa atau NIM"></input>
+                        <input className="search-bar-input-kelola-data-seminar" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => setSearch(e.target.value)}></input>
                     </div>
                 </form>
 
-                <div className="filter-dropdown-kelola-data-seminar">
-                    <div className="filter-content-kelola-data-seminar">
-                        <Icon icon="mi:filter" className="filter-seminar-icon"/>
-                        <span>Filter</span>
-                    </div>
+                <div className="filter-dropdown-kelola-data-seminar-wrapper">
+                    <button type="button" className="filter-dropdown-kelola-data-seminar" onClick={() => setShowFilter(!showFilter)}>
+                        <div className="filter-content-kelola-data-seminar">
+                            <Icon icon="mi:filter" className="filter-seminar-icon"/>
+                            <span>Filter</span>
+                        </div>
 
-                    <Icon icon="icon-park-outline:down" className="dropdown-icon-kelola-data-seminar"/>
+                        <Icon icon="icon-park-outline:down" className="dropdown-icon-kelola-data-seminar"/>
+                    </button>
+
+                    {/* Filter Dropdown */}
+                    {showFilter && (
+                        <div className="filter-menu-kelola-data-seminar">
+                            <div className="filter-lokasi-seminar">
+                                <h3>Lokasi</h3>
+
+                                <label>
+                                    <input type="checkbox" checked={selectedLokasi === "Semua"} onChange={() => setSelectedLokasi("Semua")}></input>
+                                    Semua
+                                </label>
+
+                                {lokasiList.map((item) =>(
+                                    <label key={item.lokasi}>
+                                        <input type="checkbox" checked={selectedLokasi === item.lokasi} onChange={() => setSelectedLokasi(item.lokasi)}></input>
+                                        {item.lokasi}
+                                    </label>
+                                ))}
+                            </div>
+
+                            <div className="filter-tanggal-seminar">
+                                <h3>Tanggal</h3>
+
+                                <label>
+                                    <input type="checkbox" checked={selectedTanggal === "Semua"} onChange={() => handleTanggalFilter("Semua")}></input>
+                                    Semua
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" checked={selectedTanggal === "Hari Ini"} onChange={() => handleTanggalFilter("Hari Ini")}></input>
+                                    Hari Ini
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" checked={selectedTanggal === "Minggu Ini"} onChange={() => handleTanggalFilter("Minggu Ini")}></input>
+                                    Minggu Ini
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" checked={selectedTanggal === "Bulan Ini"} onChange={() => handleTanggalFilter("Bulan Ini")}></input>
+                                    Bulan Ini
+                                </label>
+
+                                <p className="judul-rentang-tanggal-seminar">Pilih Tanggal:</p>
+
+                                <div className="seminar-date-input">
+                                    <span>Dari</span>
+                                    <input type="date" value={tanggalAwal} onChange={(e)=>{setTanggalAwal(e.target.value); setSelectedTanggal("Semua");}}></input>
+                                </div>
+
+                                <div className="seminar-date-input">
+                                    <span>Sampai</span>
+                                    <input type="date" value={tanggalAkhir} onChange={(e)=>{setTanggalAkhir(e.target.value); setSelectedTanggal("Semua");}}></input>
+                                </div>
+                            </div>                            
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -192,7 +307,7 @@ function KelolaDataSeminar() {
         {/* Pagination */}
         <div className="pagination-wrapper-kelola-data-seminar">
             <p className="page-description-kelola-data-seminar">
-                Menampilkan {(page - 1) * limit + 1}-{Math.min(page * limit, totalData)} dari {totalData} data</p>
+                Menampilkan {startData}-{endData} dari {totalData} data</p>
 
             <div className="pagination-kelola-data-seminar">
                 <button disabled={page === 1} onClick={() => setPage((prev) => prev -1)}>
