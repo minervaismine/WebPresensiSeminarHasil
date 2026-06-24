@@ -643,6 +643,35 @@
   font-size: 14px;
 }
 
+.form-search-mahasiswa-wrapper{
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-mahasiswa-list {
+  position:absolute;
+  top:40px;
+  left: 0;
+  width:100%;
+  background:#FFFFFF;
+  border:2px solid #E9EEF6;
+  border-radius:10px;
+  padding:10px 25px 0 25px;
+  z-index:999;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.item-mahasiswa {
+  font-size: 14px;
+  text-align: left;
+}
+
+.item-mahasiswa p {
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
 .form-group-judul input,
 .form-group-pembimbing input,
 .form-group-penguji input {
@@ -681,10 +710,10 @@
   color: #1E293B;
 }
 
-.jadwal-row input {
+.datepicker-input-seminar {
   padding: 0 15px;
   height: 35px;
-  width: 350px;
+  width: 300px;
   border: 2px solid #DCE3EE;
   border-radius: 10px;
   font-size: 14px;
@@ -800,7 +829,7 @@
   text-align: center;
   font-size: 16px;
   color: #1E293B;
-  margin: 10px 0;
+  margin: 5px 0;
 }
 
 .btn-wrapper {

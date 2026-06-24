@@ -25,7 +25,58 @@ def format_waktu(waktu):
         return f"{jam:02d}.{menit:02d}"
     else:
         return waktu.strftime("%H.%M")
-    
+
+@app.route("/delete-seminar/<int:id_seminar>", methods=["DELETE"])
+def delete_seminar(id_seminar):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM seminar
+        WHERE id_seminar = %s
+    """, (id_seminar,))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "message": "Data seminar berhasil dihapus"
+    })
+
+#Untuk fitur search mahasiswa di form add
+@app.route("/search/mahasiswa", methods=["GET"])
+def search_mahasiswa():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    search = request.args.get("search", "").strip()
+
+    keyword = f"%{search}%"
+
+    cursor.execute("""
+        SELECT
+            id_user,
+            nama,
+            nim
+        FROM mahasiswa
+        WHERE
+            nama LIKE %s
+            OR nim LIKE %s
+        ORDER BY nama
+        LIMIT 10
+    """, (keyword, keyword))
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(data)
+
+#Menampilkan data lokasi untuk masuk ke filter
 @app.route("/filter/lokasi", methods=["GET"])
 def get_lokasi():
     conn = get_db_connection()
@@ -45,7 +96,56 @@ def get_lokasi():
 
     return jsonify(lokasi)
 
-#Menampilkan data seminar
+@app.route("/edit-seminar/<int:id_seminar>", methods=["PUT"])
+def edit_seminar(id_seminar):
+    data = request.json
+
+    conn = get_db_connection();
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE seminar
+        SET
+            id_mahasiswa = %s,
+            judul_penelitian = %s,
+            tanggal = %s,
+            waktu_mulai = %s,
+            waktu_selesai = %s,
+            lokasi = %s,
+            latitude = %s,
+            longitude = %s,
+            radius_meter = %s,
+            dosen_pembimbing = %s,
+            dosen_penguji_1 = %s,
+            dosen_penguji_2 = %s
+        WHERE id_seminar = %s
+    """, (
+        data["id_mahasiswa"],
+        data["judul_penelitian"],
+        data["tanggal"],
+        data["waktu_mulai"],
+        data["waktu_selesai"],
+        data["lokasi"],
+        data["latitude"],
+        data["longitude"],
+        data["radius_meter"],
+        data["dosen_pembimbing"],
+        data["dosen_penguji_1"],
+        data["dosen_penguji_2"],
+        id_seminar
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "message": "Data seminar berhasil diperbarui"
+    })
+
+#Menampilkan data seminar, fitur search, fitur sort dan fitur filter di halaman Kelola Data Seminar - Admin
 @app.route("/data-seminar", methods=["GET"])
 def get_data_seminar():
     conn = get_db_connection()
@@ -60,11 +160,15 @@ def get_data_seminar():
     search = request.args.get("search", "").strip()
     keyword = f"%{search}%"
 
-    #Filter Lokasi
+    #Filter
     lokasi = request.args.get("lokasi", "Semua")
     tanggal_filter = request.args.get("tanggal", "Semua")
     tanggal_awal = request.args.get("tanggal_awal")
     tanggal_akhir = request.args.get("tanggal_akhir")
+
+    #Sort
+    sort_by = request.args.get("sort_by", "tanggal")
+    sort_order = request.args.get("sort_order", "desc").upper()
 
     conditions =[
         "(m.nama LIKE %s OR m.nim LIKE %s)"
@@ -75,6 +179,17 @@ def get_data_seminar():
     if lokasi != "Semua":
         conditions.append("s.lokasi = %s")
         params.append(lokasi)
+
+    sort_columns = {
+        "nama": "m.nama",
+        "judul": "s.judul_penelitian",
+        "tanggal": "s.tanggal"
+    }
+
+    sort_column = sort_columns.get(sort_by, "s.tanggal")
+
+    if sort_order not in ["ASC", "DESC"]:
+        sort_order = "DESC"
 
     #Kondisi untuk filter tanggal
     if tanggal_filter == "Hari Ini":
@@ -130,7 +245,7 @@ def get_data_seminar():
         ON s.id_mahasiswa = m.id_user
         {where}
         
-        ORDER BY s.tanggal DESC, s.waktu_mulai ASC
+        ORDER BY {sort_column} {sort_order}, s.waktu_mulai ASC
         LIMIT %s OFFSET %s
     """
 
@@ -142,9 +257,23 @@ def get_data_seminar():
 
     for item in data:
         #Format tanggal
-        item["tanggal"] = item["tanggal"].strftime("%A, %d %B %Y")
+        tanggal_asli = item["tanggal"]
+
+        item["tanggal_asli"] = tanggal_asli.strftime("%Y-%m-%d")
+        item["tanggal"] = tanggal_asli.strftime("%A, %d %B %Y")
 
         #Format jam
+        def format_time_iso(td):
+            total_seconds = int(td.total_seconds())
+            jam = total_seconds // 3600
+            menit = (total_seconds % 3600) // 60
+            detik = total_seconds % 60
+
+            return f"{jam:02}:{menit:02}:{detik:02}"
+
+        item["waktu_mulai_asli"] = format_time_iso(item["waktu_mulai"])
+        item["waktu_selesai_asli"] = format_time_iso(item["waktu_selesai"])
+
         item["waktu_mulai"] = format_waktu(item["waktu_mulai"])
         item["waktu_selesai"] = format_waktu(item["waktu_selesai"])
 
@@ -158,6 +287,55 @@ def get_data_seminar():
         "total": total,
         "total_page": max(1, ceil(total / limit))
     })
+
+@app.route("/data-seminar", methods=["POST"])
+def tambah_seminar():
+    data = request.json
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO seminar(
+            id_mahasiswa,
+            id_user_admin,
+            judul_penelitian,
+            tanggal,
+            waktu_mulai,
+            waktu_selesai,
+            lokasi,
+            latitude,
+            longitude,
+            radius_meter,
+            dosen_pembimbing,
+            dosen_penguji_1,
+            dosen_penguji_2
+        )
+        VALUES(
+            %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
+        )
+    """,(
+        data["id_mahasiswa"],
+        data["id_user_admin"],
+        data["judul_penelitian"],
+        data["tanggal"],
+        data["waktu_mulai"],
+        data["waktu_selesai"],
+        data["lokasi"],
+        data["latitude"],
+        data["longitude"],
+        data["radius_meter"],
+        data["dosen_pembimbing"],
+        data["dosen_penguji_1"],
+        data["dosen_penguji_2"]
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({"message": "Berhasil"})
 
 #Untuk form edit data mahasiswa
 @app.route("/edit-mahasiswa/<int:id_user>", methods=["PUT"])

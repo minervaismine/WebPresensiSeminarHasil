@@ -3,6 +3,9 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
 import PilihLokasi from "../../components/PilihLokasi";
 
 function KelolaDataSeminar() {
@@ -24,8 +27,31 @@ function KelolaDataSeminar() {
     const [selectedTanggal, setSelectedTanggal] = useState("Semua");
     const [tanggalAwal, setTanggalAwal] = useState("");
     const [tanggalAkhir, setTanggalAkhir] = useState("");
-    // Modal
+    // Sort
+    const [sortBy, setSortBy] = useState("tanggal");
+    const [sortOrder, setSortOrder] = useState("desc");
+    // Search Mahasiswa - Form Add
+    const [searchMahasiswa, setSearchMahasiswa] = useState("");
+    const [mahasiswaList, setMahasiswaList] = useState([]);
+    const [selectedMahasiswa, setSelectedMahasiswa] = useState(null);
+    const [judulPenelitian, setJudulPenelitian] = useState("");
+    const [tanggal, setTanggal] = useState(null);
+    const [waktuMulai, setWaktuMulai] = useState(null);
+    const [waktuSelesai, setWaktuSelesai] = useState(null);
+    const [lokasi, setLokasi] = useState("");
+    const [latitude, setLatitude] = useState("");
+    const [longitude, setLongitude] = useState("");
+    const [radius, setRadius] = useState("");
+    const [dosenPembimbing, setDosenPembimbing] = useState("");
+    const [dosenPenguji1, setDosenPenguji1] = useState("");
+    const [dosenPenguji2, setDosenPenguji2] = useState("");
+    // Create
     const [showFormAddSeminar, setShowFormAddSeminar] = useState(false);
+    // Update
+    const [isEdit, setIsEdit] = useState(false);
+    const [selectedSeminar, setSelectedSeminar] = useState(null);
+    // Delete
+    const [selectedDeleteSeminar, setSelectedDeleteSeminar] = useState(null);
     const [showFormDeleteSeminar, setShowFormDeleteSeminar] = useState(false);
     const [showMapModal, setShowMapModal] = useState(false);
 
@@ -34,7 +60,7 @@ function KelolaDataSeminar() {
 
     useEffect(() => {
         fetchSeminar();
-    }, [page, debouncedSearch, selectedLokasi, selectedTanggal, tanggalAwal, tanggalAkhir]);
+    }, [page, debouncedSearch, selectedLokasi, selectedTanggal, tanggalAwal, tanggalAkhir, sortBy, sortOrder]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -62,6 +88,8 @@ function KelolaDataSeminar() {
                         tanggal: selectedTanggal,
                         tanggal_awal: tanggalAwal,
                         tanggal_akhir: tanggalAkhir,
+                        sort_by: sortBy,
+                        sort_order: sortOrder
                     }
                 }
             );
@@ -77,6 +105,29 @@ function KelolaDataSeminar() {
         try{
             const res = await axios.get("http://localhost:5000/filter/lokasi");
             setLokasiList(res.data);
+        } catch(err) {
+            console.log(err);
+        }
+    };
+
+    const fetchMahasiswa = async (keyword) => {
+        // Kalau input kosong, langsung sembunyikan dropdown
+        if (!keyword.trim()) {
+            setMahasiswaList([]);
+            return;
+        }
+
+        try {
+            const res = await axios.get(
+                "http://localhost:5000/search/mahasiswa",
+                {
+                    params: {
+                        search: keyword
+                    }
+                }
+            );
+
+            setMahasiswaList(res.data);
         } catch(err) {
             console.log(err);
         }
@@ -126,6 +177,154 @@ function KelolaDataSeminar() {
 
         setPage(1);
     };
+
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+        } else {
+            setSortBy(column);
+            setSortOrder("asc");
+        }
+        setPage(1);
+    };
+
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    const handleTambahSeminar = async () => {
+        if(!selectedMahasiswa) {
+            alert("Pilih mahasiswa terlebih dahulu");
+            return;
+        }
+
+        try {
+            await axios.post(
+                "http://localhost:5000/data-seminar",
+                {
+                    id_mahasiswa: selectedMahasiswa.id_user,
+                    id_user_admin: user.id_user,
+                    judul_penelitian: judulPenelitian,
+                    tanggal: format(tanggal, "yyyy-MM-dd"),
+                    waktu_mulai: format(waktuMulai, "HH:mm:ss"),
+                    waktu_selesai: format(waktuSelesai, "HH:mm:ss"),
+                    lokasi,
+                    latitude,
+                    longitude,
+                    radius_meter: radius,
+                    dosen_pembimbing: dosenPembimbing,
+                    dosen_penguji_1: dosenPenguji1,
+                    dosen_penguji_2: dosenPenguji2
+                }
+            );
+            alert("Berhasil ditambahkan");
+
+            setShowFormAddSeminar(false);
+            fetchSeminar();
+        } catch(err) {
+            console.log(err);
+        }
+    };
+
+    const handleUpdateSeminar = async () => {
+        if (!selectedSeminar) {
+            alert("Data seminar tidak ditemukan");
+            return;
+        }
+
+        try {
+            await axios.put(
+                `http://localhost:5000/edit-seminar/${selectedSeminar.id_seminar}`,
+                {
+                    id_mahasiswa: selectedMahasiswa?.id_user || selectedSeminar.id_user,
+                    judul_penelitian: judulPenelitian,
+                    tanggal: format(tanggal, "yyyy-MM-dd"),
+                    waktu_mulai: format(waktuMulai, "HH:mm:ss"),
+                    waktu_selesai: format(waktuSelesai, "HH:mm:ss"),
+                    lokasi,
+                    latitude,
+                    longitude,
+                    radius_meter: radius,
+                    dosen_pembimbing: dosenPembimbing,
+                    dosen_penguji_1: dosenPenguji1,
+                    dosen_penguji_2: dosenPenguji2
+                }
+            );
+            alert("Data seminar berhasil diperbarui");
+
+            setShowFormAddSeminar(false);
+            fetchSeminar();
+        } catch(err) {
+            console.log(err);
+        }
+    };
+
+    const handleEdit = (seminar) => {
+        setIsEdit(true);
+        setSelectedSeminar(seminar);
+
+        setSelectedMahasiswa({
+            id_user: seminar.id_user,
+            nama: seminar.nama,
+            nim: seminar.nim
+        });
+
+        setSearchMahasiswa(`${seminar.nama} (${seminar.nim})`);
+        setJudulPenelitian(seminar.judul_penelitian);
+        setTanggal(new Date(seminar.tanggal_asli));
+        setWaktuMulai(new Date(`1970-01-01T${seminar.waktu_mulai_asli}`));
+        setWaktuSelesai(new Date(`1970-01-01T${seminar.waktu_selesai_asli}`));
+        setLokasi(seminar.lokasi);
+        setLatitude(seminar.latitude);
+        setLongitude(seminar.longitude);
+        setRadius(seminar.radius_meter);
+        setDosenPembimbing(seminar.dosen_pembimbing);
+        setDosenPenguji1(seminar.dosen_penguji_1);
+        setDosenPenguji2(seminar.dosen_penguji_2);
+
+        setShowFormAddSeminar(true);
+    };
+
+    const closeForm = () => {
+        resetForm();
+        setShowFormAddSeminar(false);
+        setIsEdit(false);
+        setSelectedSeminar(null);
+    };
+
+    const resetForm = () => {
+        setIsEdit(false);
+        setSelectedSeminar(null);
+        setSelectedMahasiswa(null);
+        setSearchMahasiswa("");
+        setJudulPenelitian("");
+        setTanggal(null);
+        setWaktuMulai(null);
+        setWaktuSelesai(null);
+        setLokasi("");
+        setLatitude("");
+        setLongitude("");
+        setRadius("");
+        setDosenPembimbing("");
+        setDosenPenguji1("");
+        setDosenPenguji2("");
+    };
+
+    const handleDeleteSeminar = async () => {
+        if (!selectedDeleteSeminar) return;
+
+        try {
+            await axios.delete(
+                `http://localhost:5000/delete-seminar/${selectedDeleteSeminar.id_seminar}`
+            );
+            alert("Data seminar berhasil dihapus");
+
+            setShowFormDeleteSeminar(false);
+            setSelectedDeleteSeminar(null);
+
+            fetchSeminar();
+        } catch(err) {
+            console.log(err);
+        }
+    };
   
     return (
     <div className="page-menu-kelola-data-seminar-layout">
@@ -141,7 +340,7 @@ function KelolaDataSeminar() {
 
         {/* Tambah Seminar, Search Bar, Filter */}
         <div className="header-kelola-data-seminar-wrapper">
-             <button className="add-seminar-btn" onClick={() => setShowFormAddSeminar(true)}> 
+             <button className="add-seminar-btn" onClick={() => {resetForm(); setShowFormAddSeminar(true)}}> 
                 <Icon icon="mingcute:add-fill" className="add-seminar-icon"/>
                 <span>Tambah Seminar</span>
             </button>
@@ -231,19 +430,19 @@ function KelolaDataSeminar() {
                     <thead>
                         <tr>
                             <th className="th-nama">
-                                <button className="sort-thead-kelola-data-seminar">
+                                <button className="sort-thead-kelola-data-seminar" onClick={() => handleSort("nama")}>
                                     <span>Nama</span>
                                     <Icon icon="uil:sort" className="sort-seminar-icon"/>
                                 </button>
                             </th>
                             <th className="th-judul">
-                                <button className="sort-thead-kelola-data-seminar">
+                                <button className="sort-thead-kelola-data-seminar" onClick={() => handleSort("judul")}>
                                     <span>Judul</span>
                                     <Icon icon="uil:sort" className="sort-seminar-icon"/>
                                 </button>
                             </th>
                             <th className="th-jadwal">
-                                <button className="sort-thead-kelola-data-seminar">
+                                <button className="sort-thead-kelola-data-seminar" onClick={() => handleSort("tanggal")}>
                                     <span>Jadwal</span>
                                     <Icon icon="uil:sort" className="sort-seminar-icon"/>
                                 </button>
@@ -288,11 +487,11 @@ function KelolaDataSeminar() {
                                 </td>
                                 <td className="kolom-aksi">
                                     <div className="btn-aksi-wrapper-kelola-data-seminar">
-                                        <button className=" aksi-btn-kelola-data-seminar edit-btn">
+                                        <button className=" aksi-btn-kelola-data-seminar edit-btn" onClick={() => handleEdit(item)}>
                                             <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-seminar"/>
                                         </button>
 
-                                        <button className=" aksi-btn-kelola-data-seminar delete-btn" onClick={() => setShowFormDeleteSeminar(true)}>
+                                        <button className=" aksi-btn-kelola-data-seminar delete-btn" onClick={() => {setSelectedDeleteSeminar(item); setShowFormDeleteSeminar(true);}}>
                                             <Icon icon="tabler:trash-filled" className="aksi-icon-kelola-data-seminar"/>
                                         </button>
                                     </div>
@@ -336,31 +535,42 @@ function KelolaDataSeminar() {
 
         {/* Form Tambah Seminar */}
         {showFormAddSeminar && (
-            <div className="form-overlay" onClick={() => setShowFormAddSeminar(false)}>
+            <div className="form-overlay" onClick={closeForm}>
                 <div className="form-add-seminar" onClick={(e) => e.stopPropagation()}>
                     <div className="form-header-wrapper">
                         <div className="form-header">
                             <Icon icon="ph:student-fill" className="student-icon"/>
                             <span>Data Seminar</span>
                         </div>
-                        <button className="close-form-btn" onClick={() => setShowFormAddSeminar(false)}>
+                        <button className="close-form-btn" onClick={closeForm}>
                             <Icon icon="mingcute:close-fill" />
                         </button>
                     </div>
 
                     <div className="form-group-search-mahasiswa">
                         <label>Mahasiswa</label>
-                        <form>
+                        <div className="form-search-mahasiswa-wrapper">
                             <div className="search-bar-form">
                                 <Icon icon="radix-icons:magnifying-glass" className="search-form-icon"/>
-                                <input className="search-form-input" type="search" placeholder="Cari mahasiswa atau NIM"></input>
+                                <input className="search-form-input" type="search" placeholder="Cari mahasiswa atau NIM" value={searchMahasiswa} onChange={(e) => {const value = e.target.value; setSearchMahasiswa(value); fetchMahasiswa(value);}}></input>
                             </div>
-                        </form>
+                            {searchMahasiswa.trim() !== "" &&
+                                mahasiswaList.length > 0 && (
+                                    <div className="dropdown-mahasiswa-list">
+                                        {mahasiswaList.map((m) => (
+                                            <div key={m.id_user} className="item-mahasiswa" onClick={() => {setSelectedMahasiswa(m); setSearchMahasiswa(`${m.nama} (${m.nim})`); setMahasiswaList([]);}}>
+                                                <b>{m.nama}</b>
+                                                <p>{m.nim}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                        </div>
                     </div>
 
                     <div className="form-group-judul">
                         <label>Judul Penelitian</label>
-                        <input type="text" placeholder="Masukkan judul skripsi mahasiswa"/>
+                        <input type="text" placeholder="Masukkan judul skripsi mahasiswa" value={judulPenelitian} onChange={(e) => setJudulPenelitian(e.target.value)}/>
                     </div>
 
                     <div className="form-group-jadwal">
@@ -368,47 +578,47 @@ function KelolaDataSeminar() {
 
                         <div className="jadwal-row">
                             <label>Tanggal</label>
-                            <input type="text" placeholder="Pilih tanggal (DD/MM/YY)"/>
+                            <DatePicker selected={tanggal} onChange={(date) => setTanggal(date)} dateFormat="dd/MM/yyyy" placeholderText="Pilih tanggal (DD/MM/YY)" className="datepicker-input-seminar"/>
                         </div>
 
                         <div className="jadwal-row">
                             <label>Waktu Mulai</label>
-                            <input type="text" placeholder="Pilih jam mulai"/>
+                            <DatePicker selected={waktuMulai} onChange={(time) => setWaktuMulai (time)} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam mulai" className="datepicker-input-seminar"/>
                         </div>
 
                         <div className="jadwal-row">
                             <label>Waktu Selesai</label>
-                            <input type="text" placeholder="Pilih jam selesai"/>
+                            <DatePicker selected={waktuSelesai} onChange={(time) => setWaktuSelesai(time)} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam selesai" className="datepicker-input-seminar"/>
                         </div>
                     </div>
 
                     <div className="form-group-lokasi">
                         <label className="lokasi-title">Lokasi Seminar</label>
                         <div className="map-picker-wrapper">
-                            <input type="text" placeholder="Masukkan nama ruangan"/>
+                            <input type="text" placeholder="Masukkan nama ruangan" value={lokasi} onChange={(e) => setLokasi(e.target.value)}/>
                             <button className="map-picker-btn" onClick={() => setShowMapModal (true)}>Pilih di Peta</button>
                         </div>
                     </div>
 
                     <div className="form-group-pembimbing">
                         <label>Dosen Pembimbing</label>
-                        <input type="text" placeholder="Masukkan nama dosen pembimbing"/>
+                        <input type="text" placeholder="Masukkan nama dosen pembimbing" value={dosenPembimbing} onChange={(e) => setDosenPembimbing(e.target.value)}/>
                     </div>
 
                     <div className="form-group-penguji">
                         <label>Dosen Penguji</label>
 
                         <div className="penguji-input-wrapper">
-                            <input type="text" placeholder="Masukkan nama dosen penguji 1"/>
-                            <input type="text" placeholder="Masukkan nama dosen penguji 2"/>
+                            <input type="text" placeholder="Masukkan nama dosen penguji 1" value={dosenPenguji1} onChange={(e) => setDosenPenguji1(e.target.value)}/>
+                            <input type="text" placeholder="Masukkan nama dosen penguji 2" value={dosenPenguji2} onChange={(e) => setDosenPenguji2(e.target.value)}/>
                         </div>
                     </div>
 
                     <div className="add-btn-wrapper">
-                        <button className="add-btn-form">
-                        <Icon icon="mingcute:add-fill" className="add-icon-form"/>
-                        <span>Tambah Seminar</span>
-                    </button>
+                        <button className="add-btn-form" onClick={isEdit ? handleUpdateSeminar : handleTambahSeminar}>
+                            <Icon icon="mingcute:add-fill" className="add-icon-form"/>
+                            <span>{isEdit ? "Simpan Perubahan" : "Tambah Seminar"}</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -428,7 +638,7 @@ function KelolaDataSeminar() {
 
                     <div className="btn-wrapper">
                         <button className="modal-batal-btn" onClick={() => setShowFormDeleteSeminar(false)}>Batal</button>
-                        <button className="modal-delete-btn">Hapus</button>
+                        <button className="modal-delete-btn" onClick={handleDeleteSeminar}>Hapus</button>
                     </div>
                 </div>
             </div>
