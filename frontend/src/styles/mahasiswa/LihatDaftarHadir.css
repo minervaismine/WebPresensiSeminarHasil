@@ -1,10 +1,10 @@
 .page-lihat-daftar-hadir-layout {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   flex-direction: column;
 }
 
-.back-btn {
+.back-btn-lihat-daftar-hadir {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -18,12 +18,12 @@
   color: #1E293B;
 }
 
-.back-icon {
+.back-icon-lihat-daftar-hadir {
   font-size: 35px;
   color: #1E293B;
 }
 
-.navbar-menu-seminar-saya {
+.navbar-menu-lihat-daftar-hadir {
   height: 110px;
   background: #FFFFFF;
   display: flex;
@@ -32,7 +32,7 @@
   padding: 0 60px;
 }
 
-.navbar-menu-seminar-saya h1 {
+.navbar-menu-lihat-daftar-hadir h1 {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -43,7 +43,7 @@
   color: #1E293B;
 }
 
-.header-wrapper {
+.header-wrapper-lihat-daftar-hadir {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -51,16 +51,16 @@
   padding: 0 60px;
 }
 
-.page-title {
-  font-size: 40px;
+.page-title-lihat-daftar-hadir {
+  font-size: 38px;
   font-weight: 800;
   letter-spacing: 0.1px;
   color: #1E293B;
 }
 
-.search-bar {
+.search-bar-lihat-daftar-hadir {
   width: max-content;
-  height: 53px;
+  height: 48px;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -69,7 +69,7 @@
   transition: background 0.25s;
 }
 
-.search-bar-input {
+.search-bar-input-lihat-daftar-hadir {
   font-size: 18px;
   font-family: "Poppins", sans-serif;
   color: #1E293B;
@@ -80,17 +80,17 @@
   width: 400px;
 }
 
-.search-bar-input::-webkit-search-cancel-button {
+.search-bar-input-lihat-daftar-hadir::-webkit-search-cancel-button {
   margin-left: 20px;
   cursor: pointer;
 }
 
-.search-icon {
-  font-size: 30px;
+.search-daftar-hadir-icon {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.search-bar-input::placeholder {
+.search-bar-input-lihat-daftar-hadir::placeholder {
   color: #E9EEF6;
   font-size: 20px;
   font-weight: 500;
@@ -114,7 +114,7 @@
   text-align: center;
 }
 
-.sort-thead {
+.sort-thead-lihat-daftar-hadir {
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -129,7 +129,7 @@
   color: #1E293B;
 }
 
-.sort-icon {
+.sort-icon-lihat-daftar-hadir {
   font-size: 22px;
 }
 
@@ -150,20 +150,20 @@
   background-color: rgba(36, 99, 235, 0.22);
 }
 
-.kolom-nama {
+.kolom-nama-lihat-daftar-hadir {
   text-align: left;
   width: 50%;
 }
 
-.kolom-nim {
+.kolom-nim-lihat-daftar-hadir {
   width: 10%;
 }
 
-.kolom-waktu-scan {
+.kolom-waktu-scan-lihat-daftar-hadir {
   width: 25%;
 }
 
-.kolom-jarak-lokasi {
+.kolom-jarak-lokasi-lihat-daftar-hadir {
   width: 15%;
 }
 
@@ -176,33 +176,32 @@
   width: 70px;
 }
 
-.dekat {
+.status-lokasi.dekat {
   background-color: #DCFCE7;
 }
 
-.sedang {
+.status-lokasi.sedang {
   background-color: #FEF3C7;
 }
 
-.pagination-wrapper {
+.pagination-wrapper-lihat-daftar-hadir {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 5px 60px;
 }
 
-.page-description {
+.page-description-lihat-daftar-hadir {
   font-family: "Poppins", sans-serif;
   font-size: 13px;
   color: #1E293B;
-  margin: 0;
 }
 
-.pagination {
+.pagination-lihat-daftar-hadir {
   display: flex;
 }
 
-.pagination a {
+.pagination-lihat-daftar-hadir button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -213,31 +212,37 @@
   color: #1E293B;
   width: 35px;
   height: 35px;
+  background: #FFFFFF;
 }
 
-.pagination a:not(:first-child) {
+.pagination-lihat-daftar-hadir button:not(:first-child) {
   border-left: none;
 }
 
-.pagination a:first-child {
+.pagination-lihat-daftar-hadir button:first-child {
   border-radius: 7px 0 0 7px;
   width: 45px;
 }
 
-.pagination a:last-child {
+.pagination-lihat-daftar-hadir button:last-child {
   border-radius: 0 7px 7px 0;
   width: 45px;
 }
 
-.pagination .active {
+.pagination-lihat-daftar-hadir button.active {
   background-color: rgba(36, 99, 235, 0.22);
 }
 
-.pagination a:hover:not(.active) {
+.pagination-lihat-daftar-hadir button:hover:not(.active):not(:disabled) {
   background-color: #E9EEF6;
 }
 
-.previous-icon,
-.next-icon {
+.pagination-lihat-daftar-hadir button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.previous-icon-lihat-daftar-hadir,
+.next-icon-lihat-daftar-hadir {
   font-size: 18px;
 }

@@ -1,4 +1,4 @@
-import "../styles/Verifikator_VerifikasiPresensi.css";
+import "../../styles/verifikator/VerifikasiPresensi.css";
 import { Icon } from '@iconify/react';
 
 function VerifikasiPresensi() {

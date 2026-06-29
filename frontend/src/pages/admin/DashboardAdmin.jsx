@@ -33,6 +33,17 @@ function Dashboard() {
 
                     <div className="menu-card-dashboard-admin">
                         <div className="card-header-dashboard-admin">
+                            <Icon icon="tdesign:location-filled" className="location-dashboard-admin-icon" />
+                            <span>Kelola Data Lokasi</span>
+                        </div>
+                        <div className="card-content-dashboard-admin">
+                            <p>Kelola data dan informasi lokasi seminar</p>
+                        </div>
+                        <button className="detail-btn" onClick={() => navigate("/kelola-data-lokasi")}>Lihat Detail</button>
+                    </div>
+
+                    <div className="menu-card-dashboard-admin">
+                        <div className="card-header-dashboard-admin">
                             <Icon icon="mingcute:clipboard-fill" className="clipboard-dashboard-admin-icon" />
                             <span>Kelola Data Seminar</span>
                         </div>

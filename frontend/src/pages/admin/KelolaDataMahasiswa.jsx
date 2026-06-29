@@ -153,11 +153,11 @@ function KelolaDataMahasiswa() {
                 pages.push(
                     1,
                     "...",
-                    totalPage - 4,
-                    totalPage - 3,
-                    totalPage - 2,
-                    totalPage - 1,
-                    totalPage
+                    totalPages - 4,
+                    totalPages - 3,
+                    totalPages - 2,
+                    totalPages - 1,
+                    totalPages
                 );
             }
             else {
@@ -187,7 +187,7 @@ function KelolaDataMahasiswa() {
             <h1>KELOLA DATA MAHASISWA</h1>
         </nav>
 
-        {/* Export, Search Bar, Filter */}
+        {/* Add, Search Bar, Filter */}
         <div className="header-kelola-data-mahasiswa-wrapper">
             <div className="search-filter-kelola-data-mahasiswa">
                 <form>

@@ -10,8 +10,11 @@ import PresensiGagalRole from "../pages/mahasiswa/PresensiGagal_Role";
 import Presensi from "../pages/mahasiswa/Presensi";
 import RiwayatPresensi from "../pages/mahasiswa/RiwayatPresensi";
 import DashboardVerifikator from "../pages/verifikator/DashboardVerifikator";
+import VerifikasiPresensi from "../pages/verifikator/VerifikasiPresensi";
+import RiwayatVerifikasi from "../pages/verifikator/RiwayatVerifikasi";
 import DashboardAdmin from "../pages/admin/DashboardAdmin";
 import KelolaDataMahasiswa from "../pages/admin/KelolaDataMahasiswa";
+import KelolaDataLokasi from "../pages/admin/KelolaDataLokasi";
 import KelolaDataSeminar from "../pages/admin/KelolaDataSeminar";
 import LaporanPresensi from "../pages/admin/LaporanPresensi";
 
@@ -28,17 +31,20 @@ function AppRoutes() {
       <Route path="/presensi-berhasil" element={<PresensiBerhasil />}/>
       <Route path="/presensi-gagal" element={<PresensiGagal />}/>
       <Route path="/presensi-gagal-role" element={<PresensiGagalRole />}/>
-      <Route path="/lihat-daftar-hadir" element={<LihatDaftarHadir />}/>
+      <Route path="/lihat-daftar-hadir/:idSeminar" element={<LihatDaftarHadir />}/>
       <Route path="/presensi" element={<Presensi />}/>
       <Route path="/riwayat-presensi" element={<RiwayatPresensi />}/>
       
       {/* Verifikator */}
       <Route path="/dashboard-verifikator" element={<DashboardVerifikator />}/>
+      <Route path="/verifikasi-presensi" element={<VerifikasiPresensi />}/>
+      <Route path="/riwayat-verifikasi" element={<RiwayatVerifikasi />}/>
       
       {/* Admin */}
       <Route path="/dashboard-admin" element={<DashboardAdmin />}/>
       <Route path="/kelola-data-mahasiswa" element={<KelolaDataMahasiswa />}/>
       <Route path="/kelola-data-seminar" element={<KelolaDataSeminar />}/>
+      <Route path="/kelola-data-lokasi" element={<KelolaDataLokasi />}/>
       <Route path="/laporan-presensi" element={<LaporanPresensi />}/>
     </Routes>
   );

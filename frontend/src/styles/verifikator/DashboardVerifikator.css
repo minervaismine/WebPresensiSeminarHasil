@@ -1,15 +1,15 @@
-.dashboard-layout {
+.dashboard-verifikator-layout {
   display: flex;
   height: 100vh;
   flex-direction: column;
 }
 
-.dashboard-container {
+.dashboard-verifikator-container {
   background: #E9EEF6;
   flex: 1;
 }
 
-.dashboard-title {
+.dashboard-verifikator-title {
     margin-top: 60px;
     margin-left: 60px;
     margin-right: 60px;
@@ -20,7 +20,7 @@
     letter-spacing: 0.1px;
 }
 
-.dashboard-description {
+.dashboard-verifikator-description {
     margin-top: 20px;
     margin-left: 60px;
     margin-right: 60px;
@@ -30,7 +30,7 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.menu-title {
+.menu-title-dashboard-verifikator {
     margin-top: 50px;
     margin-left: 60px;
     margin-right: 60px;
@@ -41,7 +41,7 @@
     letter-spacing: 0.1px;
 }
 
-.card-container {
+.card-container-dashboard-verifikator {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 50px;
@@ -50,7 +50,7 @@
     margin-top:20px;
 }
 
-.menu-card {
+.menu-card-dashboard-verifikator {
     background: #FFFFFF;
     border-radius: 20px;
     padding: 25px;
@@ -61,12 +61,12 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.menu-card:hover {
+.menu-card-dashboard-verifikator:hover {
     transform: translateY(-5px);
     box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-.card-header {
+.card-header-dashboard-verifikator {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -76,17 +76,17 @@
     color: #1E293B;
 }
 
-.check-icon {
+.check-icon-dashboard-verifikator {
     font-size: 35px;
     color: #2463EB;
 }
 
-.history-icon {
+.history-icon-dashboard-verifikator {
     font-size: 35px;
     color: #16A34A;
 }
 
-.card-content {
+.card-content-dashboard-verifikator {
     margin-top: 20px;
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
@@ -94,7 +94,7 @@
     text-align: justify;
 }
 
-.detail-btn {
+.detail-btn-dashboard-verifikator {
     margin-top: auto;
     border: none;
     font-family: 'Poppins', sans-serif;
@@ -106,6 +106,6 @@
     cursor: pointer;
 }
 
-.detail-btn:hover {
+.detail-btn-dashboard-verifikator:hover {
   background: #1D4ED8;
 }

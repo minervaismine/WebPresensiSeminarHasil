@@ -1,6 +1,6 @@
 .dashboard-admin-layout {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   flex-direction: column;
 }
 
@@ -48,6 +48,7 @@
     margin-left:60px;
     margin-right: 150px;
     margin-top:20px;
+    margin-bottom: 20px;
 }
 
 .menu-card-dashboard-admin {
@@ -81,9 +82,14 @@
     color: #2463EB;
 }
 
+.location-dashboard-admin-icon {
+    font-size: 35px;
+    color:#DC2626;
+}
+
 .clipboard-dashboard-admin-icon {
     font-size: 35px;
-    color: #DC2626;
+    color: #F7C80D;
 }
 
 .history-dashboard-admin-icon {

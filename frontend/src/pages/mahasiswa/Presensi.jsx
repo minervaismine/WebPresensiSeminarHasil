@@ -9,6 +9,7 @@ function Presensi() {
 
     const [cameraStarted, setCameraStarted] = useState(false);
     const scannerRef = useRef(null);
+    const isScanningRef = useRef(false);
 
     const startCamera = async () => {
         setCameraStarted(true);
@@ -27,6 +28,29 @@ function Presensi() {
         };
     }, []);
 
+    const getCurrentLocation = () => {
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject("Geolocation tidak didukung");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    resolve({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    });
+                },
+                (err) => reject(err),
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000
+                }
+            );
+        });
+    };
+
     useEffect(() => {
         if (!cameraStarted) return;
 
@@ -42,8 +66,16 @@ function Presensi() {
                 qrbox: 250
             },
             async (decodedText) => {
+                if (isScanningRef.current) return;
+                isScanningRef.current = true;
+
                 try {
+                    await html5QrCode.stop();
+                    scannerRef.current = null;
+                    setCameraStarted(false);
+
                     const token = localStorage.getItem("token");
+                    const location = await getCurrentLocation();
 
                     const response = await fetch (
                         "http://127.0.0.1:5000/scan-qr",
@@ -54,23 +86,15 @@ function Presensi() {
                                 Authorization: `Bearer ${token}`
                             },
                             body: JSON.stringify({
-                                qr_code: decodedText
+                                qr_code: decodedText,
+                                latitude: location.latitude,
+                                longitude: location.longitude
                             })
                         }
                     );
 
                     const result = await response.json();
                     console.log(result);
-
-                    //Menghentikan scanner agar tidak melakukan scan berkali-kali
-                    try {
-                        await html5QrCode.stop();
-                    } catch (e) {
-                        console.log(e);
-                    } finally {
-                        scannerRef.current = null;
-                        setCameraStarted(false);
-                    }
 
                     if (result.success) {
                         navigate("/presensi-berhasil", {
@@ -107,6 +131,10 @@ function Presensi() {
                             code: "SERVER_ERROR"
                         }
                     });
+                } finally {
+                    scannerRef.current = null;
+                    setCameraStarted(false);
+                    isScanningRef.current = false;
                 }
             },
             (error) => {

@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from config import get_db_connection
 from datetime import datetime, timedelta
-from math import ceil
+from math import ceil, radians, sin, cos, sqrt, atan2
 import jwt
 import locale
 
@@ -26,6 +26,339 @@ def format_waktu(waktu):
     else:
         return waktu.strftime("%H.%M")
 
+def hitung_jarak(lat1, lon1, lat2, lon2):
+    R = 6371000 #meter
+
+    dlat = radians(lat2 - lat1)
+    dlon = radians(lon2 - lon1)
+
+    a = (sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2)
+
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    return R * c
+    
+#Menampilkan data daftar hadir, fitur search dan fitur sort Lihat Daftar Hadir - Mahasiswa Penyelenggara Seminar    
+@app.route("/daftar-hadir/<int:id_seminar>", methods=["GET"])
+def daftar_hadir(id_seminar):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Pagination
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+    offset = (page - 1) * limit
+
+    #Parameter sorting
+    sort_by = request.args.get("sort_by", "waktu_scan")
+    sort_order = request.args.get("sort_order", "desc").lower()
+
+    #Search
+    search = request.args.get("search", "").strip()
+
+    #Validasi agar aman dari SQL Injection
+    allowed_columns = {"nama":"m.nama", "nim":"m.nim", "waktu_scan":"p.waktu_scan"}
+    allowed_orders = ["asc", "desc"]
+
+    if sort_by not in allowed_columns:
+        sort_by = "waktu_scan"
+    
+    if sort_order not in allowed_orders:
+        sort_order = "desc"
+
+    #Hitung total data
+    count_query = """
+        SELECT COUNT(*) AS total
+        FROM presensi p
+        JOIN mahasiswa m
+            ON p.id_mahasiswa = m.id_user
+        WHERE p.id_seminar = %s
+    """
+
+    count_params = [id_seminar]
+
+    if search:
+        count_query += """
+        AND (
+            m.nama LIKE %s
+            OR m.nim LIKE %s
+        )
+        """
+        keyword = f"%{search}%"
+        count_params.extend([keyword, keyword])
+
+    cursor.execute(count_query, tuple(count_params))
+    total_data = cursor.fetchone()["total"]
+
+    #Ambil data sesuai halaman
+    data_query = f"""
+        SELECT
+            p.id_presensi,
+            p.waktu_scan,
+            p.latitude,
+            p.longitude,
+            p.status_verifikasi,
+            
+            m.nama,
+            m.nim,
+                   
+            l.latitude AS lokasi_latitude,
+            l.longitude AS lokasi_longitude
+        FROM presensi p
+        JOIN mahasiswa m
+            ON p.id_mahasiswa = m.id_user
+        JOIN seminar s
+            ON p.id_seminar = s.id_seminar
+        JOIN lokasi_seminar l
+            ON s.id_lokasi = l.id_lokasi
+        WHERE p.id_seminar = %s
+    """
+
+    data_params = [id_seminar]
+
+    if search:
+        data_query += """
+        AND (
+            m.nama LIKE %s
+            OR m.nim LIKE %s
+        )
+        """
+        keyword = f"%{search}%"
+        data_params.extend([keyword, keyword])
+
+    data_query += f"""
+        ORDER BY {allowed_columns[sort_by]} {sort_order.upper()}
+        LIMIT %s OFFSET %s
+    """
+    
+    data_params.extend([limit, offset])
+
+    cursor.execute(data_query, tuple(data_params))
+    data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    #Menghitung jarak lokasi peserta saat scan
+    for item in data:
+        jarak = hitung_jarak(
+            float(item["latitude"]),
+            float(item["longitude"]),
+            float(item["lokasi_latitude"]),
+            float(item["lokasi_longitude"])
+        )
+
+        item["jarak"] = round(jarak)
+
+        if jarak <= 15:
+            item["status_lokasi"] = "dekat"
+        else:
+            item["status_lokasi"] = "sedang"
+
+        #Format waktu saat peserta scan
+        item["waktu_scan"] = item["waktu_scan"].strftime("%d %B %Y, %H:%M")
+
+    return jsonify({
+        "data": data,
+        "pagination": {
+            "page": page,
+            "total": total_data,
+            "total_pages": ceil(total_data / limit)
+        }
+    })
+    
+#Untuk menghapus data lokasi dari tabel
+@app.route("/lokasi-seminar/<int:id_lokasi>", methods=["DELETE"])
+def delete_lokasi(id_lokasi):
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Melakukan pengecekan apakah lokasi telah dipakai untuk seminar atau tidak
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM seminar
+        WHERE id_lokasi = %s
+    """, (id_lokasi,))
+
+    jumlah = cursor.fetchone()["total"]
+
+    # Jika masih digunakan, batalkan penghapusan
+    if jumlah > 0:
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "message": "Lokasi masih digunakan oleh seminar.",
+            "used": jumlah
+        }), 400
+
+    # Jika tidak digunakan, hapus lokasi
+    cursor.execute("""
+        DELETE FROM lokasi_seminar
+        WHERE id_lokasi = %s
+    """, (id_lokasi,))
+
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "message": "Lokasi tidak ditemukan"
+        }), 404
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "message": "Lokasi berhasil dihapus"
+    })
+
+#Untuk form edit data lokasi
+@app.route("/lokasi-seminar/<int:id_lokasi>", methods=["PUT"])
+def update_lokasi(id_lokasi):
+
+    data = request.get_json()
+
+    nama_lokasi = data.get("nama_lokasi")
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
+    radius = data.get("radius")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE lokasi_seminar
+        SET
+            nama_lokasi = %s,
+            latitude = %s,
+            longitude = %s,
+            radius = %s
+        WHERE id_lokasi = %s
+    """, (
+        nama_lokasi,
+        latitude,
+        longitude,
+        radius,
+        id_lokasi
+    ))
+
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "message": "Lokasi tidak ditemukan"
+        }), 404
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "message": "Lokasi berhasil diperbarui"
+    })
+
+#Menampilkan data lokasi seminar, fitur search dan fitur sort di halaman Kelola Data Lokasi - Admin
+@app.route("/lokasi-seminar", methods=["GET"])
+def get_lokasi_seminar():
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Pagination
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+    offset = (page - 1) * limit
+
+    #Search
+    search = request.args.get("search", "").strip()
+    keyword = f"%{search}%"
+
+    #Sort
+    sort = request.args.get("sort", "asc").lower()
+
+    if sort not in ["asc", "desc"]:
+        sort = "asc"
+
+    #Hitung total data
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM lokasi_seminar
+        WHERE nama_lokasi LIKE %s
+    """, (keyword,))
+
+    total = cursor.fetchone()["total"]
+
+    #Ambil data sesuai halaman
+    cursor.execute(f"""
+        SELECT
+            id_lokasi,
+            nama_lokasi,
+            latitude,
+            longitude,
+            radius
+        FROM lokasi_seminar
+        WHERE nama_lokasi LIKE %s
+        ORDER BY nama_lokasi {sort.upper()}
+        LIMIT %s OFFSET %s
+    """, (keyword, limit, offset))
+
+    lokasi = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "data": lokasi,
+        "page": page,
+        "limit": limit,
+        "total": total,
+        "total_page": ceil(total / limit)
+    })
+
+#Untuk form tambah lokasi
+@app.route("/lokasi-seminar", methods=["POST"])
+def add_lokasi():
+
+    data = request.get_json()
+
+    nama_lokasi = data.get("nama_lokasi")
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
+    radius = data.get("radius")
+
+    if not nama_lokasi or latitude is None or longitude is None:
+        return jsonify({"message": "Data belum lengkap"}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO lokasi_seminar
+        (nama_lokasi, latitude, longitude, radius)
+        VALUES (%s, %s, %s, %s)
+    """, (
+        nama_lokasi,
+        latitude,
+        longitude,
+        radius
+    ))
+
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "message": "Lokasi berhasil ditambahkan"
+    }), 201
+
+#Untuk menghapus data seminar dari tabel
 @app.route("/delete-seminar/<int:id_seminar>", methods=["DELETE"])
 def delete_seminar(id_seminar):
     conn = get_db_connection()
@@ -78,24 +411,28 @@ def search_mahasiswa():
 
 #Menampilkan data lokasi untuk masuk ke filter
 @app.route("/filter/lokasi", methods=["GET"])
-def get_lokasi():
+def get_filter_lokasi():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT DISTINCT lokasi
-        FROM seminar
-        WHERE lokasi IS NOT NULL
-        ORDER BY lokasi ASC
+        SELECT
+            id_lokasi,
+            nama_lokasi,
+            latitude,
+            longitude
+        FROM lokasi_seminar
+        ORDER BY nama_lokasi
     """)
 
-    lokasi = cursor.fetchall()
+    data = cursor.fetchall()
 
     cursor.close()
     conn.close()
 
-    return jsonify(lokasi)
+    return jsonify(data)
 
+#Untuk form edit data seminar
 @app.route("/edit-seminar/<int:id_seminar>", methods=["PUT"])
 def edit_seminar(id_seminar):
     data = request.json
@@ -107,28 +444,22 @@ def edit_seminar(id_seminar):
         UPDATE seminar
         SET
             id_mahasiswa = %s,
+            id_lokasi = %s,
             judul_penelitian = %s,
             tanggal = %s,
             waktu_mulai = %s,
             waktu_selesai = %s,
-            lokasi = %s,
-            latitude = %s,
-            longitude = %s,
-            radius_meter = %s,
             dosen_pembimbing = %s,
             dosen_penguji_1 = %s,
             dosen_penguji_2 = %s
         WHERE id_seminar = %s
     """, (
         data["id_mahasiswa"],
+        data["id_lokasi"],
         data["judul_penelitian"],
         data["tanggal"],
         data["waktu_mulai"],
         data["waktu_selesai"],
-        data["lokasi"],
-        data["latitude"],
-        data["longitude"],
-        data["radius_meter"],
         data["dosen_pembimbing"],
         data["dosen_penguji_1"],
         data["dosen_penguji_2"],
@@ -177,7 +508,7 @@ def get_data_seminar():
     params = [keyword, keyword]
 
     if lokasi != "Semua":
-        conditions.append("s.lokasi = %s")
+        conditions.append("l.nama_lokasi = %s")
         params.append(lokasi)
 
     sort_columns = {
@@ -213,7 +544,9 @@ def get_data_seminar():
         SELECT COUNT(*) AS total
         FROM seminar s
         JOIN mahasiswa m
-        ON s.id_mahasiswa = m.id_user
+            ON s.id_mahasiswa = m.id_user
+        LEFT JOIN lokasi_seminar l
+            ON s.id_lokasi = l.id_lokasi
         {where}
     """
 
@@ -224,17 +557,19 @@ def get_data_seminar():
     data_query = f"""
         SELECT
             s.id_seminar,
+            s.id_lokasi,
             s.judul_penelitian,
             s.tanggal,
             s.waktu_mulai,
             s.waktu_selesai,
-            s.lokasi,
-            s.latitude,
-            s.longitude,
-            s.radius_meter,
             s.dosen_pembimbing,
             s.dosen_penguji_1,
             s.dosen_penguji_2,
+
+            l.nama_lokasi,
+            l.latitude,
+            l.longitude,
+            l.radius,
                    
             m.id_user,
             m.nama,
@@ -242,7 +577,9 @@ def get_data_seminar():
             m.angkatan
         FROM seminar s
         JOIN mahasiswa m
-        ON s.id_mahasiswa = m.id_user
+            ON s.id_mahasiswa = m.id_user
+        LEFT JOIN lokasi_seminar l
+            ON s.id_lokasi = l.id_lokasi
         {where}
         
         ORDER BY {sort_column} {sort_order}, s.waktu_mulai ASC
@@ -288,6 +625,7 @@ def get_data_seminar():
         "total_page": max(1, ceil(total / limit))
     })
 
+#Untuk form tambah seminar
 @app.route("/data-seminar", methods=["POST"])
 def tambah_seminar():
     data = request.json
@@ -299,32 +637,26 @@ def tambah_seminar():
         INSERT INTO seminar(
             id_mahasiswa,
             id_user_admin,
+            id_lokasi,
             judul_penelitian,
             tanggal,
             waktu_mulai,
             waktu_selesai,
-            lokasi,
-            latitude,
-            longitude,
-            radius_meter,
             dosen_pembimbing,
             dosen_penguji_1,
             dosen_penguji_2
         )
         VALUES(
-            %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
+            %s,%s,%s,%s,%s,%s,%s,%s,%s,%s
         )
     """,(
         data["id_mahasiswa"],
         data["id_user_admin"],
+        data["id_lokasi"],
         data["judul_penelitian"],
         data["tanggal"],
         data["waktu_mulai"],
         data["waktu_selesai"],
-        data["lokasi"],
-        data["latitude"],
-        data["longitude"],
-        data["radius_meter"],
         data["dosen_pembimbing"],
         data["dosen_penguji_1"],
         data["dosen_penguji_2"]
@@ -435,6 +767,7 @@ def get_data_mahasiswa():
     limit = int(request.args.get("limit", 10))
     offset = (page - 1) * limit
 
+    #Search
     search = request.args.get("search", "").strip()
     keyword = f"%{search}%"
 
@@ -721,10 +1054,13 @@ def scan_qr():
     
     token = token.replace("Bearer ", "")
 
-    #Mengambil data QR Code
+    #Mengambil data QR Code dari frontend
     data = request.get_json()
 
     qr_token = data.get("qr_code")
+
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
 
     if not qr_token:
         return jsonify({
@@ -757,7 +1093,7 @@ def scan_qr():
 
         #Mengecek QR di database
         conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(dictionary=True, buffered=True)
 
         cursor.execute("""
             SELECT *
@@ -787,6 +1123,19 @@ def scan_qr():
                 "code": "QR_NOT_ACTIVE",
                 "message": "QR Code belum diaktifkan"
             }), 400
+        
+        cursor.execute("""
+            SELECT
+                l.latitude,
+                l.longitude,
+                l.radius
+            FROM seminar s
+            JOIN lokasi_seminar l
+                ON s.id_lokasi = l.id_lokasi
+            WHERE s.id_seminar = %s
+        """, (qr_payload["id_seminar"],))
+
+        lokasi = cursor.fetchone()
         
         #Mengecek apakah penyelenggara mencoba scan qr seminar miliknya sendiri
         if peserta["id_user"] == qr_payload["id_user"]:
@@ -834,6 +1183,34 @@ def scan_qr():
                 "message": "Anda sudah melakukan presensi"
             }), 400
         
+        if lokasi is None:
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "message": "Lokasi seminar tidak ditemukan"
+            }), 404
+        
+        jarak = hitung_jarak(
+            float(latitude),
+            float(longitude),
+            float(lokasi["latitude"]),
+            float(lokasi["longitude"])
+        )
+
+        if jarak > lokasi["radius"]:
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+                "success": False,
+                "code": "OUT_OF_RADIUS",
+                "message": "Anda berada di luar area seminar",
+                "distance": round(jarak, 2),
+                "radius": lokasi["radius"]
+            }), 400
+        
         #Menyimpan data presensi
         cursor.execute("""
             INSERT INTO presensi(
@@ -848,8 +1225,8 @@ def scan_qr():
             peserta["id_user"],
             qr_payload["id_seminar"],
             now,
-            None,
-            None
+            latitude,
+            longitude
         ))
 
         conn.commit()
@@ -880,7 +1257,7 @@ def scan_qr():
             "message": "QR Code tidak valid"
         }), 401
     
-#Menghubungkan data nama di halaman seminar saya (penyelenggara)
+#Menghubungkan data di halaman seminar saya (Penyelenggara)
 @app.route("/detail-seminar/<int:id_user>")
 def detail_seminar(id_user):
     conn = get_db_connection()
@@ -891,10 +1268,16 @@ def detail_seminar(id_user):
             s.*,
             m.nama,
             m.nim,
-            m.angkatan
+            m.angkatan,
+            l.nama_lokasi,
+            l.latitude,
+            l.longitude,
+            l.radius
         FROM seminar s
         JOIN mahasiswa m
             ON s.id_mahasiswa = m.id_user
+        LEFT JOIN lokasi_seminar l
+            ON s.id_lokasi = l.id_lokasi
         WHERE s.id_mahasiswa = %s
     """
 

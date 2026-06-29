@@ -245,7 +245,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
                             <div className="informasi-jadwal-seminar">
                                 <Icon icon="weui:location-filled" className="informasi-icon"/>
-                                <span>{seminarData.lokasi}</span>
+                                <span>{seminarData.nama_lokasi || "Lokasi belum ditentukan"}</span>
                             </div>
                         </div>
 
@@ -266,7 +266,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     </div>
 
                     <div className="actions-btn-menu-seminar-saya">
-                        <button className="lihat-daftar-hadir-btn" onClick={() => navigate("/lihat-daftar-hadir")}>Lihat Daftar Hadir</button>
+                        <button className="lihat-daftar-hadir-btn" onClick={() => navigate(`/lihat-daftar-hadir/${seminarData.id_seminar}`)}>Lihat Daftar Hadir</button>
                         <button className="generate-qr-code-btn" onClick={generateQRCode} disabled={showQRModal}>Generate QR Code</button>
                     </div>
                 </div>

@@ -6,7 +6,7 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
-import PilihLokasi from "../../components/PilihLokasi";
+import DetailLokasi from "../../components/DetailLokasi";
 
 function KelolaDataSeminar() {
     const navigate = useNavigate();
@@ -25,8 +25,8 @@ function KelolaDataSeminar() {
     const [lokasiList, setLokasiList] = useState([]);
     const [selectedLokasi, setSelectedLokasi] = useState("Semua");
     const [selectedTanggal, setSelectedTanggal] = useState("Semua");
-    const [tanggalAwal, setTanggalAwal] = useState("");
-    const [tanggalAkhir, setTanggalAkhir] = useState("");
+    const [tanggalAwal, setTanggalAwal] = useState(null);
+    const [tanggalAkhir, setTanggalAkhir] = useState(null);
     // Sort
     const [sortBy, setSortBy] = useState("tanggal");
     const [sortOrder, setSortOrder] = useState("desc");
@@ -38,10 +38,7 @@ function KelolaDataSeminar() {
     const [tanggal, setTanggal] = useState(null);
     const [waktuMulai, setWaktuMulai] = useState(null);
     const [waktuSelesai, setWaktuSelesai] = useState(null);
-    const [lokasi, setLokasi] = useState("");
-    const [latitude, setLatitude] = useState("");
-    const [longitude, setLongitude] = useState("");
-    const [radius, setRadius] = useState("");
+    const [idLokasi, setIdLokasi] = useState("");
     const [dosenPembimbing, setDosenPembimbing] = useState("");
     const [dosenPenguji1, setDosenPenguji1] = useState("");
     const [dosenPenguji2, setDosenPenguji2] = useState("");
@@ -53,7 +50,9 @@ function KelolaDataSeminar() {
     // Delete
     const [selectedDeleteSeminar, setSelectedDeleteSeminar] = useState(null);
     const [showFormDeleteSeminar, setShowFormDeleteSeminar] = useState(false);
+    // Map Picker
     const [showMapModal, setShowMapModal] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState(null);
 
     const startData = totalData === 0 ? 0 : (page - 1) * limit + 1;
     const endData = totalData === 0 ? 0 : Math.min(page * limit, totalData);
@@ -75,6 +74,19 @@ function KelolaDataSeminar() {
         fetchLokasi();
     }, []);
 
+    useEffect(() => {
+        if (!idLokasi) {
+            setSelectedLocation(null);
+            return;
+        }
+
+        const lokasi = lokasiList.find(
+            item => item.id_lokasi === Number(idLokasi)
+        );
+
+        setSelectedLocation(lokasi || null);
+    }, [idLokasi, lokasiList]);
+
     const fetchSeminar = async () => {
         try {
             const response = await axios.get(
@@ -86,8 +98,8 @@ function KelolaDataSeminar() {
                         search: debouncedSearch,
                         lokasi: selectedLokasi,
                         tanggal: selectedTanggal,
-                        tanggal_awal: tanggalAwal,
-                        tanggal_akhir: tanggalAkhir,
+                        tanggal_awal: tanggalAwal ? format(tanggalAwal, "yyyy-MM-dd") : "",
+                        tanggal_akhir: tanggalAkhir ? format(tanggalAkhir, "yyyy-MM-dd") : "",
                         sort_by: sortBy,
                         sort_order: sortOrder
                     }
@@ -202,20 +214,17 @@ function KelolaDataSeminar() {
                 {
                     id_mahasiswa: selectedMahasiswa.id_user,
                     id_user_admin: user.id_user,
+                    id_lokasi: idLokasi,
                     judul_penelitian: judulPenelitian,
                     tanggal: format(tanggal, "yyyy-MM-dd"),
                     waktu_mulai: format(waktuMulai, "HH:mm:ss"),
                     waktu_selesai: format(waktuSelesai, "HH:mm:ss"),
-                    lokasi,
-                    latitude,
-                    longitude,
-                    radius_meter: radius,
                     dosen_pembimbing: dosenPembimbing,
                     dosen_penguji_1: dosenPenguji1,
                     dosen_penguji_2: dosenPenguji2
                 }
             );
-            alert("Berhasil ditambahkan");
+            alert("Data seminar Berhasil ditambahkan");
 
             setShowFormAddSeminar(false);
             fetchSeminar();
@@ -235,14 +244,11 @@ function KelolaDataSeminar() {
                 `http://localhost:5000/edit-seminar/${selectedSeminar.id_seminar}`,
                 {
                     id_mahasiswa: selectedMahasiswa?.id_user || selectedSeminar.id_user,
+                    id_lokasi: idLokasi,
                     judul_penelitian: judulPenelitian,
                     tanggal: format(tanggal, "yyyy-MM-dd"),
                     waktu_mulai: format(waktuMulai, "HH:mm:ss"),
                     waktu_selesai: format(waktuSelesai, "HH:mm:ss"),
-                    lokasi,
-                    latitude,
-                    longitude,
-                    radius_meter: radius,
                     dosen_pembimbing: dosenPembimbing,
                     dosen_penguji_1: dosenPenguji1,
                     dosen_penguji_2: dosenPenguji2
@@ -268,14 +274,11 @@ function KelolaDataSeminar() {
         });
 
         setSearchMahasiswa(`${seminar.nama} (${seminar.nim})`);
+        setIdLokasi(seminar.id_lokasi);
         setJudulPenelitian(seminar.judul_penelitian);
         setTanggal(new Date(seminar.tanggal_asli));
         setWaktuMulai(new Date(`1970-01-01T${seminar.waktu_mulai_asli}`));
         setWaktuSelesai(new Date(`1970-01-01T${seminar.waktu_selesai_asli}`));
-        setLokasi(seminar.lokasi);
-        setLatitude(seminar.latitude);
-        setLongitude(seminar.longitude);
-        setRadius(seminar.radius_meter);
         setDosenPembimbing(seminar.dosen_pembimbing);
         setDosenPenguji1(seminar.dosen_penguji_1);
         setDosenPenguji2(seminar.dosen_penguji_2);
@@ -299,10 +302,8 @@ function KelolaDataSeminar() {
         setTanggal(null);
         setWaktuMulai(null);
         setWaktuSelesai(null);
-        setLokasi("");
-        setLatitude("");
-        setLongitude("");
-        setRadius("");
+        setIdLokasi("");
+        setSelectedLocation(null);
         setDosenPembimbing("");
         setDosenPenguji1("");
         setDosenPenguji2("");
@@ -325,7 +326,15 @@ function KelolaDataSeminar() {
             console.log(err);
         }
     };
-  
+
+    useEffect(() => {
+        console.log(lokasiList);
+    }, [lokasiList]);
+
+    const handleChangeLocation = (e) => {
+        setIdLokasi(Number(e.target.value));
+    };
+
     return (
     <div className="page-menu-kelola-data-seminar-layout">
         {/* Navbar */}
@@ -340,7 +349,7 @@ function KelolaDataSeminar() {
 
         {/* Tambah Seminar, Search Bar, Filter */}
         <div className="header-kelola-data-seminar-wrapper">
-             <button className="add-seminar-btn" onClick={() => {resetForm(); setShowFormAddSeminar(true)}}> 
+            <button className="add-seminar-btn" onClick={() => {resetForm(); setShowFormAddSeminar(true)}}> 
                 <Icon icon="mingcute:add-fill" className="add-seminar-icon"/>
                 <span>Tambah Seminar</span>
             </button>
@@ -375,9 +384,9 @@ function KelolaDataSeminar() {
                                 </label>
 
                                 {lokasiList.map((item) =>(
-                                    <label key={item.lokasi}>
-                                        <input type="checkbox" checked={selectedLokasi === item.lokasi} onChange={() => setSelectedLokasi(item.lokasi)}></input>
-                                        {item.lokasi}
+                                    <label key={item.nama_lokasi}>
+                                        <input type="checkbox" checked={selectedLokasi === item.nama_lokasi} onChange={() => setSelectedLokasi(item.nama_lokasi)}></input>
+                                        <span>{item.nama_lokasi}</span>
                                     </label>
                                 ))}
                             </div>
@@ -406,15 +415,19 @@ function KelolaDataSeminar() {
                                 </label>
 
                                 <p className="judul-rentang-tanggal-seminar">Pilih Tanggal:</p>
-
+                                
                                 <div className="seminar-date-input">
                                     <span>Dari</span>
-                                    <input type="date" value={tanggalAwal} onChange={(e)=>{setTanggalAwal(e.target.value); setSelectedTanggal("Semua");}}></input>
+                                    <DatePicker 
+                                        selected={tanggalAwal} onChange={(date) => {setTanggalAwal(date); setSelectedTanggal("Semua");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-seminar" popperPlacement="bottom-start" portalId="root">
+                                    </DatePicker>
                                 </div>
 
                                 <div className="seminar-date-input">
                                     <span>Sampai</span>
-                                    <input type="date" value={tanggalAkhir} onChange={(e)=>{setTanggalAkhir(e.target.value); setSelectedTanggal("Semua");}}></input>
+                                    <DatePicker
+                                        selected={tanggalAkhir} onChange={(date) => {setTanggalAkhir(date); setSelectedTanggal("Semua");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-seminar" popperPlacement="bottom-start" portalId="root">
+                                    </DatePicker>
                                 </div>
                             </div>                            
                         </div>
@@ -471,8 +484,8 @@ function KelolaDataSeminar() {
                                 </td>
                                 <td className="kolom-lokasi">
                                     <div className="kolom-lokasi-content">
-                                        <p>{item.lokasi}</p>
-                                        <button className="lihat-peta-btn">
+                                        <p>{item.nama_lokasi}</p>
+                                        <button className="lihat-peta-btn" onClick={() => {setSelectedLocation({nama_lokasi: item.nama_lokasi, latitude: item.latitude, longitude: item.longitude,}); setShowMapModal(true);}}>
                                             <Icon icon="weui:location-filled" className="location-icon"/>
                                             <span>Lihat Peta</span>
                                         </button>
@@ -595,8 +608,20 @@ function KelolaDataSeminar() {
                     <div className="form-group-lokasi">
                         <label className="lokasi-title">Lokasi Seminar</label>
                         <div className="map-picker-wrapper">
-                            <input type="text" placeholder="Masukkan nama ruangan" value={lokasi} onChange={(e) => setLokasi(e.target.value)}/>
-                            <button className="map-picker-btn" onClick={() => setShowMapModal (true)}>Pilih di Peta</button>
+                            <div className="custom-select-wrapper">
+                                <select value={idLokasi} onChange={handleChangeLocation} className="custom-select-lokasi">
+                                    <option value="">Pilih Lokasi</option>
+
+                                    {lokasiList.map((lokasi) => (
+                                        <option key={lokasi.id_lokasi} value={lokasi.id_lokasi}>
+                                            {lokasi.nama_lokasi}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <Icon icon="icon-park-outline:down" className="dropdown-icon-lokasi-seminar"/>
+                            </div>
+                            <button type="button" className="map-picker-btn" disabled={!idLokasi} onClick={() => setShowMapModal (true)}>Lihat Peta</button>
                         </div>
                     </div>
 
@@ -645,8 +670,8 @@ function KelolaDataSeminar() {
         )}
 
         {/* Modal Map */}
-        {showMapModal && (
-            <PilihLokasi onClose={() => setShowMapModal(false)}/>
+        {showMapModal && selectedLocation && (
+            <DetailLokasi onClose={() => setShowMapModal(false)} lokasi={selectedLocation}/>
         )}
     </div>
   );
