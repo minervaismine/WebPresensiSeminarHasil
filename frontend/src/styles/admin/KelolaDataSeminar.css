@@ -162,7 +162,8 @@
   position:absolute;
   top:55px;
   right:0;
-  width:500px;
+  width:max-content;
+  gap: 20px;
   display: flex;
   justify-content: space-between;
   padding:20px 25px 10px 25px;
@@ -179,6 +180,10 @@
 
 .react-datepicker {
   z-index: 9999 !important;
+}
+
+.filter-lokasi-seminar {
+  width: 200px;
 }
 
 .filter-lokasi-seminar h3,

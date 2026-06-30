@@ -37,8 +37,123 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     return R * c
+
+@app.route("/verifikasi-presensi/<int:id_seminar>", methods=["GET"])
+def lihat_daftar_hadir(id_seminar):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            p.id_presensi,
+            p.waktu_presensi,
+            m.nama,
+            m.nim
+        FROM presensi p
+        JOIN mahasiswa m
+            ON p.id_mahasiswa = m.id_user
+        WHERE p.id_seminar = %s
+        ORDER BY p.waktu_presensi ASC
+    """, (id_seminar,))
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "data": data
+    })
+
+#Menampilkan data daftar seminar, fitur search dan fitur filter Verifikasi Presensi - Verfikator
+@app.route("/verifikasi-presensi", methods=["GET"])
+def verifikasi_presensi():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Search
+    search = request.args.get("search", "").strip()
+
+    # Filter
+    tanggal_filter = request.args.get("tanggal", "Semua")
+    tanggal_awal = request.args.get("tanggal_awal")
+    tanggal_akhir = request.args.get("tanggal_akhir")
+
+    #Ambil data
+    query = """
+        SELECT
+            s.id_seminar,
+            s.judul_penelitian,
+            s.tanggal,
+            s.waktu_mulai,
+            s.waktu_selesai,
+            s.dosen_pembimbing,
+            s.dosen_penguji_1,
+            s.dosen_penguji_2,
     
-#Menampilkan data daftar hadir, fitur search dan fitur sort Lihat Daftar Hadir - Mahasiswa Penyelenggara Seminar    
+            m.nama,
+            m.nim
+        FROM seminar s
+        JOIN mahasiswa m
+            ON s.id_mahasiswa = m.id_user
+        WHERE 1=1
+    """
+
+    params = []
+
+    if search:
+        query += """
+        AND m.nama LIKE %s
+        """
+        keyword = f"%{search}%"
+        params.append(keyword)
+
+    if tanggal_filter == "Hari Ini":
+        query += """
+        AND DATE(s.tanggal) = CURDATE()
+        """
+
+    elif tanggal_filter == "Minggu Ini":
+        query += """
+        AND YEARWEEK(s.tanggal,1)=YEARWEEK(CURDATE(),1)
+        """
+
+    elif tanggal_filter == "Bulan Ini":
+        query += """
+        AND MONTH(s.tanggal)=MONTH(CURDATE())
+        AND YEAR(s.tanggal)=YEAR(CURDATE())
+        """
+
+    elif tanggal_awal and tanggal_akhir:
+        query += """
+        AND DATE(s.tanggal) BETWEEN %s AND %s
+        """
+        params.extend([tanggal_awal, tanggal_akhir])
+
+    query += """
+        ORDER BY s.tanggal DESC, s.waktu_mulai ASC
+    """
+
+    cursor.execute(query, tuple(params))
+    
+    data = cursor.fetchall()
+
+    for item in data:
+        # Format tanggal
+        item["tanggal"] = item["tanggal"].strftime("%A, %d %B %Y")
+
+        # Format jam
+        item["waktu_mulai"] = format_waktu(item["waktu_mulai"])
+        item["waktu_selesai"] = format_waktu(item["waktu_selesai"])
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "data": data
+    })
+    
+#Menampilkan data daftar hadir, fitur search dan fitur sort Lihat Daftar Hadir - Mahasiswa Penyelenggara Seminar
 @app.route("/daftar-hadir/<int:id_seminar>", methods=["GET"])
 def daftar_hadir(id_seminar):
     conn = get_db_connection()

@@ -184,8 +184,8 @@ function KelolaDataSeminar() {
         setSelectedTanggal(value);
 
         //Menghapus input rentang tanggal
-        setTanggalAwal("");
-        setTanggalAkhir("");
+        setTanggalAwal(null);
+        setTanggalAkhir(null);
 
         setPage(1);
     };
@@ -419,14 +419,14 @@ function KelolaDataSeminar() {
                                 <div className="seminar-date-input">
                                     <span>Dari</span>
                                     <DatePicker 
-                                        selected={tanggalAwal} onChange={(date) => {setTanggalAwal(date); setSelectedTanggal("Semua");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-seminar" popperPlacement="bottom-start" portalId="root">
+                                        selected={tanggalAwal} onChange={(date) => {setTanggalAwal(date); setSelectedTanggal("");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-seminar" popperPlacement="bottom-start" portalId="root">
                                     </DatePicker>
                                 </div>
 
                                 <div className="seminar-date-input">
                                     <span>Sampai</span>
                                     <DatePicker
-                                        selected={tanggalAkhir} onChange={(date) => {setTanggalAkhir(date); setSelectedTanggal("Semua");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-seminar" popperPlacement="bottom-start" portalId="root">
+                                        selected={tanggalAkhir} onChange={(date) => {setTanggalAkhir(date); setSelectedTanggal("");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-seminar" popperPlacement="bottom-start" portalId="root">
                                     </DatePicker>
                                 </div>
                             </div>                            
