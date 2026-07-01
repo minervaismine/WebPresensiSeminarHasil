@@ -38,6 +38,7 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
 
     return R * c
 
+#Update status presensi
 @app.route("/verifikator-update-status-presensi/<int:id_presensi>", methods=["PUT"])
 def update_status_presensi(id_presensi):
     conn = get_db_connection()
@@ -1571,7 +1572,26 @@ def detail_seminar(id_user):
             l.nama_lokasi,
             l.latitude,
             l.longitude,
-            l.radius
+            l.radius,
+
+            (
+                SELECT COUNT(*)
+                FROM presensi p
+                WHERE p.id_seminar = s.id_seminar
+            ) AS total_peserta,
+            (
+                SELECT COUNT(*)
+                FROM presensi p
+                WHERE p.id_seminar = s.id_seminar
+                AND p.status_verifikasi <> 'pending'
+            ) AS telah_diverifikasi,
+            (
+                SELECT COUNT(*)
+                FROM presensi p
+                WHERE p.id_seminar = s.id_seminar
+                AND p.status_verifikasi = 'pending'
+            ) AS pending
+        
         FROM seminar s
         JOIN mahasiswa m
             ON s.id_mahasiswa = m.id_user
@@ -1586,7 +1606,12 @@ def detail_seminar(id_user):
     cursor.close()
     conn.close()
 
+    #Statistik presensi seminar
     if seminar:
+        seminar["total_peserta"] = seminar["total_peserta"] or 0
+        seminar["telah_diverifikasi"] = seminar["telah_diverifikasi"] or 0
+        seminar["pending"] = seminar["pending"] or 0
+
         for key, value in seminar.items():
             if isinstance(value, timedelta):
                 seminar[key] = str(value)

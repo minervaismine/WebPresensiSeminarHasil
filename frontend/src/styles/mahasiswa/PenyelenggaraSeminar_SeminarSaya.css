@@ -182,7 +182,8 @@
   margin-bottom: 45px;
 }
 
-.actions-btn-menu-seminar-saya button {
+.lihat-daftar-hadir-btn-penyelenggara-seminar,
+.generate-qr-code-btn-penyelenggara-seminar {
   background: #2463EB;
   color: #FFFFFF;
   border: none;

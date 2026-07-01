@@ -266,8 +266,8 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     </div>
 
                     <div className="actions-btn-menu-seminar-saya">
-                        <button className="lihat-daftar-hadir-btn" onClick={() => navigate(`/lihat-daftar-hadir/${seminarData.id_seminar}`)}>Lihat Daftar Hadir</button>
-                        <button className="generate-qr-code-btn" onClick={generateQRCode} disabled={showQRModal}>Generate QR Code</button>
+                        <button className="lihat-daftar-hadir-btn-penyelenggara-seminar" onClick={() => navigate(`/lihat-daftar-hadir/${seminarData.id_seminar}`)}>Lihat Daftar Hadir</button>
+                        <button className="generate-qr-code-btn-penyelenggara-seminar" onClick={generateQRCode} disabled={showQRModal}>Generate QR Code</button>
                     </div>
                 </div>
 
@@ -276,7 +276,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     <div className="stat-card-menu-seminar-saya">
                         <div className="stat-content-menu-seminar-saya">
                             <h3>Total Peserta</h3>
-                            <h1>12</h1>
+                            <h1>{seminarData.total_peserta}</h1>
                         </div>
 
                         <div className="stat-icon-wrapper-menu-seminar-saya">
@@ -287,7 +287,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     <div className="stat-card-menu-seminar-saya">
                         <div className="stat-content-menu-seminar-saya">
                             <h3>Telah Diverifikasi</h3>
-                            <h1>9</h1>
+                            <h1>{seminarData.telah_diverifikasi}</h1>
                         </div>
 
                         <div className="stat-icon-wrapper-menu-seminar-saya">
@@ -298,7 +298,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     <div className="stat-card-menu-seminar-saya">
                         <div className="stat-content-menu-seminar-saya">
                             <h3>Pending</h3>
-                            <h1>3</h1>
+                            <h1>{seminarData.pending}</h1>
                         </div>
 
                         <div className="stat-icon-wrapper-menu-seminar-saya">
