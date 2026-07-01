@@ -78,7 +78,7 @@
 }
 
 .search-bar-input-verifikasi-presensi {
-  font-size: 18px;
+  font-size: 20px;
   font-family: "Poppins", sans-serif;
   color: #1E293B;
   margin-left: 8px;
@@ -101,7 +101,6 @@
 .search-bar-input-verifikasi-presensi::placeholder {
   color: #E9EEF6;
   font-size: 20px;
-  font-weight: 500;
 }
 
 .filter-dropdown-verifikasi-presensi-wrapper {

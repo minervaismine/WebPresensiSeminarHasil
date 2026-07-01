@@ -93,37 +93,37 @@
   margin-top: 10px;
 }
 
-.sedang-berlangsung {
+.status-badge-verifikator-lihat-daftar-hadir.sedang-berlangsung {
   background: #FEF3C7;
   border: 1px solid #FACC15;
   color: #1E293B;
 }
 
-.selesai {
+.status-badge-verifikator-lihat-daftar-hadir.selesai {
   background: #DCFCE7;
   border: 1px solid #22C55E;
   color: #1E293B;
 }
 
-.belum-dimulai {
+.status-badge-verifikator-lihat-daftar-hadir.belum-dimulai {
   background: #FEE2E2;
   border: 1px solid #EF4444;
   color: #1E293B;
 }
 
-.right-content {
-  width: 330px;
+.right-content-verifikator-lihat-daftar-hadir {
+  width: 310px;
   display: flex;
   flex-direction: column;
   gap: 32px;
-  margin-left: 80px;
+  margin-left: 100px;
 }
 
-.stat-card {
+.stat-card-verifikator-lihat-daftar-hadir {
   background: #E9EEF6;
   border-radius: 15px;
   padding: 32px;
-  height: 160px;
+  height: 150px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -131,7 +131,7 @@
   overflow: hidden;
 }
 
-.stat-content {
+.stat-content-verifikator-lihat-daftar-hadir {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -139,7 +139,7 @@
   z-index: 2;
 }
 
-.stat-content h3 {
+.stat-content-verifikator-lihat-daftar-hadir h3 {
   margin: 0;
   padding-top: 10px;
   font-size: 18px;
@@ -148,56 +148,54 @@
   font-family: "Poppins", sans-serif;
 }
 
-.stat-content h1 {
-  margin-top: 20px;
-  font-size: 80px;
+.stat-content-verifikator-lihat-daftar-hadir h1 {
+  margin-top: 15px;
+  font-size: 75px;
   font-weight: 800;
   line-height: 1;
   color: #1E293B;
 }
 
-.stat-icon-wrapper {
+.stat-icon-wrapper-verifikator-lihat-daftar-hadir {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.people-icon {
+.people-icon-verifikator-lihat-daftar-hadir {
   position: absolute;
-  right: -10px;
-  bottom: -30px;;
+  right: -25px;
+  bottom: -35px;;
   font-size: 180px;
   color: #7384A7;
   opacity: 0.2;
 }
 
-.daftar-hadir-wrapper {
+.daftar-hadir-wrapper-verifikator-lihat-daftar-hadir {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 30px;
-  margin-left: 90px;
-  margin-right: 90px;
+  margin: 30px 60px 0 60px;
 }
 
-.daftar-hadir-title {
+.daftar-hadir-title-verifikator-lihat-daftar-hadir {
   display: flex;
   justify-content: flex-start;
-  font-size: 40px;
+  font-size: 37px;
   font-weight: 800;
   letter-spacing: 0.1px;
   color: #1E293B;
 }
 
-.search-filter {
+.search-filter-verifikator-lihat-daftar-hadir {
   display: flex;
   align-items: center;
   gap: 40px;
 }
 
-.search-bar {
+.search-bar-verifikator-lihat-daftar-hadir {
   width: max-content;
-  height: 53px;
+  height: 48px;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -205,8 +203,8 @@
   border: 2px solid #E9EEF6;
 }
 
-.search-bar-input {
-  font-size: 18px;
+.search-bar-input-verifikator-lihat-daftar-hadir {
+  font-size: 20px;
   font-family: "Poppins", sans-serif;
   color: #1E293B;
   margin-left: 8px;
@@ -216,63 +214,105 @@
   width: 400px;
 }
 
-.search-bar-input::-webkit-search-cancel-button {
+.search-bar-input-verifikator-lihat-daftar-hadir::-webkit-search-cancel-button {
   margin-left: 20px;
   cursor: pointer;
 }
 
-.search-icon {
-  font-size: 30px;
+.search-icon-verifikator-lihat-daftar-hadir {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.search-bar-input::placeholder {
+.search-bar-input-verifikator-lihat-daftar-hadir::placeholder {
   color: #E9EEF6;
   font-size: 20px;
-  font-weight: 500;
 }
 
-.filter-dropdown {
-  width: 180px;
-  height: 53px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border: 2px solid #E9EEF6;
-  border-radius: 10px;
-  cursor: pointer;
+.filter-dropdown-verifikator-lihat-daftar-hadir-wrapper {
+  position: relative;
+  display: inline-block;
   box-sizing: border-box;
 }
 
-.filter-content {
+.filter-dropdown-verifikator-lihat-daftar-hadir {
+  width: 180px;
+  height: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid #E9EEF6;
+  border-radius: 10px; 
+  background: #FFFFFF;
+  cursor: pointer;
+  padding: 10px 15px;
+  font-family: "Poppins", sans-serif;
+}
+
+.filter-content-verifikator-lihat-daftar-hadir {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.filter-icon {
-  font-size: 30px;
+.filter-icon-verifikator-lihat-daftar-hadir {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.filter-content span {
+.filter-content-verifikator-lihat-daftar-hadir span {
   font-family: "Poppins", sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: #1E293B;
 }
 
-.dropdown-icon {
-  font-size: 30px;
+.dropdown-icon-verifikator-lihat-daftar-hadir {
+  font-size: 27px;
   color: #1E293B;
+}
+
+.filter-menu-verifikator-lihat-daftar-hadir {
+  position:absolute;
+  top:55px;
+  right:0;
+  width:180px;
+  background:#FFFFFF;
+  border:2px solid #E9EEF6;
+  border-radius:10px;
+  padding:20px 25px 10px 25px;
+  z-index:999;
+}
+
+.filter-menu-verifikator-lihat-daftar-hadir h3 {
+  margin:0 0 18px;
+  text-align:left;
+  font-size:20px;
+  font-weight:700;
+  color:#1E293B;
+}
+
+.filter-menu-verifikator-lihat-daftar-hadir label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+  font-size:16px;
+  font-family:"Poppins", sans-serif;
+  color:#1E293B;
+  cursor:pointer;
+}
+
+.filter-menu-verifikator-lihat-daftar-hadir input[type="checkbox"]{
+  width:19px;
+  height:19px;
+  cursor:pointer;
 }
 
 .tabel-daftar-hadir-verifikator {
   font-family: "Poppins", sans-serif;
   border-collapse: collapse;
-  margin: 10px 90px;
-  /* min-width: 400px; */
+  margin: 10px 60px;
 }
 
 .tabel-daftar-hadir-verifikator thead tr {
@@ -286,7 +326,7 @@
   text-align: center;
 }
 
-.sort-thead {
+.sort-thead-verifikator-lihat-daftar-hadir {
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -301,7 +341,7 @@
   color: #1E293B;
 }
 
-.sort-icon {
+.sort-icon-verifikator-lihat-daftar-hadir {
   font-size: 22px;
 }
 
@@ -322,29 +362,29 @@
   background-color: rgba(36, 99, 235, 0.22);
 }
 
-.kolom-nama {
+.kolom-nama-verifikator-lihat-daftar-hadir {
   text-align: left;
-  width: 45%;
+  width: 35%;
 }
 
-.kolom-nim {
+.kolom-nim-verifikator-lihat-daftar-hadir {
   width: 10%;
 }
 
-.kolom-waktu-scan {
+.kolom-waktu-scan-verifikator-lihat-daftar-hadir {
   width: 20%;
 }
 
-.kolom-jarak-lokasi {
-  width: 10%;
-}
-
-.kolom-status-presensi {
-  text-align: center;
+.kolom-jarak-lokasi-verifikator-lihat-daftar-hadir {
   width: 15%;
 }
 
-.status-lokasi {
+.kolom-status-presensi-verifikator-lihat-daftar-hadir {
+  text-align: center;
+  width: 20%;
+}
+
+.status-lokasi-verifikator-lihat-daftar-hadir {
   display: inline-block;
   padding: 5px 12px;
   border: none;
@@ -361,55 +401,86 @@
   background-color: #FEF3C7;
 }
 
-.pilih-status-kehadiran-btn {
-  width: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 5px 12px;
-  font-weight: 600;
-  color: #1E293B;
-  border: none;
-  border-radius: 7px;
-  margin: 0 auto;
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
 }
 
-.pending {
+.dropdown-button {
+  min-width: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1E293B;
+}
+
+.dropdown-button.pending {
   background: #FEF3C7;
 }
 
-.valid {
+.dropdown-button.valid {
   background: #DCFCE7;
 }
 
-.invalid {
+.dropdown-button.invalid {
   background: #FEE2E2;
 }
 
-.pilih-status-icon {
-  font-size: 18px;
-  color: #1E293B;
+.dropdown-button span {
+  font-weight: 600;
 }
 
-.pagination-wrapper {
+.status-dropdown-icon {
+  font-size: 18px;
+}
+
+.status-dropdown-menu {
+  position:absolute;
+  top:115%;
+  left:0;
+  width:100%;
+  background:#FFFFFF;
+  border: 2px solid #E9EEF6;
+  border-radius:7px;
+  overflow:hidden;
+  z-index:1000;
+  font-weight: 600;
+}
+
+.status-dropdown-item{
+  padding: 5px 12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.status-dropdown-item:hover{
+  background:#F3F4F6;
+}
+
+.pagination-wrapper-verifikator-lihat-daftar-hadir {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 5px 90px;
+  margin: 5px 60px;
 }
 
-.page-description {
+.page-description-verifikator-lihat-daftar-hadir {
   font-family: "Poppins", sans-serif;
   font-size: 13px;
   color: #1E293B;
   margin: 0;
 }
 
-.pagination {
+.pagination-verifikator-lihat-daftar-hadir {
   display: flex;
 }
 
-.pagination a {
+.pagination-verifikator-lihat-daftar-hadir button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -420,31 +491,37 @@
   color: #1E293B;
   width: 35px;
   height: 35px;
+  background: #FFFFFF;
 }
 
-.pagination a:not(:first-child) {
+.pagination-verifikator-lihat-daftar-hadir button:not(:first-child) {
   border-left: none;
 }
 
-.pagination a:first-child {
+.pagination-verifikator-lihat-daftar-hadir button:first-child {
   border-radius: 7px 0 0 7px;
   width: 45px;
 }
 
-.pagination a:last-child {
+.pagination-verifikator-lihat-daftar-hadir button:last-child {
   border-radius: 0 7px 7px 0;
   width: 45px;
 }
 
-.pagination .active {
+.pagination-verifikator-lihat-daftar-hadir .active {
   background-color: rgba(36, 99, 235, 0.22);
 }
 
-.pagination a:hover:not(.active) {
+.pagination-verifikator-lihat-daftar-hadir button:hover:not(.active):not(:disabled) {
   background-color: #E9EEF6;
 }
 
-.previous-icon,
-.next-icon {
+.pagination-verifikator-lihat-daftar-hadir button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.previous-icon-verifikator-lihat-daftar-hadir,
+.next-icon-verifikator-lihat-daftar-hadir {
   font-size: 18px;
 }

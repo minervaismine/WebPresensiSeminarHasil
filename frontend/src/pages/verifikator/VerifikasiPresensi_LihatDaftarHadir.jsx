@@ -11,18 +11,154 @@ function VerifikasiPresensi_LihatDaftarHadir() {
     const { id_seminar } = useParams();
     console.log(id_seminar)
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const idVerifikator = user?.id_user;
+
+    // Menampilkan detail berdasarkan id seminar
     const [presensi, setPresensi] = useState([]);
+    // Detail Seminar
+    const [seminar, setSeminar] = useState({});
+    // Data total peserta
+    const [totalPeserta, setTotalPeserta] = useState(0);
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalData, setTotalData] = useState(0);
+    // Sort
+    const [sortBy, setSortBy] = useState("waktu_scan");
+    const [sortOrder, setSortOrder] = useState("desc");
+    // Search
+    const [search, setSearch] = useState("");
+    // Dropdown Status
+    const [openDropdown, setOpenDropdown] = useState(null);
+    //Filter
+    const [filterStatus, setFilterStatus] = useState("");
+    const [showFilter, setShowFilter] = useState(false);
+
+    const dataPerPage = 5;
+
+    const startData = totalData === 0 ? 0 : (currentPage - 1) * dataPerPage + 1;
+    const endData = totalData === 0 ? 0 : Math.min(currentPage * dataPerPage, totalData);
 
     useEffect(() => {
-        fetchDaftarHadir();
-    }, []);
+        const timer = setTimeout(() => {
+            fetchDaftarHadir();
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [currentPage, sortBy, sortOrder, search, filterStatus]);
 
     const fetchDaftarHadir = async () => {
         const res = await axios.get(
-            `http://localhost:5000/verifikator-lihat-daftar-hadir/${id_seminar}`
+            `http://localhost:5000/verifikator-lihat-daftar-hadir/${id_seminar}`,
+            {
+                params:{
+                    page: currentPage,
+                    limit: dataPerPage,
+                    sort_by: sortBy,
+                    sort_order: sortOrder,
+                    search: search,
+                    status_verifikasi: filterStatus
+                }
+            }
         );
 
         setPresensi(res.data.data);
+        setSeminar(res.data.seminar);
+        setTotalPeserta(res.data.total_peserta);
+        setCurrentPage(res.data.pagination.page);
+        setTotalPages(res.data.pagination.total_pages);
+        setTotalData(res.data.pagination.total_data);
+    };
+
+    const handleStatusChange = async (idPresensi, status) => {
+        setPresensi(prev =>
+            prev.map(item =>
+                item.id_presensi === idPresensi
+                    ? { ...item, status_verifikasi: status }
+                    : item
+            )
+        );
+
+        try {
+            await axios.put(
+                `http://localhost:5000/verifikator-update-status-presensi/${idPresensi}`,
+                {
+                    status,
+                    id_user_verifikator: idVerifikator
+                }
+            );
+            
+            await fetchDaftarHadir();
+        }
+        catch (err) {
+            console.log(err);
+
+            await fetchDaftarHadir();
+        }
+    };
+
+    const getStatusClass = (status) => {
+        switch (status) {
+            case "Belum Dimulai":
+                return "belum-dimulai";
+            case "Sedang Berlangsung":
+                return "sedang-berlangsung";
+            case "Selesai":
+                return "selesai";
+            default:
+                return "";
+        }
+    };
+
+    const getPagination = () => {
+        const pages = [];
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage <= 4) {
+                pages.push(1,2,3,4,5, "...", totalPages);
+            }
+            else if (currentPage >= totalPages - 3) {
+                pages.push(
+                    1,
+                    "...",
+                    totalPages - 4,
+                    totalPages - 3,
+                    totalPages - 2,
+                    totalPages - 1,
+                    totalPages
+                );
+            }
+            else {
+                pages.push(
+                    1,
+                    "...",
+                    currentPage - 1,
+                    currentPage,
+                    currentPage + 1,
+                    "...",
+                    totalPages
+                );
+            }
+        }
+        return pages;
+    };
+
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            // Klik kolom yang sama -> ubah asc ke desc
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+        } else {
+            // Klik kolom berbeda
+            setSortBy(column);
+            setSortOrder("asc");
+        }
+
+        setCurrentPage(1);
     };
 
     return (
@@ -42,51 +178,80 @@ function VerifikasiPresensi_LihatDaftarHadir() {
                 {/* Left */}
                 <div className="left-content-detail-seminar">
                     <div className="content-seminar-verifikator-lihat-daftar-hadir">
-                        <h1 className="nama-mahasiswa-verifikator-lihat-daftar-hadir">Karina Minerva Romeda</h1>
+                        <h1 className="nama-mahasiswa-verifikator-lihat-daftar-hadir">{seminar.nama}</h1>
                         <div className="jadwal-seminar-verifikator-lihat-daftar-hadir">
-                            <span>Senin, 13 April 2026</span>
+                            <span>{seminar.tanggal}</span>
                             <span>|</span>
-                            <span>13.00 - 14.30</span>
+                            <span>{seminar.waktu_mulai} - {seminar.waktu_selesai}</span>
                         </div>
 
-                        <span className="status-badge-verifikator-lihat-daftar-hadir selesai">Selesai</span>
+                        <span className={`status-badge-verifikator-lihat-daftar-hadir ${getStatusClass(seminar.status_seminar)}`}>{seminar.status_seminar}</span>
                     </div>
                 </div>
                 
                 {/* Right */}
-                <div className="right-content">
-                    <div className="stat-card">
-                        <div className="stat-content">
+                <div className="right-content-verifikator-lihat-daftar-hadir">
+                    <div className="stat-card-verifikator-lihat-daftar-hadir">
+                        <div className="stat-content-verifikator-lihat-daftar-hadir">
                             <h3>Total Peserta</h3>
-                            <h1>20</h1>
+                            <h1>{totalPeserta}</h1>
                         </div>
 
-                        <div className="stat-icon-wrapper">
-                            <Icon icon="bi:people-fill" className="people-icon"/>
+                        <div className="stat-icon-wrapper-verifikator-lihat-daftar-hadir">
+                            <Icon icon="bi:people-fill" className="people-icon-verifikator-lihat-daftar-hadir"/>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Judul, Search Bar, Filter  */}
-            <div className="daftar-hadir-wrapper">
-                <h1 className="daftar-hadir-title">Daftar Hadir</h1>
+            <div className="daftar-hadir-wrapper-verifikator-lihat-daftar-hadir">
+                <h1 className="daftar-hadir-title-verifikator-lihat-daftar-hadir">Daftar Hadir</h1>
 
-                <div className="search-filter">
+                <div className="search-filter-verifikator-lihat-daftar-hadir">
                     <form>
-                        <div className="search-bar">
-                            <Icon icon="radix-icons:magnifying-glass" className="search-icon"/>
-                            <input className="search-bar-input" type="search" placeholder="Cari mahasiswa"></input>
+                        <div className="search-bar-verifikator-lihat-daftar-hadir">
+                            <Icon icon="radix-icons:magnifying-glass" className="search-icon-verifikator-lihat-daftar-hadir"/>
+                            <input className="search-bar-input-verifikator-lihat-daftar-hadir" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => {setSearch(e.target.value); setCurrentPage(1);}}></input>
                         </div>
                     </form>
 
-                    <div className="filter-dropdown">
-                        <div className="filter-content">
-                            <Icon icon="mi:filter" className="filter-icon"/>
-                            <span>Filter</span>
-                        </div>
+                    <div className="filter-dropdown-verifikator-lihat-daftar-hadir-wrapper">
+                        <button type="button" className="filter-dropdown-verifikator-lihat-daftar-hadir" onClick={() => setShowFilter(!showFilter)}>   
+                            <div className="filter-content-verifikator-lihat-daftar-hadir">
+                                <Icon icon="mi:filter" className="filter-icon-verifikator-lihat-daftar-hadir"/>
+                                <span>Filter</span>
+                            </div>
 
-                        <Icon icon="icon-park-outline:down" className="dropdown-icon"/>
+                            <Icon icon="icon-park-outline:down" className="dropdown-icon-verifikator-lihat-daftar-hadir"/>
+                        </button>
+
+                        {/* Filter Dropdown */}
+                        {showFilter && (
+                            <div className="filter-menu-verifikator-lihat-daftar-hadir">
+                                <h3>Status</h3>
+
+                                <label>
+                                    <input type="checkbox" name="statusFilter" checked={filterStatus === ""} onChange={() => {setFilterStatus(""); setCurrentPage(1);}}></input>
+                                    Semua
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" name="statusFilter" checked={filterStatus === "pending"} onChange={() => {setFilterStatus("pending"); setCurrentPage(1);}}></input>
+                                    Pending
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" name="statusFilter" checked={filterStatus === "valid"} onChange={() => {setFilterStatus("valid"); setCurrentPage(1);}}></input>
+                                    Valid
+                                </label>
+
+                                <label>
+                                    <input type="checkbox" name="statusFilter" checked={filterStatus === "invalid"} onChange={() => {setFilterStatus("invalid"); setCurrentPage(1);}}></input>
+                                    Invalid
+                                </label>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -96,112 +261,82 @@ function VerifikasiPresensi_LihatDaftarHadir() {
                 <thead>
                     <tr>
                         <th>
-                            <button className="sort-thead">
+                            <button className="sort-thead-verifikator-lihat-daftar-hadir" onClick={() => handleSort("nama")}>
                                 <span>Nama</span>
-                                <Icon icon="uil:sort" className="sort-icon"/>
+                                <Icon icon="uil:sort" className="sort-icon-verifikator-lihat-daftar-hadir"/>
                             </button>
                         </th>
                         <th>
-                            <button className="sort-thead">
+                            <button className="sort-thead-verifikator-lihat-daftar-hadir" onClick={() => handleSort("nim")}>
                                 <span>NIM</span>
-                                <Icon icon="uil:sort" className="sort-icon"/>
+                                <Icon icon="uil:sort" className="sort-icon-verifikator-lihat-daftar-hadir"/>
                             </button>
                         </th>
-                        <th>Waktu Scan</th>
-                        <th>Lokasi</th>
+                        <th>
+                            <button className="sort-thead-verifikator-lihat-daftar-hadir" onClick={() => handleSort("waktu_scan")}>
+                                <span>Waktu Scan</span>
+                                <Icon icon="uil:sort" className="sort-icon-verifikator-lihat-daftar-hadir"/>
+                            </button>
+                        </th>
+                        <th>Jarak Lokasi</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td className="kolom-nama">Karina Minerva Romeda</td>
-                        <td className="kolom-nim">H071221034</td>
-                        <td className="kolom-waktu-scan">15 April 2026, 10:30</td>
-                        <td className="kolom-jarak-lokasi">
-                            <span className="status-lokasi dekat">5 m</span>
-                        </td>
-                        <td className="kolom-status-presensi">
-                            <button className="pilih-status-kehadiran-btn pending">
-                                <span className="status-presensi">Pending</span>
-                                <Icon icon="icon-park-outline:down" className="pilih-status-icon"/>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">Karina Minerva Romeda</td>
-                        <td className="kolom-nim">H071221034</td>
-                        <td className="kolom-waktu-scan">15 April 2026, 10:30</td>
-                        <td className="kolom-jarak-lokasi">
-                            <span className="status-lokasi dekat">10 m</span>
-                        </td>
-                        <td className="kolom-status-presensi">
-                            <button className="pilih-status-kehadiran-btn pending">
-                                <span className="status-presensi">Pending</span>
-                                <Icon icon="icon-park-outline:down" className="pilih-status-icon"/>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">Karina Minerva Romeda</td>
-                        <td className="kolom-nim">H071221034</td>
-                        <td className="kolom-waktu-scan">15 April 2026, 10:30</td>
-                        <td className="kolom-jarak-lokasi">
-                            <span className="status-lokasi dekat">7 m</span>
-                        </td>
-                        <td className="kolom-status-presensi">
-                            <button className="pilih-status-kehadiran-btn valid">
-                                <span className="status-presensi">Valid</span>
-                                <Icon icon="icon-park-outline:down" className="pilih-status-icon"/>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">Karina Minerva Romeda</td>
-                        <td className="kolom-nim">H071221034</td>
-                        <td className="kolom-waktu-scan">15 April 2026, 10:30</td>
-                        <td className="kolom-jarak-lokasi">
-                            <span className="status-lokasi dekat">5 m</span>
-                        </td>
-                        <td className="kolom-status-presensi">
-                            <button className="pilih-status-kehadiran-btn valid">
-                                <span className="status-presensi">Valid</span>
-                                <Icon icon="icon-park-outline:down" className="pilih-status-icon"/>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td className="kolom-nama">Karina Minerva Romeda</td>
-                        <td className="kolom-nim">H071221034</td>
-                        <td className="kolom-waktu-scan">15 April 2026, 10:30</td>
-                        <td className="kolom-jarak-lokasi">
-                            <span className="status-lokasi sedang">15 m</span>
-                        </td>
-                        <td className="kolom-status-presensi">
-                            <button className="pilih-status-kehadiran-btn invalid">
-                                <span className="status-presensi">Invalid</span>
-                                <Icon icon="icon-park-outline:down" className="pilih-status-icon"/>
-                            </button>
-                        </td>
-                    </tr>
+                    {presensi.map((item) => (
+                        <tr key={item.id_presensi}>
+                            <td className="kolom-nama-verifikator-lihat-daftar-hadir">{item.nama}</td>
+                            <td className="kolom-nim-verifikator-lihat-daftar-hadir">{item.nim}</td>
+                            <td className="kolom-waktu-scan-verifikator-lihat-daftar-hadir">{item.waktu_scan}</td>
+                            <td className="kolom-jarak-lokasi-verifikator-lihat-daftar-hadir">
+                                <span className={`status-lokasi-verifikator-lihat-daftar-hadir ${item.status_lokasi}`}>{item.jarak} m</span>
+                            </td>
+                            <td className="kolom-status-presensi-verifikator-lihat-daftar-hadir">
+                                <div className="custom-dropdown">
+                                    <button className={`dropdown-button ${item.status_verifikasi}`} onClick={() => setOpenDropdown(openDropdown === item.id_presensi ? null : item.id_presensi)}>
+                                        <span>{item.status_verifikasi.charAt(0).toUpperCase() + item.status_verifikasi.slice(1)}</span>
+                                        <Icon icon="icon-park-outline:down" className="status-dropdown-icon"/>
+                                    </button>
+
+                                    {openDropdown === item.id_presensi && (
+                                        <div className="status-dropdown-menu">
+                                            {["pending", "valid", "invalid"].map((status) => (
+                                                <div key={status} className="status-dropdown-item" onClick={() => {handleStatusChange(item.id_presensi, status); setOpenDropdown(null);}}>
+                                                    {status === item.status_verifikasi}
+                                                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
 
             {/* Pagination */}
-            <div className="pagination-wrapper">
-                <p className="page-description">Menampilkan 1-5 dari 20 data</p>
+            <div className="pagination-wrapper-verifikator-lihat-daftar-hadir">
+                <p className="page-description-verifikator-lihat-daftar-hadir">Menampilkan {startData}-{endData} dari {totalData} data</p>
 
-                <div className="pagination">
-                    <a href="#">
-                        <Icon icon="ooui:previous-ltr" className="previous-icon"/>
-                    </a>
-                    <a href="#" className="active">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#">4</a>
-                    <a href="#">5</a>
-                    <a href="#">
-                        <Icon icon="ooui:next-ltr" className="next-icon"/>
-                    </a>
+                <div className="pagination-verifikator-lihat-daftar-hadir">
+                    <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)}>
+                        <Icon icon="ooui:previous-ltr" className="previous-icon-verifikator-lihat-daftar-hadir"/>
+                    </button>
+
+                    {getPagination().map((item, index) =>
+                        item === "..." ? (
+                            <span key={index} className="pagination-dots-verifikator-lihat-daftar-hadir">...</span>
+                        ) : (
+                            <button key={index} className={currentPage === item ? "active" : ""} onClick={() => setCurrentPage(item)}>
+                                {item}
+                            </button>
+                        )
+                    )}
+
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(prev => prev + 1)}>
+                        <Icon icon="ooui:next-ltr" className="next-icon-verifikator-lihat-daftar-hadir"/>
+                    </button>
                 </div>
             </div>
         </div>

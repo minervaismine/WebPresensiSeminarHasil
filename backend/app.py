@@ -38,31 +38,215 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
 
     return R * c
 
-@app.route("/verifikasi-presensi/<int:id_seminar>", methods=["GET"])
-def lihat_daftar_hadir(id_seminar):
+@app.route("/verifikator-update-status-presensi/<int:id_presensi>", methods=["PUT"])
+def update_status_presensi(id_presensi):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()
 
+    data = request.get_json()
+
+    status = data.get("status")
+    id_verifikator = data.get("id_user_verifikator")
+
+    if status not in ["pending", "valid", "invalid"]:
+        return jsonify({
+            "success": False,
+            "message": "Status tidak valid"
+        }), 400
+    
     cursor.execute("""
-        SELECT
-            p.id_presensi,
-            p.waktu_presensi,
-            m.nama,
-            m.nim
-        FROM presensi p
-        JOIN mahasiswa m
-            ON p.id_mahasiswa = m.id_user
-        WHERE p.id_seminar = %s
-        ORDER BY p.waktu_presensi ASC
-    """, (id_seminar,))
+        UPDATE presensi
+        SET
+            status_verifikasi = %s,
+            id_user_verifikator = %s
+        WHERE id_presensi = %s
+    """, (status, id_verifikator, id_presensi))
 
-    data = cursor.fetchall()
+    conn.commit()
 
     cursor.close()
     conn.close()
 
     return jsonify({
-        "data": data
+        "success": True,
+        "message": "Status berhasil diperbarui"
+    })
+
+#Menampilkan data daftar hadir, pagination, fitur search dan fitur filter Verifikasi Presensi - Verfikator
+@app.route("/verifikator-lihat-daftar-hadir/<int:id_seminar>", methods=["GET"])
+def lihat_daftar_hadir(id_seminar):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Pagination
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 5))
+    offset = (page - 1) * limit
+
+    #Parameter sorting
+    sort_by = request.args.get("sort_by", "waktu_scan")
+    sort_order = request.args.get("sort_order", "desc").lower()
+
+    # Search
+    search = request.args.get("search", "").strip()
+
+    #Filter
+    status_verifikasi = request.args.get("status_verifikasi", "")
+
+    #Validasi agar aman dari SQL Injection
+    allowed_columns = {"nama":"m.nama", "nim":"m.nim", "waktu_scan":"p.waktu_scan"}
+    allowed_orders = ["asc", "desc"]
+
+    if sort_by not in allowed_columns:
+        sort_by = "waktu_scan"
+
+    if sort_order not in allowed_orders:
+        sort_order = "desc"
+
+    #Untuk card total peserta
+    cursor.execute("""
+        SELECT COUNT(*) AS total
+        FROM presensi
+        WHERE id_seminar = %s
+    """, (id_seminar,))
+
+    total_peserta = cursor.fetchone()["total"]
+
+    #Detail Seminar
+    cursor.execute("""
+        SELECT
+            s.id_seminar,
+            s.judul_penelitian,
+            s.tanggal,
+            s.waktu_mulai,
+            s.waktu_selesai,
+            m.nama,
+            
+            CASE
+                WHEN CURDATE() > DATE(s.tanggal)
+                   OR (CURDATE() = DATE(s.tanggal) AND CURTIME() > s.waktu_selesai)
+                   THEN 'Selesai'
+                
+                WHEN CURDATE() = DATE(s.tanggal)
+                   AND CURTIME() BETWEEN s.waktu_mulai AND s.waktu_selesai
+                   THEN 'Sedang Berlangsung'
+                ELSE 'Belum Dimulai'
+            END AS status_seminar
+                   
+        FROM seminar s
+        JOIN mahasiswa m
+            ON s.id_mahasiswa = m.id_user
+        WHERE s.id_seminar = %s
+    """, (id_seminar,))
+
+    seminar = cursor.fetchone()
+
+    if seminar:
+        seminar["tanggal"] = seminar["tanggal"].strftime("%A, %d %B %Y")
+        seminar["waktu_mulai"] = format_waktu(seminar["waktu_mulai"])
+        seminar["waktu_selesai"] = format_waktu(seminar["waktu_selesai"])
+
+    #Hitung total data
+    count_query = """
+        SELECT COUNT(*) AS total
+        FROM presensi p
+        JOIN mahasiswa m
+            ON p.id_mahasiswa = m.id_user
+        WHERE id_seminar = %s
+    """
+
+    count_params = [id_seminar]
+
+    if search:
+        count_query += """
+        AND (
+            m.nama LIKE %s
+            OR m.nim LIKE %s
+        )
+        """
+        keyword = f"%{search}%"
+        count_params.extend([keyword, keyword])
+
+    cursor.execute(count_query, tuple(count_params))
+    total_data = cursor.fetchone()["total"]
+
+    total_pages = ceil(total_data / limit)
+
+    #Daftar Hadir
+    data_query = f"""
+        SELECT
+            p.id_presensi,
+            p.waktu_scan,
+            p.latitude,
+            p.longitude,
+            p.status_verifikasi,
+            m.nama,
+            m.nim,
+            l.latitude AS lokasi_latitude,
+            l.longitude AS lokasi_longitude
+        FROM presensi p
+        JOIN mahasiswa m
+            ON p.id_mahasiswa = m.id_user
+        JOIN seminar s
+            ON p.id_seminar = s.id_seminar
+        JOIN lokasi_seminar l
+            ON s.id_lokasi = l.id_lokasi
+        WHERE p.id_seminar = %s
+    """
+
+    data_params = [id_seminar]
+
+    if search:
+        data_query += """
+        AND (
+            m.nama LIKE %s
+            OR m.nim LIKE %s
+        )
+        """
+        keyword = f"%{search}%"
+        data_params.extend([keyword, keyword])
+
+    if status_verifikasi:
+        data_query += " AND p.status_verifikasi = %s"
+        data_params.append(status_verifikasi)
+
+    data_query += f"""
+        ORDER BY {allowed_columns[sort_by]} {sort_order.upper()}
+        LIMIT %s OFFSET %s
+    """
+    
+    data_params.extend([limit, offset])
+
+    cursor.execute(data_query, tuple(data_params))
+    presensi = cursor.fetchall()
+
+    for item in presensi:
+        #Format waktu scan di tabel
+        item["waktu_scan"] = item["waktu_scan"].strftime("%d %b %Y, %H:%M")
+
+        #Menghitung jarak lokasi peserta saat scan
+        jarak = hitung_jarak(
+            float(item["latitude"]),
+            float(item["longitude"]),
+            float(item["lokasi_latitude"]),
+            float(item["lokasi_longitude"])
+        )
+
+        item["jarak"] = round(jarak)
+
+        if jarak <= 15:
+            item["status_lokasi"] = "dekat"
+        else:
+            item["status_lokasi"] = "sedang"
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "seminar": seminar,
+        "data": presensi,
+        "total_peserta": total_peserta,
+        "pagination": {"page": page, "limit": limit, "total_data": total_data, "total_pages": total_pages}
     })
 
 #Menampilkan data daftar seminar, fitur search dan fitur filter Verifikasi Presensi - Verfikator
