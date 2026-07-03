@@ -540,7 +540,7 @@ function KelolaDataSeminar() {
                     );
                 })}
 
-                <button disabled={page === totalPage} onClick={() => setPage((prev) => prev +1)}>
+                <button disabled={page === totalPage} onClick={() => setPage((prev) => prev + 1)}>
                     <Icon icon="ooui:next-ltr" className="next-icon-kelola-data-seminar"/>
                 </button>
             </div>

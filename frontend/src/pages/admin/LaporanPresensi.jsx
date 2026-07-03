@@ -1,185 +1,313 @@
 import "../../styles/admin/LaporanPresensi.css";
 import { Icon } from '@iconify/react';
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function LaporanPresensi() {
-  return (
-    <div className="page-menu-laporan-presensi-layout">
-        {/* Navbar */}
-        <nav className="navbar-menu-laporan-presensi">
-            <button className="back-btn">
-                <Icon icon="weui:back-filled" className="back-icon"/>
-                <span>Kembali</span>
-            </button>
+    const navigate = useNavigate();
 
-            <h1>LAPORAN PRESENSI</h1>
-        </nav>
+    // Tabel
+    const [laporan, setLaporan] = useState([]);
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalData, setTotalData] = useState(0);
+    const dataPerPage = 10;
+    // Sort
+    const [sortBy, setSortBy] = useState("nama");
+    const [sortOrder, setSortOrder] = useState("asc");
+    // Search
+    const [search, setSearch] = useState("");
+    // Filter
+    const [showFilter, setShowFilter] = useState(false);
+    const [angkatan, setAngkatan] = useState("");
+    const [status, setStatus] = useState("");
+    const [listAngkatan, setListAngkatan] = useState([]);
 
-        {/* Export, Search Bar, Filter */}
-        <div className="header-laporan-presensi-wrapper">
-            <button className="export-btn">
-                <Icon icon="ic:round-download" className="export-icon"/>
-                <span>Export Ke Excel</span>
-            </button>
+    const startData = totalData === 0 ? 0 : (currentPage - 1) * dataPerPage + 1;
+    const endData = totalData === 0 ? 0 : Math.min(currentPage * dataPerPage, totalData);
 
-            <div className="search-filter">
-                <form>
-                    <div className="search-bar">
-                        <Icon icon="radix-icons:magnifying-glass" className="search-icon"/>
-                        <input className="search-bar-input" type="search" placeholder="Cari mahasiswa atau NIM"></input>
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchLaporan();
+        }, 500);
+        
+        return () => clearTimeout(timer);
+    }, [currentPage, sortBy, sortOrder, search, angkatan, status]);
+
+    useEffect(() => {
+        fetchAngkatan();
+    }, []);
+
+    const fetchLaporan = async () => {
+        try {
+            const res = await axios.get(
+                "http://localhost:5000/laporan-presensi",
+                {
+                    params: {
+                        page: currentPage,
+                        limit: dataPerPage,
+                        sort_by: sortBy,
+                        sort_order: sortOrder,
+                        search: search,
+                        angkatan: angkatan,
+                        status: status
+                    }
+                }
+            );
+
+            setLaporan(res.data.data);
+            setCurrentPage(res.data.pagination.page);
+            setTotalPages(res.data.pagination.total_pages);
+            setTotalData(res.data.pagination.total_data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const fetchAngkatan = async () => {
+        try {
+            const res = await axios.get(
+                "http://localhost:5000/data-angkatan-laporan"
+            );
+
+            setListAngkatan(res.data);
+        } catch(err){
+            console.log(err);
+        }
+    }
+
+    const getPagination = () => {
+        const pages = [];
+
+        if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage <= 4) {
+                pages.push(1, 2, 3, 4, 5, "...", totalPages);
+            } else if (currentPage >= totalPages - 3) {
+                pages.push(
+                    1,
+                    "...",
+                    totalPages - 4,
+                    totalPages - 3,
+                    totalPages - 2,
+                    totalPages - 1,
+                    totalPages
+                );
+            } else {
+                pages.push(
+                    1,
+                    "...",
+                    currentPage - 1,
+                    currentPage,
+                    currentPage + 1,
+                    "...",
+                    totalPages
+                );
+            }
+        }
+        return pages;
+    };
+
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+        } else {
+            setSortBy(column);
+            setSortOrder("asc");
+        }
+        setCurrentPage(1);
+    };
+
+    const handleExport = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:5000/laporan-presensi/export",
+                {
+                    params: {
+                        search: search,
+                        angkatan: angkatan,
+                        status: status,
+                        sort_by: sortBy,
+                        sort_order: sortOrder
+                    },
+                    responseType: "blob"
+                }
+            );
+
+            // Membuat file download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "Laporan_Presensi.xlsx");
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.log(err);
+            alert("Gagal mengunduh laporan!");
+        }
+    };
+
+    return (
+        <div className="page-menu-laporan-presensi-layout">
+            {/* Navbar */}
+            <nav className="navbar-menu-laporan-presensi">
+                <button className="back-btn-laporan-presensi" onClick={() => navigate(-1)}>
+                    <Icon icon="weui:back-filled" className="back-icon-laporan-presensi"/>
+                    <span>Kembali</span>
+                </button>
+
+                <h1>LAPORAN PRESENSI</h1>
+            </nav>
+
+            {/* Export, Search Bar, Filter */}
+            <div className="header-laporan-presensi-wrapper">
+                <button className="export-btn" onClick={handleExport}>
+                    <Icon icon="ic:round-download" className="export-icon"/>
+                    <span>Export Ke Excel</span>
+                </button>
+
+                <div className="search-filter-laporan-presensi">
+                    <form>
+                        <div className="search-bar-laporan-presensi">
+                            <Icon icon="radix-icons:magnifying-glass" className="search-icon-laporan-presensi"/>
+                            <input className="search-bar-input-laporan-presensi" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => {setSearch(e.target.value); setCurrentPage(1);}}></input>
+                        </div>
+                    </form>
+
+                    <div className="filter-dropdown-laporan-presensi-wrapper">
+                        <button type="button" className="filter-dropdown-laporan-presensi" onClick={() => setShowFilter(!showFilter)}>
+                            <div className="filter-content-laporan-presensi">
+                                <Icon icon="mi:filter" className="filter-icon-laporan-presensi"/>
+                                <span>Filter</span>
+                            </div>
+                        
+                            <Icon icon="icon-park-outline:down" className="dropdown-icon-laporan-presensi"/>
+                        </button>
+                        
+                        {/* Filter Dropdown */}
+                        {showFilter && (
+                            <div className="filter-menu-laporan-presensi">
+                                <div className="filter-angkatan-laporan-presensi">
+                                    <h3>Angkatan</h3>
+    
+                                    <label>
+                                        <input type="checkbox" checked={angkatan === ""} onChange={() => {setAngkatan(""); setCurrentPage(1);}}></input>
+                                        Semua
+                                    </label>
+    
+                                    {listAngkatan.map((item) =>(
+                                        <label key={item.angkatan}>
+                                            <input type="checkbox" checked={angkatan === String(item.angkatan)} onChange={() => {setAngkatan(String(item.angkatan)); setCurrentPage(1);}}></input>
+                                            <span>{item.angkatan}</span>
+                                        </label>
+                                    ))}
+                                </div>
+    
+                                <div className="filter-status-laporan-presensi">
+                                    <h3>Status</h3>
+    
+                                    <label>
+                                        <input type="checkbox" checked={status === ""} onChange={() => {setStatus(""); setCurrentPage(1);}}></input>
+                                        Semua
+                                    </label>
+
+                                    <label>
+                                        <input type="checkbox" checked={status === "Memenuhi"} onChange={() => {setStatus("Memenuhi"); setCurrentPage(1);}}></input>
+                                        Memenuhi
+                                    </label>
+    
+                                    <label>
+                                        <input type="checkbox" checked={status === "Belum Memenuhi"} onChange={() => {setStatus("Belum Memenuhi"); setCurrentPage(1);}}></input>
+                                        Belum Memenuhi
+                                    </label>
+                                </div>                            
+                            </div>
+                        )}
                     </div>
-                </form>
+                </div>
+            </div>
 
-                <div className="filter-dropdown">
-                    <div className="filter-content">
-                        <Icon icon="mi:filter" className="filter-icon"/>
-                        <span>Filter</span>
-                    </div>
+            {/* Tabel */}
+            <table className="tabel-laporan-presensi">
+                <thead>
+                    <tr>
+                        <th>
+                            <button className="sort-thead-laporan-presensi" onClick={() => handleSort("nama")}>
+                                <span>Nama</span>
+                                <Icon icon="uil:sort" className="sort-icon-laporan-presensi"/>
+                            </button>
+                        </th>
+                        <th>
+                            <button className="sort-thead-laporan-presensi" onClick={() => handleSort("nim")}>
+                                <span>NIM</span>
+                                <Icon icon="uil:sort" className="sort-icon-laporan-presensi"/>
+                            </button>
+                        </th>
+                        <th>
+                            <button className="sort-thead-laporan-presensi" onClick={() => handleSort("angkatan")}>
+                                <span>Angkatan</span>
+                                <Icon icon="uil:sort" className="sort-icon-laporan-presensi"/>
+                            </button>
+                        </th>
+                        <th>Kehadiran</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {laporan.map((item) => (
+                        <tr key={item.id_user}>
+                            <td className="kolom-nama-laporan-presensi">{item.nama}</td>
+                            <td className="kolom-nim-laporan-presensi">{item.nim}</td>
+                            <td className="kolom-angkatan-laporan-presensi">{item.angkatan}</td>
+                            <td className="kolom-kehadiran-laporan-presensi">{item.kehadiran}</td>
+                            <td className="kolom-status-laporan-presensi">
+                                <span className={`status-presensi-laporan-presensi ${item.status === "Memenuhi" ? "memenuhi" : "belum-memenuhi"}`}>{item.status}</span>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
 
-                    <Icon icon="icon-park-outline:down" className="dropdown-icon"/>
+            {/* Pagination */}
+            <div className="pagination-wrapper-laporan-presensi">
+                <p className="page-description-laporan-presensi">Menampilkan {startData}-{endData} dari {totalData} data</p>
+
+                <div className="pagination-laporan-presensi">
+                    <button disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)}>
+                        <Icon icon="ooui:previous-ltr" className="previous-icon-laporan-presensi"/>
+                    </button>
+
+                    {getPagination().map((item, index) => {
+                        if (item === "...") {
+                            return (
+                                <span key={index} className="pagination-dots-kelola-data-seminar">...</span>
+                            )
+                        }
+
+                        return (
+                            <button key={index} className={currentPage === item ? "active" : ""} onClick={() => setCurrentPage(item)}>
+                                {item}
+                            </button>
+                        );
+                    })}
+
+                    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage((prev) => prev + 1)}>
+                        <Icon icon="ooui:next-ltr" className="next-icon-laporan-presensi"/>
+                    </button>
                 </div>
             </div>
         </div>
-
-        {/* Tabel */}
-        <table className="tabel-laporan-presensi">
-            <thead>
-                <tr>
-                    <th>
-                        <button className="sort-thead">
-                            <span>Nama</span>
-                            <Icon icon="uil:sort" className="sort-icon"/>
-                        </button>
-                    </th>
-                    <th>
-                        <button className="sort-thead">
-                            <span>NIM</span>
-                            <Icon icon="uil:sort" className="sort-icon"/>
-                        </button>
-                    </th>
-                    <th>
-                        <button className="sort-thead">
-                            <span>Angkatan</span>
-                            <Icon icon="uil:sort" className="sort-icon"/>
-                        </button>
-                    </th>
-                    <th>Kehadiran</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="kolom-nama">Karina Minerva Romeda</td>
-                    <td className="kolom-nim">H071221034</td>
-                    <td className="kolom-angkatan">2022</td>
-                    <td className="kolom-kehadiran">10</td>
-                    <td className="kolom-status">
-                        <span className="status-presensi">Memenuhi</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        {/* Pagination */}
-        <div className="pagination-wrapper">
-            <p className="page-description">Menampilkan 1-10 dari 50 data</p>
-
-            <div className="pagination">
-                <a href="#">
-                    <Icon icon="ooui:previous-ltr" className="previous-icon"/>
-                </a>
-                <a href="#" className="active">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">4</a>
-                <a href="#">5</a>
-                <a href="#">
-                    <Icon icon="ooui:next-ltr" className="next-icon"/>
-                </a>
-            </div>
-        </div>
-    </div>
-  );
+    );
 }
 
 export default LaporanPresensi;

@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 from math import ceil, radians, sin, cos, sqrt, atan2
 import jwt
 import locale
+from openpyxl import Workbook
+from io import BytesIO
+from flask import send_file
 
 app = Flask(__name__)
 CORS(app)
@@ -37,6 +40,318 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     return R * c
+
+@app.route("/laporan-presensi/export")
+def export_laporan_presensi():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Sort
+    sort_by = request.args.get("sort_by", "nama")
+    sort_order = request.args.get("sort_order", "asc").lower()
+
+    # Search
+    search = request.args.get("search", "").strip()
+
+    #Filter
+    angkatan = request.args.get("angkatan", "")
+    status = request.args.get("status", "")
+
+    #Validasi agar aman dari SQL Injection
+    allowed_columns = {"nama":"m.nama", "nim":"m.nim", "angkatan":"m.angkatan"}
+    allowed_orders = ["asc", "desc"]
+
+    if sort_by not in allowed_columns:
+        sort_by = "nama"
+
+    if sort_order not in allowed_orders:
+        sort_order = "asc"
+
+    conditions = []
+    params = []
+
+    #Search
+    if search:
+        keyword = f"%{search}%"
+        conditions.append("(m.nama LIKE %s OR m.nim LIKE %s)")
+        params.extend([keyword, keyword])
+
+    #Filter angkatan
+    if angkatan:
+        conditions.append("m.angkatan = %s")
+        params.append(angkatan)
+
+    where_clause = ""
+
+    if conditions:
+        where_clause = "WHERE " + " AND ".join(conditions)
+
+    having_clause = ""
+
+    if status == "Memenuhi":
+        having_clause = """
+            HAVING COUNT(
+                CASE
+                    WHEN p.status_verifikasi = 'valid'
+                    THEN p.id_presensi
+                END
+            ) >= 3
+    """
+    elif status == "Belum Memenuhi":
+        having_clause = """
+            HAVING COUNT(
+                CASE
+                    WHEN p.status_verifikasi = 'valid'
+                    THEN p.id_presensi
+                END
+            ) < 3
+    """
+
+    #Hitung total data
+    count_query = f"""
+        SELECT COUNT(*) AS total_data
+        FROM (
+            SELECT
+                m.id_user
+
+            FROM mahasiswa m
+            LEFT JOIN presensi p
+                ON p.id_mahasiswa = m.id_user
+
+            {where_clause}
+
+            GROUP BY
+                m.id_user,
+                m.nama,
+                m.nim,
+                m.angkatan
+
+            {having_clause}
+        ) AS hasil
+    """
+
+    #Ambil data sesuai halaman
+    data_query = f"""
+        SELECT
+            m.id_user,
+            m.nama,
+            m.nim,
+            m.angkatan,
+
+            COUNT(CASE WHEN p.status_verifikasi = 'valid' THEN p.id_presensi END) AS kehadiran
+
+        FROM mahasiswa m
+        LEFT JOIN presensi p
+            ON m.id_user = p.id_mahasiswa
+        {where_clause}
+        GROUP BY
+            m.id_user, m.nama, m.nim, m.angkatan
+        {having_clause}
+        ORDER BY {allowed_columns[sort_by]} {sort_order.upper()}
+    """ 
+
+    cursor.execute(data_query, params)
+    data = cursor.fetchall()
+
+    #Filter status
+    for item in data:
+        item["status"] = (
+            "Memenuhi"
+            if item["kehadiran"] >= 3
+            else "Belum Memenuhi"
+        )
+
+    #File excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Laporan Presensi"
+
+    #Header
+    ws.append(["Nama", "NIM", "Angkatan", "Kehadiran", "Status"])
+
+    #Isi data
+    for item in data:
+        ws.append([item["nama"], item["nim"], item["angkatan"], item["kehadiran"], item["status"]])
+
+    #Simpan file
+    file = BytesIO()
+    wb.save(file)
+    file.seek(0)
+
+    cursor.close()
+    conn.close()
+
+    return send_file(
+        file,
+        as_attachment=True,
+        download_name="laporan_presensi.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+#Menampilkan data angkatan untuk masuk ke filter
+@app.route("/data-angkatan-laporan")
+def get_data_angkatan_laporan():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT DISTINCT angkatan
+        FROM mahasiswa
+        ORDER BY angkatan DESC
+    """)
+
+    data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(data)
+
+#Menampilkan data laporan presensi, pagination, fitur search dan fitur filter dan download di halaman Verifikasi Presensi - Verfikator
+@app.route("/laporan-presensi")
+def laporan_presensi():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Pagination
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 10))
+    offset = (page - 1) * limit
+
+    #Sort
+    sort_by = request.args.get("sort_by", "nama")
+    sort_order = request.args.get("sort_order", "asc").lower()
+
+    # Search
+    search = request.args.get("search", "").strip()
+
+    #Filter
+    angkatan = request.args.get("angkatan", "")
+    status = request.args.get("status", "")
+
+    #Validasi agar aman dari SQL Injection
+    allowed_columns = {"nama":"m.nama", "nim":"m.nim", "angkatan":"m.angkatan"}
+    allowed_orders = ["asc", "desc"]
+
+    if sort_by not in allowed_columns:
+        sort_by = "nama"
+
+    if sort_order not in allowed_orders:
+        sort_order = "asc"
+
+    conditions = []
+    params = []
+
+    #Search
+    if search:
+        keyword = f"%{search}%"
+        conditions.append("(m.nama LIKE %s OR m.nim LIKE %s)")
+        params.extend([keyword, keyword])
+
+    #Filter angkatan
+    if angkatan:
+        conditions.append("m.angkatan = %s")
+        params.append(angkatan)
+
+    where_clause = ""
+
+    if conditions:
+        where_clause = "WHERE " + " AND ".join(conditions)
+
+    having_clause = ""
+
+    if status == "Memenuhi":
+        having_clause = """
+            HAVING COUNT(
+                CASE
+                    WHEN p.status_verifikasi = 'valid'
+                    THEN p.id_presensi
+                END
+            ) >= 3
+    """
+    elif status == "Belum Memenuhi":
+        having_clause = """
+            HAVING COUNT(
+                CASE
+                    WHEN p.status_verifikasi = 'valid'
+                    THEN p.id_presensi
+                END
+            ) < 3
+    """
+
+    #Hitung total data
+    count_query = f"""
+        SELECT COUNT(*) AS total_data
+        FROM (
+            SELECT
+                m.id_user
+
+            FROM mahasiswa m
+            LEFT JOIN presensi p
+                ON p.id_mahasiswa = m.id_user
+
+            {where_clause}
+
+            GROUP BY
+                m.id_user,
+                m.nama,
+                m.nim,
+                m.angkatan
+
+            {having_clause}
+        ) AS hasil
+    """
+
+    cursor.execute(count_query, params)
+    total_data = cursor.fetchone()["total_data"]
+    total_pages = ceil(total_data / limit)
+
+    #Ambil data sesuai halaman
+    data_query = f"""
+        SELECT
+            m.id_user,
+            m.nama,
+            m.nim,
+            m.angkatan,
+
+            COUNT(CASE WHEN p.status_verifikasi = 'valid' THEN p.id_presensi END) AS kehadiran
+
+        FROM mahasiswa m
+        LEFT JOIN presensi p
+            ON m.id_user = p.id_mahasiswa
+        {where_clause}
+        GROUP BY
+            m.id_user, m.nama, m.nim, m.angkatan
+        {having_clause}
+        ORDER BY {allowed_columns[sort_by]} {sort_order.upper()}
+        LIMIT %s OFFSET %s
+    """
+
+    if search:
+        keyword = f"%{search}%"
+        data_params.extend([keyword, keyword])
+
+    data_params = params.copy()
+    data_params.extend([limit, offset])
+
+    cursor.execute(data_query, data_params)
+    data = cursor.fetchall()
+
+    #Filter status
+    for item in data:
+            item["status"] = (
+                "Memenuhi"
+                if item["kehadiran"] >= 3
+                else "Belum Memenuhi"
+            )
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "data": data,
+        "pagination": {"page": page, "limit": limit, "total_data": total_data, "total_pages": total_pages}
+    })
 
 #Update status presensi
 @app.route("/verifikator-update-status-presensi/<int:id_presensi>", methods=["PUT"])
