@@ -1,9 +1,13 @@
-import "../styles/Verifikator_RiwayatVerifikasi_LihatDetail.css";
+import "../../styles/verifikator/RiwayatVerifikasi_LihatDetail.css";
 import { Icon } from '@iconify/react';
 import { CircularProgressbar, buildStyles,} from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useParams } from "react-router-dom";
 
 function LihatDetail() {
+    const { id_seminar } = useParams();
+    console.log(id_seminar);
+
     const totalPeserta = 20;
     const telahDiverifikasi = 18;
 
@@ -92,7 +96,7 @@ function LihatDetail() {
                     <form>
                         <div className="search-bar">
                             <Icon icon="radix-icons:magnifying-glass" className="search-icon"/>
-                            <input className="search-bar-input" type="search" placeholder="Cari mahasiswa"></input>
+                            <input className="search-bar-input" type="search" placeholder="Cari mahasiswa atau NIM"></input>
                         </div>
                     </form>
 

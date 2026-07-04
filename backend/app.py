@@ -52,6 +52,118 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
 
     return R * c
 
+@app.route("/riwayat-verifikasi")
+def riwayat_verifikasi():
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Search
+    search = request.args.get("search", "").strip()
+
+    #Filter
+    status = request.args.get("status", "")
+    tanggal_filter = request.args.get("tanggal", "Semua")
+    tanggal_awal = request.args.get("tanggal_awal")
+    tanggal_akhir = request.args.get("tanggal_akhir")
+
+    conditions = []
+    params = []
+
+    having_conditions = []
+
+    #Search
+    if search:
+        conditions.append("m.nama LIKE %s")
+        params.append(f"%{search}%")
+
+    #Filter
+    #Status
+    if status == "belum":
+        having_conditions.append("""
+            (COUNT(p.id_presensi) = 0 OR COALESCE(SUM(CASE WHEN p.status_verifikasi IN ('valid', 'invalid') THEN 1 ELSE 0 END), 0) = 0)
+        """)
+    elif status == "sedang":
+        having_conditions.append("""
+            (COALESCE(SUM(CASE WHEN p.status_verifikasi IN ('valid', 'invalid') THEN 1 ELSE 0 END), 0) > 0) AND COALESCE(SUM(CASE WHEN p.status_verifikasi IN ('valid', 'invalid') THEN 1 ELSE 0 END), 0) < COUNT(p.id_presensi)
+        """)
+    elif status == "selesai":
+        having_conditions.append("""
+            COUNT(p.id_presensi) > 0 AND COALESCE(SUM(CASE WHEN p.status_verifikasi IN ('valid', 'invalid') THEN 1 ELSE 0 END), 0) = COUNT(p.id_presensi)
+        """)
+
+    #Tanggal
+    if tanggal_filter == "Hari Ini":
+        conditions.append("DATE(s.tanggal) = CURDATE()")
+    elif tanggal_filter == "Minggu Ini":
+        conditions.append("YEARWEEK(s.tanggal,1)=YEARWEEK(CURDATE(),1)")
+    elif tanggal_filter == "Bulan Ini":
+        conditions.append("""
+            MONTH(s.tanggal)=MONTH(CURDATE())
+            AND YEAR(s.tanggal)=YEAR(CURDATE())
+        """)
+    #Rentang tanggal
+    elif tanggal_awal and tanggal_akhir:
+        conditions.append("DATE(s.tanggal) BETWEEN %s AND %s")
+        params.extend([tanggal_awal, tanggal_akhir])
+    
+    where_clause = ""
+
+    having_clause = ""
+
+    if conditions:
+        where_clause = "WHERE " + " AND ".join(conditions)
+
+    if having_conditions:
+        having_clause = "HAVING " + " AND ".join(having_conditions)
+
+    #Ambil data
+    query = f"""
+        SELECT
+            s.id_seminar,
+            m.nama,
+            s.tanggal,
+            s.waktu_mulai,
+            s.waktu_selesai,
+        COUNT(p.id_presensi) AS total_presensi,
+        SUM(CASE WHEN p.status_verifikasi IN ('valid', 'invalid') THEN 1 ELSE 0 END) AS selesai_diproses
+        FROM seminar s
+        JOIN mahasiswa m
+            ON m.id_user = s.id_mahasiswa
+        LEFT JOIN presensi p
+            ON p.id_seminar = s.id_seminar
+        {where_clause}
+        GROUP BY
+            s.id_seminar,
+            m.nama,
+            s.tanggal,
+            s.waktu_mulai,
+            s.waktu_selesai
+        {having_clause}
+        ORDER BY s.tanggal DESC
+    """
+
+    cursor.execute(query, params)
+    data = cursor.fetchall()
+
+    for item in data:
+        # Format tanggal
+        item["tanggal"] = item["tanggal"].strftime("%A, %d %B %Y")
+
+        # Format jam
+        item["waktu_mulai"] = format_waktu(item["waktu_mulai"])
+        item["waktu_selesai"] = format_waktu(item["waktu_selesai"])
+
+        #Status
+        item["selesai_diproses"] = item["selesai_diproses"] or 0
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "data": data
+    })
+
+#Menampilkan data riwayat presensi, fitur search, fitur filter dan card statistik kehadiran di halaman Riwayat Presensi - Mahasiswa
 @app.route("/riwayat-presensi-mahasiswa")
 def riwayat_presensi_mahasiswa():
     conn = get_db_connection ()
@@ -214,7 +326,7 @@ def export_laporan_presensi():
                     THEN p.id_presensi
                 END
             ) >= 3
-    """
+        """
     elif status == "Belum Memenuhi":
         having_clause = """
             HAVING COUNT(
@@ -223,7 +335,7 @@ def export_laporan_presensi():
                     THEN p.id_presensi
                 END
             ) < 3
-    """
+        """
 
     #Hitung total data
     count_query = f"""

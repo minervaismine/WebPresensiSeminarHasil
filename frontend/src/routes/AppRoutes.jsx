@@ -13,6 +13,7 @@ import DashboardVerifikator from "../pages/verifikator/DashboardVerifikator";
 import VerifikasiPresensi from "../pages/verifikator/VerifikasiPresensi";
 import VerifikasiPresensi_LihatDaftarHadir from "../pages/verifikator/VerifikasiPresensi_LihatDaftarHadir";
 import RiwayatVerifikasi from "../pages/verifikator/RiwayatVerifikasi";
+import RiwayatVerifikasi_LihatDetail from "../pages/verifikator/RiwayatVerifikasi_LihatDetail";
 import DashboardAdmin from "../pages/admin/DashboardAdmin";
 import KelolaDataMahasiswa from "../pages/admin/KelolaDataMahasiswa";
 import KelolaDataLokasi from "../pages/admin/KelolaDataLokasi";
@@ -41,6 +42,7 @@ function AppRoutes() {
       <Route path="/verifikasi-presensi" element={<VerifikasiPresensi />}/>
       <Route path="/riwayat-verifikasi" element={<RiwayatVerifikasi />}/>
       <Route path="/verifikator-lihat-daftar-hadir/:id_seminar" element={<VerifikasiPresensi_LihatDaftarHadir />}/>
+      <Route path="/riwayat-verifikasi-lihat-detail/:id_seminar" element={<RiwayatVerifikasi_LihatDetail />}/>
       
       {/* Admin */}
       <Route path="/dashboard-admin" element={<DashboardAdmin />}/>
