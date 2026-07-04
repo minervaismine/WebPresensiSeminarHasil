@@ -4,7 +4,7 @@
   flex-direction: column;
 }
 
-.back-btn {
+.back-btn-riwayat-presensi {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -18,7 +18,7 @@
   color: #1E293B;
 }
 
-.back-icon {
+.back-icon-riwayat-presensi {
   font-size: 35px;
   color: #1E293B;
 }
@@ -29,7 +29,7 @@
   display: flex;
   position: relative;
   align-items: center;
-  padding: 0 80px;
+  padding: 0 60px;
 }
 
 .navbar-menu-riwayat-presensi h1 {
@@ -43,27 +43,27 @@
   color: #1E293B;
 }
 
-.stats-card-container {
+.stats-card-container-riwayat-presensi {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   margin-top: 10px;
-  margin-left: 90px;
-  margin-right: 320px;
+  margin-left: 60px;
+  margin-right: auto;
 }
 
 .statistik-kehadiran-title {
   display: flex;
   justify-content: flex-start;
   margin-top: 10px;
-  margin-left: 90px;
-  font-size: 40px;
+  margin-left: 60px;
+  font-size: 38px;
   font-weight: 800;
   letter-spacing: 0.1px;
   color: #1E293B;
 }
 
-.stat-card {
+.stat-card-riwayat-presensi {
   background: #E9EEF6;
   border-radius: 15px;
   padding: 32px;
@@ -73,9 +73,10 @@
   align-items: center;
   position: relative;
   overflow: hidden;
+  width: 300px;
 }
 
-.stat-content {
+.stat-content-riwayat-presensi {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -83,7 +84,7 @@
   z-index: 2;
 }
 
-.stat-content h3 {
+.stat-content-riwayat-presensi h3 {
   margin: 0;
   padding-top: 10px;
   font-size: 18px;
@@ -92,7 +93,7 @@
   font-family: "Poppins", sans-serif;
 }
 
-.stat-content h1 {
+.stat-content-riwayat-presensi h1 {
   margin-top: 20px;
   font-size: 80px;
   font-weight: 800;
@@ -100,13 +101,13 @@
   color: #1E293B;
 }
 
-.stat-icon-wrapper {
+.stat-icon-wrapper-riwayat-presensi {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.stat-icon {
+.stat-icon-riwayat-presensi {
   position: absolute;
   right: -15px;
   bottom: -40px;;
@@ -119,29 +120,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 40px;
-  margin-left: 90px;
-  margin-right: 90px;
+  margin: 40px 60px 0 60px;
 }
 
 .riwayat-presensi-title {
   display: flex;
   justify-content: flex-start;
-  font-size: 40px;
+  font-size: 38px;
   font-weight: 800;
   letter-spacing: 0.1px;
   color: #1E293B;
 }
 
-.search-filter {
+.search-filter-riwayat-presensi {
   display: flex;
   align-items: center;
   gap: 40px;
 }
 
-.search-bar {
+.search-bar-riwayat-presensi {
   width: max-content;
-  height: 53px;
+  height: 48px;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -151,7 +150,7 @@
   box-sizing: border-box;
 }
 
-.search-bar-input {
+.search-bar-input-riwayat-presensi {
   font-size: 18px;
   font-family: "Poppins", sans-serif;
   color: #1E293B;
@@ -162,56 +161,157 @@
   width: 400px;
 }
 
-.search-bar-input::-webkit-search-cancel-button {
+.search-bar-input-riwayat-presensi::-webkit-search-cancel-button {
   margin-left: 20px;
   cursor: pointer;
 }
 
-.search-icon {
-  font-size: 30px;
+.search-icon-riwayat-presensi {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.search-bar-input::placeholder {
+.search-bar-input-riwayat-presensi::placeholder {
   color: #E9EEF6;
   font-size: 20px;
-  font-weight: 500;
 }
 
-.filter-dropdown {
+.filter-dropdown-riwayat-presensi-wrapper {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.filter-dropdown-riwayat-presensi {
   width: 180px;
-  height: 53px;
+  height: 48px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px;
   border: 2px solid #E9EEF6;
+  background: #FFFFFF;
   border-radius: 10px;
   cursor: pointer;
   box-sizing: border-box;
 }
 
-.filter-content {
+.filter-content-riwayat-presensi {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.filter-icon {
-  font-size: 30px;
+.filter-icon-riwayat-presensi {
+  font-size: 27px;
   color: #1E293B;
 }
 
-.filter-content span {
+.filter-content-riwayat-presensi span {
   font-family: "Poppins", sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: #1E293B;
 }
 
-.dropdown-icon {
-  font-size: 30px;
+.dropdown-icon-riwayat-presensi {
+  font-size: 27px;
   color: #1E293B;
+}
+
+.filter-menu-riwayat-presensi {
+  position:absolute;
+  top:55px;
+  right:0;
+  width:max-content;
+  gap: 50px;
+  display: flex;
+  justify-content: space-between;
+  padding:20px 25px 10px 25px;
+  background:#FFFFFF;
+  border:2px solid #E9EEF6;
+  border-radius:10px;
+  z-index:999;
+  text-align: left;
+}
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}
+
+.react-datepicker {
+  z-index: 9999 !important;
+}
+
+.filter-riwayat-presensi {
+  width: max-content;
+}
+
+.filter-riwayat-presensi h3,
+.filter-tanggal-seminar-riwayat-presensi h3 {
+  margin:0 0 18px;
+  font-size:20px;
+  font-weight:700;
+  color:#1E293B;
+}
+
+.filter-riwayat-presensi label,
+.filter-tanggal-seminar-riwayat-presensi label {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:10px;
+  font-size:16px;
+  font-family:"Poppins", sans-serif;
+  color:#1E293B;
+  cursor:pointer;
+}
+
+.filter-menu-riwayat-presensi input[type="checkbox"]{
+  width:19px;
+  height:19px;
+  cursor:pointer;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.judul-rentang-tanggal-riwayat-presensi {
+  font-size: 16px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #1E293B;
+}
+
+.seminar-date-input-riwayat-presensi {
+  display:flex;
+  align-items:center;
+  border:2px solid #E9EEF6;
+  border-radius:5px;
+  margin-bottom:10px; 
+}
+
+.seminar-date-input-riwayat-presensi span {
+  width: 100px;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1E293B;
+}
+
+.datepicker-filter-riwayat-presensi {
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #1E293B;
+  width: 100px;
+}
+
+.datepicker-filter-riwayat-presensi::placeholder {
+  color: #E9EEF6;
+}
+
+.datepicker-filter-riwayat-presensi input::-webkit-calendar-picker-indicator{
+  padding:0;
 }
 
 .riwayat-list {
@@ -228,30 +328,30 @@
   background: #E9EEF6;
   border-radius: 0 10px 10px 0;
   overflow: hidden;
-  margin-left: 90px;
-  margin-right: 90px;
+  margin-left: 60px;
+  margin-right: 60px;
 }
 
-.card-accent {
+.riwayat-card-accent {
   width: 10px;
   background: #2563EB;
   flex-shrink: 0;
 }
 
-.card-content {
+.riwayat-card-content {
   flex: 1;
   padding: 20px 28px;
   text-align: left;
 }
 
-.card-header {
+.riwayat-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 20px;
 }
 
-.nama-mahasiswa {
+.riwayat-nama-mahasiswa {
   margin: 0;
   font-family: "Poppins", sans-serif;
   font-size: 22px;
@@ -259,7 +359,7 @@
   color: #1E293B;
 }
 
-.judul-skripsi {
+.riwayat-judul-skripsi {
   margin-top: 10px;
   max-width: 900px;
   font-family: "Poppins", sans-serif;
@@ -268,7 +368,7 @@
   color: #1E293B;
 }
 
-.status-badge {
+.riwayat-status-badge {
   padding: 3px 30px;
   border-radius: 8px;
   font-family: "Poppins", sans-serif;
@@ -298,7 +398,7 @@
   color: #1E293B;
 }
 
-.informasi-seminar {
+.riwayat-informasi-seminar {
   margin-top: 10px;
   display: flex;
   gap: 15px;
@@ -307,17 +407,17 @@
   color: #1E293B;
 }
 
-.dosen-info {
+.riwayat-dosen-info {
   font-family: "Poppins", sans-serif;
   font-size: 15px;
   color: #1E293B;
 }
 
-.dosen-info p {
+.riwayat-dosen-info p {
   margin-top: 3px;
   margin-bottom: 0;
 }
 
-.separator {
+.riwayat-separator {
   margin: 0 15px;
 }

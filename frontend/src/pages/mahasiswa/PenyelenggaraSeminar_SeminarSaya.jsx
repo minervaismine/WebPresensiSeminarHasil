@@ -5,6 +5,8 @@ import QRCode from "react-qr-code";
 import { Icon } from '@iconify/react';
 
 function PenyelenggaraSeminar_SeminarSaya() {
+    const navigate = useNavigate();
+
     const [showQRModal, setShowQRModal] = useState(false);
     const [seminarData, setSeminarData] = useState(null);
     const [qrCode, setQrCode] = useState("");
@@ -12,8 +14,6 @@ function PenyelenggaraSeminar_SeminarSaya() {
     const [countdown, setCountdown] = useState("10:00");
     const [isExpired, setIsExpired] = useState(false);
     const [isActivated, setIsActivated] = useState(false);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSeminar = async () => {

@@ -1,239 +1,261 @@
 import "../../styles/mahasiswa/RiwayatPresensi.css";
 import { Icon } from '@iconify/react';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-function RiwayatPresensiMahasiswa() {
-  return (
-    <div className="page-menu-riwayat-presensi-layout">
-        {/* Navbar */}
-        <nav className="navbar-menu-riwayat-presensi">
-            <button className="back-btn">
-                <Icon icon="weui:back-filled" className="back-icon"/>
-                <span>Kembali</span>
-            </button>
+function RiwayatPresensi() {
+    const navigate = useNavigate();
 
-            <h1>RIWAYAT PRESENSI</h1>
-        </nav>
+    // Data dalam card statistik kehadiran
+    const [statistik, setStatistik] = useState({total_kehadiran: 0, kehadiran_valid: 0, kehadiran_pending: 0});
+    // Data dalam card riwayat presensi
+    const [riwayat, setRiwayat] = useState([]);
+    // Search
+    const [search, setSearch] = useState("");
+    // Filter
+    const [showFilter, setShowFilter] = useState(false);
+    const [status, setStatus] = useState("");
+    const [selectedTanggal, setSelectedTanggal] = useState("Semua");
+    const [tanggalAwal, setTanggalAwal] = useState(null);
+    const [tanggalAkhir, setTanggalAkhir] = useState(null);
 
-        {/* Statistik Kehadiran */}
-        <h1 className="statistik-kehadiran-title">Statistik Kehadiran</h1>
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchRiwayat();
+        }, 500);
 
-        <div className="stats-card-container">
-            <div className="stat-card">
-                <div className="stat-content">
-                    <h3>Total Kehadiran</h3>
-                    <h1>10</h1>
-                </div>
+        return () => clearTimeout(timer);
+    }, [search, status, selectedTanggal, tanggalAwal, tanggalAkhir,]);
 
-                <div className="stat-icon-wrapper">
-                    <Icon icon="mingcute:clipboard-fill" className="stat-icon"/>
-                </div>
-            </div>
+    const fetchRiwayat = async () => {
+        try {
+            const res = await axios.get(
+                "http://localhost:5000/riwayat-presensi-mahasiswa",
+                {
+                    params: {
+                        search: search,
+                        status,
+                        tanggal: selectedTanggal,
+                        tanggal_awal: tanggalAwal ? format(tanggalAwal, "yyyy-MM-dd") : "",
+                        tanggal_akhir: tanggalAkhir ? format(tanggalAkhir, "yyyy-MM-dd") : "",
+                    },
+                    withCredentials: true
+                }
+            );
+            setRiwayat(res.data.data);
+            setStatistik(res.data.statistik);
+        } catch(err) {
+            console.error(err);
+        }
+    };
 
-            <div className="stat-card">
-                <div className="stat-content">
-                    <h3>Kehadiran Valid</h3>
-                    <h1>8</h1>
-                </div>
+    const getStatusText = (status) => {
+        switch(status) {
+            case "valid":
+                return "Valid";
+            case "pending":
+                return "Pending";
+            case "invalid":
+                return "Invalid";
+            default:
+                return status;
+        }
+    }
 
-                <div className="stat-icon-wrapper">
-                    <Icon icon="gg:check-o" className="stat-icon"/>
-                </div>
-            </div>
+    const handleTanggalFilter = (value) => {
+        setSelectedTanggal(value);
 
-            <div className="stat-card">
-                <div className="stat-content">
-                    <h3>Kehadiran Pending</h3>
-                    <h1>1</h1>
-                </div>
+        //Menghapus input rentang tanggal
+        setTanggalAwal(null);
+        setTanggalAkhir(null);
 
-                <div className="stat-icon-wrapper">
-                    <Icon icon="mdi:clock" className="stat-icon"/>
-                </div>
-            </div>
-        </div>  
+        setPage(1);
+    };
 
-        {/* Judul, Search Bar, Filter  */}
-        <div className="header-riwayat-presensi-wrapper">
-            <h1 className="riwayat-presensi-title">Riwayat Presensi</h1>
+    return (
+        <div className="page-menu-riwayat-presensi-layout">
+            {/* Navbar */}
+            <nav className="navbar-menu-riwayat-presensi">
+                <button className="back-btn-riwayat-presensi" onClick={() => navigate(-1)}>
+                    <Icon icon="weui:back-filled" className="back-icon-riwayat-presensi"/>
+                    <span>Kembali</span>
+                </button>
 
-            <div className="search-filter">
-                <form>
-                    <div className="search-bar">
-                        <Icon icon="radix-icons:magnifying-glass" className="search-icon"/>
-                        <input className="search-bar-input" type="search" placeholder="Cari mahasiswa, judul atau dosen"></input>
+                <h1>RIWAYAT PRESENSI</h1>
+            </nav>
+
+            {/* Statistik Kehadiran */}
+            <h1 className="statistik-kehadiran-title">Statistik Kehadiran</h1>
+
+            <div className="stats-card-container-riwayat-presensi">
+                <div className="stat-card-riwayat-presensi">
+                    <div className="stat-content-riwayat-presensi">
+                        <h3>Total Kehadiran</h3>
+                        <h1>{statistik.total_kehadiran}</h1>
                     </div>
-                </form>
 
-                <div className="filter-dropdown">
-                    <div className="filter-content">
-                        <Icon icon="mi:filter" className="filter-icon"/>
-                        <span>Filter</span>
+                    <div className="stat-icon-wrapper-riwayat-presensi">
+                        <Icon icon="mingcute:clipboard-fill" className="stat-icon-riwayat-presensi"/>
+                    </div>
+                </div>
+
+                <div className="stat-card-riwayat-presensi">
+                    <div className="stat-content-riwayat-presensi">
+                        <h3>Kehadiran Valid</h3>
+                        <h1>{statistik.kehadiran_valid}</h1>
                     </div>
 
-                    <Icon icon="icon-park-outline:down" className="dropdown-icon"/>
+                    <div className="stat-icon-wrapper-riwayat-presensi">
+                        <Icon icon="gg:check-o" className="stat-icon-riwayat-presensi"/>
+                    </div>
                 </div>
+
+                <div className="stat-card-riwayat-presensi">
+                    <div className="stat-content-riwayat-presensi">
+                        <h3>Kehadiran Pending</h3>
+                        <h1>{statistik.kehadiran_pending}</h1>
+                    </div>
+
+                    <div className="stat-icon-wrapper-riwayat-presensi">
+                        <Icon icon="mdi:clock" className="stat-icon-riwayat-presensi"/>
+                    </div>
+                </div>
+            </div>  
+
+            {/* Judul, Search Bar, Filter  */}
+            <div className="header-riwayat-presensi-wrapper">
+                <h1 className="riwayat-presensi-title">Riwayat Presensi</h1>
+
+                <div className="search-filter-riwayat-presensi">
+                    <form>
+                        <div className="search-bar-riwayat-presensi">
+                            <Icon icon="radix-icons:magnifying-glass" className="search-icon-riwayat-presensi"/>
+                            <input className="search-bar-input-riwayat-presensi" type="search" placeholder="Cari mahasiswa, judul atau dosen" value={search} onChange={(e) => setSearch(e.target.value)}></input>
+                        </div>
+                    </form>
+
+                    <div className="filter-dropdown-riwayat-presensi-wrapper">
+                        <button type="button" className="filter-dropdown-riwayat-presensi" onClick={() => setShowFilter(!showFilter)}>
+                            <div className="filter-content-riwayat-presensi">
+                                <Icon icon="mi:filter" className="filter-icon-riwayat-presensi"/>
+                                <span>Filter</span>
+                            </div>
+
+                            <Icon icon="icon-park-outline:down" className="dropdown-icon-riwayat-presensi"/>
+                        </button>
+
+                        {/* Filter Dropdown */}
+                        {showFilter && (
+                            <div className="filter-menu-riwayat-presensi">
+                                <div className="filter-riwayat-presensi">
+                                    <h3>Status</h3>
+    
+                                    <label>
+                                        <input type="checkbox" checked={status === ""} onChange={() => setStatus("")}></input>
+                                        Semua
+                                    </label>
+
+                                    <label>
+                                        <input type="checkbox" checked={status === "pending"} onChange={() => setStatus("pending")}></input>
+                                        Pending
+                                    </label>
+    
+                                    <label>
+                                        <input type="checkbox" checked={status === "valid"} onChange={() => setStatus("valid")}></input>
+                                        Valid
+                                    </label>
+
+                                    <label>
+                                        <input type="checkbox" checked={status === "invalid"} onChange={() => setStatus("invalid")}></input>
+                                        Invalid
+                                    </label>
+                                </div>
+    
+                                <div className="filter-tanggal-seminar-riwayat-presensi">
+                                    <h3>Tanggal</h3>
+    
+                                    <label>
+                                        <input type="checkbox" checked={selectedTanggal === "Semua"} onChange={() => handleTanggalFilter("Semua")}></input>
+                                        Semua
+                                    </label>
+    
+                                    <label>
+                                        <input type="checkbox" checked={selectedTanggal === "Hari Ini"} onChange={() => handleTanggalFilter("Hari Ini")}></input>
+                                        Hari Ini
+                                    </label>
+    
+                                    <label>
+                                        <input type="checkbox" checked={selectedTanggal === "Minggu Ini"} onChange={() => handleTanggalFilter("Minggu Ini")}></input>
+                                        Minggu Ini
+                                    </label>
+    
+                                    <label>
+                                        <input type="checkbox" checked={selectedTanggal === "Bulan Ini"} onChange={() => handleTanggalFilter("Bulan Ini")}></input>
+                                        Bulan Ini
+                                    </label>
+    
+                                    <p className="judul-rentang-tanggal-riwayat-presensi">Pilih Tanggal:</p>
+                                    
+                                    <div className="seminar-date-input-riwayat-presensi">
+                                        <span>Dari</span>
+                                        <DatePicker 
+                                            selected={tanggalAwal} onChange={(date) => {setTanggalAwal(date); setSelectedTanggal("");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-riwayat-presensi" popperPlacement="bottom-start" portalId="root">
+                                        </DatePicker>
+                                    </div>
+    
+                                    <div className="seminar-date-input-riwayat-presensi">
+                                        <span>Sampai</span>
+                                        <DatePicker
+                                            selected={tanggalAkhir} onChange={(date) => {setTanggalAkhir(date); setSelectedTanggal("");}} dateFormat="dd/MM/yyyy" placeholderText="DD/MM/YY" className="datepicker-filter-riwayat-presensi" popperPlacement="bottom-start" portalId="root">
+                                        </DatePicker>
+                                    </div>
+                                </div>                            
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Riwayat Presensi */}
+            <div className="riwayat-list">
+                {riwayat.map((item) => (
+                    <div className="riwayat-card" key={item.id_presensi}>
+                        <div className="riwayat-card-accent"></div>
+
+                        <div className="riwayat-card-content">
+                            <div className="riwayat-card-header">
+                                <div>
+                                    <h2 className="riwayat-nama-mahasiswa">{item.nama_mahasiswa}</h2>
+                                    <p className="riwayat-judul-skripsi">"{item.judul_penelitian}"</p>
+                                </div>
+
+                                <span className={`riwayat-status-badge ${item.status_verifikasi}`}>{getStatusText(item.status_verifikasi)}</span>
+                            </div>
+
+                            <div className="riwayat-informasi-seminar">
+                                <span>{item.tanggal}</span>
+                                <span>|</span>
+                                <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
+                            </div>
+
+                            <div className="riwayat-dosen-info">
+                                <p><strong>Pembimbing:</strong>{" "}{item.dosen_pembimbing}</p>
+
+                                <p>
+                                    <strong>Penguji:</strong>{" "}{item.dosen_penguji_1}
+                                    <span className="riwayat-separator">|</span>
+                                    {item.dosen_penguji_2}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))} 
             </div>
         </div>
-
-        {/* Riwayat Presensi */}
-        <div className="riwayat-list">
-            <div className="riwayat-card">
-                <div className="card-accent"></div>
-
-                <div className="card-content">
-                    <div className="card-header">
-                        <div>
-                            <h2 className="nama-mahasiswa">Karina Minerva Romeda</h2>
-                            <p className="judul-skripsi">"Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa"</p>
-                        </div>
-
-                        <span className="status-badge pending">Pending</span>
-                    </div>
-
-                    <div className="informasi-seminar">
-                        <span>Senin, 13 April 2026</span>
-                        <span>|</span>
-                        <span>13.00 - 14.30</span>
-                    </div>
-
-                    <div className="dosen-info">
-                        <p><strong>Pembimbing:</strong> Dr. Hendra, S.Si., M.Kom.</p>
-
-                        <p>
-                            <strong>Penguji:</strong> Edy Saputra Rusdi, S.Si., M.Si.
-                            <span className="separator">|</span>
-                            Siti Rabiatul Adawiyah, S.Si., M.Kom.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="riwayat-card">
-                <div className="card-accent"></div>
-
-                <div className="card-content">
-                    <div className="card-header">
-                        <div>
-                            <h2 className="nama-mahasiswa">Karina Minerva Romeda</h2>
-                            <p className="judul-skripsi">"Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa"</p>
-                        </div>
-
-                        <span className="status-badge valid">Valid</span>
-                    </div>
-
-                    <div className="informasi-seminar">
-                        <span>Senin, 13 April 2026</span>
-                        <span>|</span>
-                        <span>13.00 - 14.30</span>
-                    </div>
-
-                    <div className="dosen-info">
-                        <p><strong>Pembimbing:</strong> Dr. Hendra, S.Si., M.Kom.</p>
-
-                        <p>
-                            <strong>Penguji:</strong> Edy Saputra Rusdi, S.Si., M.Si.
-                            <span className="separator">|</span>
-                            Siti Rabiatul Adawiyah, S.Si., M.Kom.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="riwayat-card">
-                <div className="card-accent"></div>
-
-                <div className="card-content">
-                    <div className="card-header">
-                        <div>
-                            <h2 className="nama-mahasiswa">Karina Minerva Romeda</h2>
-                            <p className="judul-skripsi">"Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa"</p>
-                        </div>
-
-                        <span className="status-badge valid">Valid</span>
-                    </div>
-
-                    <div className="informasi-seminar">
-                        <span>Senin, 13 April 2026</span>
-                        <span>|</span>
-                        <span>13.00 - 14.30</span>
-                    </div>
-
-                    <div className="dosen-info">
-                        <p><strong>Pembimbing:</strong> Dr. Hendra, S.Si., M.Kom.</p>
-
-                        <p>
-                            <strong>Penguji:</strong> Edy Saputra Rusdi, S.Si., M.Si.
-                            <span className="separator">|</span>
-                            Siti Rabiatul Adawiyah, S.Si., M.Kom.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="riwayat-card">
-                <div className="card-accent"></div>
-
-                <div className="card-content">
-                    <div className="card-header">
-                        <div>
-                            <h2 className="nama-mahasiswa">Karina Minerva Romeda</h2>
-                            <p className="judul-skripsi">"Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa"</p>
-                        </div>
-
-                        <span className="status-badge valid">Valid</span>
-                    </div>
-
-                    <div className="informasi-seminar">
-                        <span>Senin, 13 April 2026</span>
-                        <span>|</span>
-                        <span>13.00 - 14.30</span>
-                    </div>
-
-                    <div className="dosen-info">
-                        <p><strong>Pembimbing:</strong> Dr. Hendra, S.Si., M.Kom.</p>
-
-                        <p>
-                            <strong>Penguji:</strong> Edy Saputra Rusdi, S.Si., M.Si.
-                            <span className="separator">|</span>
-                            Siti Rabiatul Adawiyah, S.Si., M.Kom.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="riwayat-card">
-                <div className="card-accent"></div>
-
-                <div className="card-content">
-                    <div className="card-header">
-                        <div>
-                            <h2 className="nama-mahasiswa">Karina Minerva Romeda</h2>
-                            <p className="judul-skripsi">"Pengembangan Sistem Presensi Seminar Hasil Berbasis Web Menggunakan QR Code dan Geolocation Validation untuk Meningkatkan Akurasi Data Kehadiran Mahasiswa"</p>
-                        </div>
-
-                        <span className="status-badge invalid">Invalid</span>
-                    </div>
-
-                    <div className="informasi-seminar">
-                        <span>Senin, 13 April 2026</span>
-                        <span>|</span>
-                        <span>13.00 - 14.30</span>
-                    </div>
-
-                    <div className="dosen-info">
-                        <p><strong>Pembimbing:</strong> Dr. Hendra, S.Si., M.Kom.</p>
-
-                        <p>
-                            <strong>Penguji:</strong> Edy Saputra Rusdi, S.Si., M.Si.
-                            <span className="separator">|</span>
-                            Siti Rabiatul Adawiyah, S.Si., M.Kom.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-  );
+    );
 }
 
-export default RiwayatPresensiMahasiswa;
+export default RiwayatPresensi;

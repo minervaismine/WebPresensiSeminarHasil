@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from config import get_db_connection
 from datetime import datetime, timedelta
@@ -8,9 +8,20 @@ import locale
 from openpyxl import Workbook
 from io import BytesIO
 from flask import send_file
+from flask_session import Session
 
 app = Flask(__name__)
-CORS(app)
+
+app.secret_key = "web_seminar_key"
+
+app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = False
+
+Session(app)
+
+CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
 try:
     locale.setlocale(locale.LC_TIME, "id_ID.UTF-8")   # Linux/Mac
@@ -41,6 +52,113 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
 
     return R * c
 
+@app.route("/riwayat-presensi-mahasiswa")
+def riwayat_presensi_mahasiswa():
+    conn = get_db_connection ()
+    cursor = conn.cursor(dictionary=True)
+
+    id_mahasiswa = session.get("id_user")
+
+    if not id_mahasiswa:
+        return jsonify({"message": "Unauthorized"}), 401
+
+    #Search
+    search = request.args.get("search", "").strip()
+
+    #Filter
+    status = request.args.get("status", "")
+    tanggal_filter = request.args.get("tanggal", "Semua")
+    tanggal_awal = request.args.get("tanggal_awal")
+    tanggal_akhir = request.args.get("tanggal_akhir")
+
+    conditions = ["p.id_mahasiswa = %s"]
+    params = [id_mahasiswa]
+
+    #Search
+    if search:
+        keyword = f"%{search}%"
+        conditions.append("(m.nama LIKE %s OR s.judul_penelitian LIKE %s OR s.dosen_pembimbing LIKE %s OR s.dosen_penguji_1 LIKE %s OR s.dosen_penguji_2 LIKE %s)")
+        params.extend([keyword, keyword, keyword, keyword, keyword])
+
+    #Filter
+    #Status
+    if status:
+        conditions.append("p.status_verifikasi = %s")
+        params.append(status)
+
+    #Tanggal
+    if tanggal_filter == "Hari Ini":
+        conditions.append("DATE(s.tanggal) = CURDATE()")
+    elif tanggal_filter == "Minggu Ini":
+        conditions.append("YEARWEEK(s.tanggal,1)=YEARWEEK(CURDATE(),1)")
+    elif tanggal_filter == "Bulan Ini":
+        conditions.append("""
+            MONTH(s.tanggal)=MONTH(CURDATE())
+            AND YEAR(s.tanggal)=YEAR(CURDATE())
+        """)
+    #Rentang tanggal
+    elif tanggal_awal and tanggal_akhir:
+        conditions.append("DATE(s.tanggal) BETWEEN %s AND %s")
+        params.extend([tanggal_awal, tanggal_akhir])
+
+    where_clause = "WHERE " + " AND ".join(conditions)
+
+    #Data statistik kehadiran
+    statistik_query = f"""
+        SELECT
+            COUNT(*) AS total_kehadiran,
+            SUM(CASE WHEN p.status_verifikasi = 'valid' THEN 1 ELSE 0 END) AS kehadiran_valid,
+            SUM(CASE WHEN p.status_verifikasi = 'pending' THEN 1 ELSE 0 END) AS kehadiran_pending
+        FROM presensi p
+        WHERE id_mahasiswa = %s
+    """
+    cursor.execute(statistik_query, (id_mahasiswa,))
+    statistik = cursor.fetchone()
+
+    #Ambil data
+    data_query = f"""
+        SELECT
+            p.id_presensi,
+            p.status_verifikasi,
+            
+            s.judul_penelitian,
+            s.tanggal,
+            s.waktu_mulai,
+            s.waktu_selesai,
+
+            m.nama AS nama_mahasiswa,
+            s.dosen_pembimbing,
+            s.dosen_penguji_1,
+            s.dosen_penguji_2
+        FROM presensi p
+        JOIN seminar s
+            ON s.id_seminar = p.id_seminar
+        JOIN mahasiswa m
+            ON m.id_user = s.id_mahasiswa
+        {where_clause}
+        ORDER BY s.tanggal DESC
+    """
+
+    cursor.execute(data_query, params)
+    data = cursor.fetchall()
+
+    for item in data:
+        # Format tanggal
+        item["tanggal"] = item["tanggal"].strftime("%A, %d %B %Y")
+
+        # Format jam
+        item["waktu_mulai"] = format_waktu(item["waktu_mulai"])
+        item["waktu_selesai"] = format_waktu(item["waktu_selesai"])
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "statistik": statistik,
+        "data": data
+    })
+
+#Export laporan presensi ke excel
 @app.route("/laporan-presensi/export")
 def export_laporan_presensi():
     conn = get_db_connection()
@@ -1999,6 +2117,9 @@ def login():
             "field": "password",
             "message": "Password salah"
         }), 401
+    
+    session["id_user"] = user["id_user"]
+    session["role"] = user["role"]
     
     payload = {
         "id_user": user["id_user"],

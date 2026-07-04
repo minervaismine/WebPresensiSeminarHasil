@@ -65,7 +65,7 @@ function Dashboard() {
                         <div className="dashboard-mahasiswa-card-content">
                             <p>Lihat informasi seminar Anda dan akses QR Code untuk presensi seminar</p>
                         </div>
-                        <button className="detail-btn" onClick={handleSeminarSaya}>Lihat Detail</button>
+                        <button className="detail-btn-mahasiswa" onClick={handleSeminarSaya}>Lihat Detail</button>
                     </div>
 
                     <div className="mahasiswa-menu-card">
@@ -76,7 +76,7 @@ function Dashboard() {
                         <div className="dashboard-mahasiswa-card-content">
                             <p>Scan QR Code dan validasi lokasi otomatis untuk mencatat kehadiran seminar</p>
                         </div>
-                        <button className="detail-btn" onClick={() => navigate("/presensi")}>Lihat Detail</button>
+                        <button className="detail-btn-mahasiswa" onClick={() => navigate("/presensi")}>Lihat Detail</button>
                     </div>
 
                     <div className="mahasiswa-menu-card">
