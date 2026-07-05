@@ -5,41 +5,22 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
-    const [username, setUsername] = useState("");
+    const [user, setUser] = useState(null);
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-
-        if (user) {
-            setUsername(user.username);
-        }
+        const data = JSON.parse(localStorage.getItem("user"));
+        setUser(data);
     }, []);
 
-    const handleSeminarSaya = async () => {
-        const user = JSON.parse(localStorage.getItem("user"));
+    const handleSeminarSaya = () => {
+        if (!user) return;
 
-        try {
-            const token = localStorage.getItem("token");
-
-            const response = await fetch(
-                `http://127.0.0.1:5000/cek-seminar/${user.id_mahasiswa}`,
-                {
-                    headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                }
-            );
-
-            const result = await response.json();
-
-            if (result.memiliki_seminar) {
-                navigate("/penyelenggara-seminar-saya");
-            } else {
-                navigate("/peserta-seminar-saya")
-            }
-        } catch (error) {
-            console.error(error);
+        if (user.memiliki_seminar) {
+            navigate("/penyelenggara-seminar-saya");
+        } else {
+            navigate("/peserta-seminar-saya")
         }
     };
 
@@ -49,7 +30,7 @@ function Dashboard() {
 
             <div className="dashboard-mahasiswa-container">
                 {/* Title */}
-                <h1 className="dashboard-mahasiswa-title">Selamat Datang, {username}</h1>
+                <h1 className="dashboard-mahasiswa-title">Selamat Datang, {user?.username}</h1>
                 <p className="dashboard-mahasiswa-description">Aplikasi ini digunakan sebagai presensi online sekaligus memantau kehadiran mahasiswa dalam mengikuti seminar, sebagai syarat mengajukan seminar hasil. Syarat minimal yang harus dipenuhi adalah minimal 3 kali mengikuti seminar.</p>
             
                 {/* Menu */}

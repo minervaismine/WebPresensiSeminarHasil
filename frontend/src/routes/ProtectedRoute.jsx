@@ -1,7 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-function ProtectedRoute({ children, allowedRoles }) {
+function ProtectedRoute({
+    children,
+    allowedRoles,
+    seminarType = null
+}) {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -9,24 +13,27 @@ function ProtectedRoute({ children, allowedRoles }) {
         return <Navigate to="/" replace />;
     }
 
-    try {
-        const decoded = jwtDecode(token);
-
-        if (decoded.exp * 1000 < Date.now()) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            return <Navigate to="/" replace />;
-        }
-
-        // cek role
-        if (!allowedRoles.includes(user.role)) {
-            return <Navigate to="/" replace />;
-        }
-
-    } catch {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+    if (!allowedRoles.includes(user.role)) {
         return <Navigate to="/" replace />;
+    }
+
+    if (user.role === "mahasiswa") {
+
+        // Hanya mahasiswa yang memiliki seminar
+        if (
+            seminarType === "penyelenggara" &&
+            !user.memiliki_seminar
+        ) {
+            return <Navigate to="/dashboard-mahasiswa" replace />;
+        }
+
+        // Hanya mahasiswa yang tidak memiliki seminar
+        if (
+            seminarType === "peserta" &&
+            user.memiliki_seminar
+        ) {
+            return <Navigate to="/dashboard-mahasiswa" replace />;
+        }
     }
 
     return children;

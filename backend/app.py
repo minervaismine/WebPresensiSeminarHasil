@@ -2396,31 +2396,7 @@ def detail_seminar(id_user):
 
     return jsonify(seminar)
 
-#Cek apakah mahasiswa yang login memiliki jadwal seminar atau tidak, untuk menyesuaikan tampilan halaman seminar saya
-@app.route("/cek-seminar/<int:id_mahasiswa>")
-@login_required
-@role_required("mahasiswa")
-def cek_seminar(id_mahasiswa):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    query = """
-        SELECT *
-        FROM seminar
-        WHERE id_mahasiswa = %s
-    """
-
-    cursor.execute(query, (id_mahasiswa,))
-    seminar = cursor.fetchone()
-
-    cursor.close()
-    conn.close()
-
-    return jsonify({
-        "memiliki_seminar": seminar is not None
-    })
-
-#Menghubungkan halaman login dengan BE
+#Menghubungkan halaman login dengan BE dan mengecek apakah mahasiswa yang login memiliki jadwal seminar atau tidak, untuk menyesuaikan tampilan halaman seminar saya
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -2431,8 +2407,8 @@ def login():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
-    query = """
-        SELECT 
+    cursor.execute("""
+        SELECT
             u.*,
             m.nim,
             m.nama,
@@ -2441,32 +2417,51 @@ def login():
         LEFT JOIN mahasiswa m
             ON u.id_user = m.id_user
         WHERE u.username = %s
-    """
+    """, (username,))
 
-    cursor.execute(query, (username,))
     user = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
-
+    # Username salah
     if not user:
+        cursor.close()
+        conn.close()
+
         return jsonify({
             "success": False,
             "field": "username",
-            "message": "Username salah",
+            "message": "Username salah"
         }), 401
 
+    # Password salah
     if password != user["password"]:
+        cursor.close()
+        conn.close()
+
         return jsonify({
             "success": False,
             "field": "password",
             "message": "Password salah"
         }), 401
-    
+
+    # Default
+    memiliki_seminar = False
+
+    # Jika mahasiswa, cek apakah memiliki seminar
+    if user["role"] == "mahasiswa":
+        cursor.execute("""
+            SELECT 1
+            FROM seminar
+            WHERE id_mahasiswa = %s
+            LIMIT 1
+        """, (user["id_user"],))
+
+        memiliki_seminar = cursor.fetchone() is not None
+
     payload = {
         "id_user": user["id_user"],
         "username": user["username"],
         "role": user["role"],
+        "memiliki_seminar": memiliki_seminar,
         "exp": datetime.utcnow() + timedelta(hours=3)
     }
 
@@ -2475,7 +2470,10 @@ def login():
         SECRET_KEY,
         algorithm="HS256"
     )
-    
+
+    cursor.close()
+    conn.close()
+
     return jsonify({
         "success": True,
         "token": token,
@@ -2485,7 +2483,8 @@ def login():
             "username": user["username"],
             "role": user["role"],
             "nim": user["nim"],
-            "nama": user["nama"]
+            "nama": user["nama"],
+            "memiliki_seminar": memiliki_seminar
         }
     })
 

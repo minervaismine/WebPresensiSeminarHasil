@@ -29,12 +29,12 @@ function AppRoutes() {
 
       {/* Mahasiswa */}
       <Route path="/dashboard-mahasiswa" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><DashboardMahasiswa /></ProtectedRoute>}/>
-      <Route path="/peserta-seminar-saya" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PesertaSeminarSaya /></ProtectedRoute>}/>
-      <Route path="/penyelenggara-seminar-saya" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PenyelenggaraSeminarSaya /></ProtectedRoute>}/>
+      <Route path="/peserta-seminar-saya" element={<ProtectedRoute allowedRoles={["mahasiswa"]} seminarType="peserta"><PesertaSeminarSaya /></ProtectedRoute>}/>
+      <Route path="/penyelenggara-seminar-saya" element={<ProtectedRoute allowedRoles={["mahasiswa"]} seminarType="penyelenggara"><PenyelenggaraSeminarSaya /></ProtectedRoute>}/>
       <Route path="/presensi-berhasil" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PresensiBerhasil /></ProtectedRoute>}/>
       <Route path="/presensi-gagal" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PresensiGagal /></ProtectedRoute>}/>
       <Route path="/presensi-gagal-role" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PresensiGagalRole /></ProtectedRoute>}/>
-      <Route path="/lihat-daftar-hadir/:idSeminar" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><LihatDaftarHadir /></ProtectedRoute>}/>
+      <Route path="/lihat-daftar-hadir/:idSeminar" element={<ProtectedRoute allowedRoles={["mahasiswa"]} seminarType="penyelenggara"><LihatDaftarHadir /></ProtectedRoute>}/>
       <Route path="/presensi" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><Presensi /></ProtectedRoute>}/>
       <Route path="/riwayat-presensi" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><RiwayatPresensi /></ProtectedRoute>}/>
       
