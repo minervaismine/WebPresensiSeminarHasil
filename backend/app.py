@@ -52,6 +52,124 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
 
     return R * c
 
+@app.route("/riwayat-verifikasi/<int:id_seminar>")
+def detail_riwayat_verifikasi(id_seminar):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    #Pagination
+    page = int(request.args.get("page", 1))
+    limit = int(request.args.get("limit", 5))
+    offset = (page - 1) * limit
+
+    #Parameter sorting
+    sort_by = request.args.get("sort_by", "waktu_scan")
+    sort_order = request.args.get("sort_order", "desc").lower()
+
+    # Search
+    search = request.args.get("search", "").strip()
+
+    #Filter
+    status_verifikasi = request.args.get("status_verifikasi", "")
+
+    #Validasi agar aman dari SQL Injection
+    allowed_columns = {"nama":"m.nama", "nim":"m.nim", "waktu_scan":"p.waktu_scan", "waktu_verifikasi":"p.waktu_verifikasi"}
+    allowed_orders = ["asc", "desc"]
+
+    if sort_by not in allowed_columns:
+        sort_by = "waktu_scan"
+
+    if sort_order not in allowed_orders:
+        sort_order = "desc"
+
+    conditions = ["p.id_seminar = %s"]
+    params = [id_seminar]
+
+    #Search
+    if search:
+        keyword = f"%{search}%"
+        conditions.append("(m.nama LIKE %s OR m.nim LIKE %s)")
+        params.extend([keyword, keyword])
+
+    # Filter status
+    if status_verifikasi:
+        conditions.append("p.status_verifikasi = %s")
+        params.append(status_verifikasi)
+
+    where_clause = "WHERE " + " AND ".join(conditions)
+    order_clause = f"{allowed_columns[sort_by]} {sort_order.upper()}"
+
+    #Hitung data
+    count_query = f"""
+        SELECT COUNT(*) AS total
+        FROM presensi p
+        JOIN mahasiswa m
+            ON m.id_user = p.id_mahasiswa
+        {where_clause}
+    """
+
+    cursor.execute(count_query, params)
+    total_data = cursor.fetchone()["total"]
+    total_pages = ceil(total_data / limit)
+
+    #Hitung data untuk card total peserta, dan total status (pending, valid, invalid)
+    card_query = """
+        SELECT
+            COUNT(*) AS total_peserta,
+            COALESCE(SUM(CASE WHEN status_verifikasi = 'pending' THEN 1 ELSE 0 END),0) AS total_pending,
+            COALESCE(SUM(CASE WHEN status_verifikasi = 'valid' THEN 1 ELSE 0 END),0) AS total_valid,
+            COALESCE(SUM(CASE WHEN status_verifikasi = 'invalid' THEN 1 ELSE 0 END),0) AS total_invalid
+        FROM presensi
+        WHERE id_seminar = %s
+    """
+
+    cursor.execute(card_query, (id_seminar,))
+    card = cursor.fetchone()
+
+    #Ambil data sesuai halaman
+    query = f"""
+        SELECT
+            p.id_presensi,
+            m.nama,
+            m.nim,
+            p.waktu_scan,
+            p.status_verifikasi,
+            p.waktu_verifikasi
+        FROM presensi p
+        JOIN mahasiswa m
+            ON m.id_user = p.id_mahasiswa
+        {where_clause}
+        ORDER BY {order_clause}
+        LIMIT %s OFFSET %s
+    """
+
+    data_params = params.copy()
+    data_params.extend([limit, offset])
+
+    cursor.execute(query, data_params)
+    data = cursor.fetchall()
+
+    for item in data:
+        #Format waktu scan
+        if item["waktu_scan"]:
+            item["waktu_scan"] = item["waktu_scan"].strftime("%d %B %Y, %H:%M")
+
+        #Format waktu verifikasi
+        if item["waktu_verifikasi"]:
+            item["waktu_verifikasi"] = item["waktu_verifikasi"].strftime("%d %B %Y, %H:%M")
+        else:
+            item["waktu_verifikasi"] = "-"
+    
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "data": data,
+        "card": card,
+        "pagination": {"page": page, "limit": limit, "total_data": total_data, "total_pages": total_pages}
+    })
+
+#Menampilkan data progress riwayat verifikasi, fitur search dan fitur filter halaman Riwayat Verifikasi - Verifikator
 @app.route("/riwayat-verifikasi")
 def riwayat_verifikasi():
     conn = get_db_connection()
@@ -437,7 +555,7 @@ def get_data_angkatan_laporan():
 
     return jsonify(data)
 
-#Menampilkan data laporan presensi, pagination, fitur search dan fitur filter dan download di halaman Verifikasi Presensi - Verfikator
+#Menampilkan data laporan presensi, pagination, fitur search dan fitur filter dan download di halaman Laporan Presensi - Admin
 @app.route("/laporan-presensi")
 def laporan_presensi():
     conn = get_db_connection()
@@ -604,7 +722,8 @@ def update_status_presensi(id_presensi):
         UPDATE presensi
         SET
             status_verifikasi = %s,
-            id_user_verifikator = %s
+            id_user_verifikator = %s,
+            waktu_verifikasi = NOW()
         WHERE id_presensi = %s
     """, (status, id_verifikator, id_presensi))
 
