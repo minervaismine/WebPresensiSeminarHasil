@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 
 function LihatDaftarHadir() {
     const navigate = useNavigate();
@@ -33,8 +33,7 @@ function LihatDaftarHadir() {
 
     const fetchDaftarHadir = async (page = 1, searchKeyword = search) => {
         try {
-            const res = await axios.get(
-                `http://localhost:5000/daftar-hadir/${idSeminar}`,
+            const res = await api.get(`/daftar-hadir/${idSeminar}`,
                 {
                     params:{
                         page: currentPage,

@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "../routes/ProtectedRoute";
 import Login from "../pages/auth/Login";
 import DashboardMahasiswa from "../pages/mahasiswa/DashboardMahasiswa";
 import PesertaSeminarSaya from "../pages/mahasiswa/PesertaSeminar_SeminarSaya";
@@ -27,29 +28,29 @@ function AppRoutes() {
       <Route path="/" element={<Login />} />
 
       {/* Mahasiswa */}
-      <Route path="/dashboard-mahasiswa" element={<DashboardMahasiswa />}/>
-      <Route path="/peserta-seminar-saya" element={<PesertaSeminarSaya />}/>
-      <Route path="/penyelenggara-seminar-saya" element={<PenyelenggaraSeminarSaya />}/>
-      <Route path="/presensi-berhasil" element={<PresensiBerhasil />}/>
-      <Route path="/presensi-gagal" element={<PresensiGagal />}/>
-      <Route path="/presensi-gagal-role" element={<PresensiGagalRole />}/>
-      <Route path="/lihat-daftar-hadir/:idSeminar" element={<LihatDaftarHadir />}/>
-      <Route path="/presensi" element={<Presensi />}/>
-      <Route path="/riwayat-presensi" element={<RiwayatPresensi />}/>
+      <Route path="/dashboard-mahasiswa" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><DashboardMahasiswa /></ProtectedRoute>}/>
+      <Route path="/peserta-seminar-saya" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PesertaSeminarSaya /></ProtectedRoute>}/>
+      <Route path="/penyelenggara-seminar-saya" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PenyelenggaraSeminarSaya /></ProtectedRoute>}/>
+      <Route path="/presensi-berhasil" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PresensiBerhasil /></ProtectedRoute>}/>
+      <Route path="/presensi-gagal" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PresensiGagal /></ProtectedRoute>}/>
+      <Route path="/presensi-gagal-role" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><PresensiGagalRole /></ProtectedRoute>}/>
+      <Route path="/lihat-daftar-hadir/:idSeminar" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><LihatDaftarHadir /></ProtectedRoute>}/>
+      <Route path="/presensi" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><Presensi /></ProtectedRoute>}/>
+      <Route path="/riwayat-presensi" element={<ProtectedRoute allowedRoles={["mahasiswa"]}><RiwayatPresensi /></ProtectedRoute>}/>
       
       {/* Verifikator */}
-      <Route path="/dashboard-verifikator" element={<DashboardVerifikator />}/>
-      <Route path="/verifikasi-presensi" element={<VerifikasiPresensi />}/>
-      <Route path="/riwayat-verifikasi" element={<RiwayatVerifikasi />}/>
-      <Route path="/verifikator-lihat-daftar-hadir/:id_seminar" element={<VerifikasiPresensi_LihatDaftarHadir />}/>
-      <Route path="/riwayat-verifikasi-lihat-detail/:id_seminar" element={<RiwayatVerifikasi_LihatDetail />}/>
+      <Route path="/dashboard-verifikator" element={<ProtectedRoute allowedRoles={["verifikator"]}><DashboardVerifikator /></ProtectedRoute>}/>
+      <Route path="/verifikasi-presensi" element={<ProtectedRoute allowedRoles={["verifikator"]}><VerifikasiPresensi /></ProtectedRoute>}/>
+      <Route path="/riwayat-verifikasi" element={<ProtectedRoute allowedRoles={["verifikator"]}><RiwayatVerifikasi /></ProtectedRoute>}/>
+      <Route path="/verifikator-lihat-daftar-hadir/:id_seminar" element={<ProtectedRoute allowedRoles={["verifikator"]}><VerifikasiPresensi_LihatDaftarHadir /></ProtectedRoute>}/>
+      <Route path="/riwayat-verifikasi-lihat-detail/:id_seminar" element={<ProtectedRoute allowedRoles={["verifikator"]}><RiwayatVerifikasi_LihatDetail /></ProtectedRoute>}/>
       
       {/* Admin */}
-      <Route path="/dashboard-admin" element={<DashboardAdmin />}/>
-      <Route path="/kelola-data-mahasiswa" element={<KelolaDataMahasiswa />}/>
-      <Route path="/kelola-data-seminar" element={<KelolaDataSeminar />}/>
-      <Route path="/kelola-data-lokasi" element={<KelolaDataLokasi />}/>
-      <Route path="/laporan-presensi" element={<LaporanPresensi />}/>
+      <Route path="/dashboard-admin" element={<ProtectedRoute allowedRoles={["admin"]}><DashboardAdmin /></ProtectedRoute>}/>
+      <Route path="/kelola-data-mahasiswa" element={<ProtectedRoute allowedRoles={["admin"]}><KelolaDataMahasiswa /></ProtectedRoute>}/>
+      <Route path="/kelola-data-seminar" element={<ProtectedRoute allowedRoles={["admin"]}><KelolaDataSeminar /></ProtectedRoute>}/>
+      <Route path="/kelola-data-lokasi" element={<ProtectedRoute allowedRoles={["admin"]}><KelolaDataLokasi /></ProtectedRoute>}/>
+      <Route path="/laporan-presensi" element={<ProtectedRoute allowedRoles={["admin"]}><LaporanPresensi /></ProtectedRoute>}/>
     </Routes>
   );
 }

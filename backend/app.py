@@ -8,18 +8,13 @@ import locale
 from openpyxl import Workbook
 from io import BytesIO
 from flask import send_file
-from flask_session import Session
+from functools import wraps
 
 app = Flask(__name__)
 
 app.secret_key = "web_seminar_key"
 
-app.config["SESSION_TYPE"] = "filesystem"
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["SESSION_COOKIE_SECURE"] = False
-
-Session(app)
+SECRET_KEY = "web_seminar_key"
 
 CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
@@ -31,6 +26,7 @@ except:
     except:
         pass
 
+#Fungsi helper untuk format waktu
 def format_waktu(waktu):
     if isinstance(waktu, timedelta):
         total = int(waktu.total_seconds())
@@ -40,6 +36,7 @@ def format_waktu(waktu):
     else:
         return waktu.strftime("%H.%M")
 
+#Fungsi helper untuk menghitung jarak antara lokasi dan perangkat mahasiswa ketika melakukan presensi menggunakan Haversine
 def hitung_jarak(lat1, lon1, lat2, lon2):
     R = 6371000 #meter
 
@@ -52,7 +49,64 @@ def hitung_jarak(lat1, lon1, lat2, lon2):
 
     return R * c
 
+# Fungsi helper untuk memeriksa apakah user sudah login 
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, ** kwargs):
+        token = request.headers.get("Authorization")
+
+        if not token:
+            return jsonify({
+                "success": False,
+                "message": "Token tidak ditemukan"
+            }), 401
+        
+        try:
+            token = token.replace("Bearer ", "")
+
+            payload = jwt.decode(
+                token,
+                SECRET_KEY,
+                algorithms=["HS256"]
+            )
+            request.user = payload
+
+        except jwt.ExpiredSignatureError:
+            return jsonify({
+                "success": False,
+                "message": "Token sudah kedaluwarsa"
+            }), 401
+        
+        except jwt.InvalidTokenError:
+            return jsonify({
+                "success": False,
+                "message": "Token tidak valid"
+            }), 401
+        
+        return f(*args, ** kwargs)
+    
+    return decorated
+
+def role_required(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+
+            if request.user["role"] not in roles:
+                return jsonify({
+                    "success": False,
+                    "message": "Forbidden"
+                }), 403
+
+            return f(*args, **kwargs)
+
+        return decorated
+    return wrapper
+
+#Menampilkan detail riwayat verifikasi, fitur search, fitur sort, fitur filter, card dan progress bar halaman Riwayat Verifikasi Lihat Detail - Verifikator
 @app.route("/riwayat-verifikasi/<int:id_seminar>")
+@login_required
+@role_required("verifikator")
 def detail_riwayat_verifikasi(id_seminar):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -171,6 +225,8 @@ def detail_riwayat_verifikasi(id_seminar):
 
 #Menampilkan data progress riwayat verifikasi, fitur search dan fitur filter halaman Riwayat Verifikasi - Verifikator
 @app.route("/riwayat-verifikasi")
+@login_required
+@role_required("verifikator")
 def riwayat_verifikasi():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -283,11 +339,13 @@ def riwayat_verifikasi():
 
 #Menampilkan data riwayat presensi, fitur search, fitur filter dan card statistik kehadiran di halaman Riwayat Presensi - Mahasiswa
 @app.route("/riwayat-presensi-mahasiswa")
+@login_required
+@role_required("mahasiswa")
 def riwayat_presensi_mahasiswa():
     conn = get_db_connection ()
     cursor = conn.cursor(dictionary=True)
 
-    id_mahasiswa = session.get("id_user")
+    id_mahasiswa = request.user.get("id_user")
 
     if not id_mahasiswa:
         return jsonify({"message": "Unauthorized"}), 401
@@ -337,8 +395,8 @@ def riwayat_presensi_mahasiswa():
     statistik_query = f"""
         SELECT
             COUNT(*) AS total_kehadiran,
-            SUM(CASE WHEN p.status_verifikasi = 'valid' THEN 1 ELSE 0 END) AS kehadiran_valid,
-            SUM(CASE WHEN p.status_verifikasi = 'pending' THEN 1 ELSE 0 END) AS kehadiran_pending
+            COALESCE(SUM(CASE WHEN p.status_verifikasi = 'valid' THEN 1 ELSE 0 END),0) AS kehadiran_valid,
+            COALESCE(SUM(CASE WHEN p.status_verifikasi = 'pending' THEN 1 ELSE 0 END),0) AS kehadiran_pending
         FROM presensi p
         WHERE id_mahasiswa = %s
     """
@@ -390,6 +448,8 @@ def riwayat_presensi_mahasiswa():
 
 #Export laporan presensi ke excel
 @app.route("/laporan-presensi/export")
+@login_required
+@role_required("admin")
 def export_laporan_presensi():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -538,6 +598,8 @@ def export_laporan_presensi():
 
 #Menampilkan data angkatan untuk masuk ke filter
 @app.route("/data-angkatan-laporan")
+@login_required
+@role_required("admin")
 def get_data_angkatan_laporan():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -557,6 +619,8 @@ def get_data_angkatan_laporan():
 
 #Menampilkan data laporan presensi, pagination, fitur search dan fitur filter dan download di halaman Laporan Presensi - Admin
 @app.route("/laporan-presensi")
+@login_required
+@role_required("admin")
 def laporan_presensi():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -703,14 +767,22 @@ def laporan_presensi():
 
 #Update status presensi
 @app.route("/verifikator-update-status-presensi/<int:id_presensi>", methods=["PUT"])
+@login_required
+@role_required("verifikator")
 def update_status_presensi(id_presensi):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    data = request.get_json()
+    if request.user["role"] != "verifikator":
+        return jsonify({
+            "success": False,
+            "message": "Akses ditolak"
+        }), 403
 
+    data = request.get_json()
     status = data.get("status")
-    id_verifikator = data.get("id_user_verifikator")
+
+    id_verifikator = request.user["id_user"]
 
     if status not in ["pending", "valid", "invalid"]:
         return jsonify({
@@ -739,6 +811,8 @@ def update_status_presensi(id_presensi):
 
 #Menampilkan data daftar hadir, pagination, fitur search dan fitur filter Verifikasi Presensi - Verfikator
 @app.route("/verifikator-lihat-daftar-hadir/<int:id_seminar>", methods=["GET"])
+@login_required
+@role_required("verifikator")
 def lihat_daftar_hadir(id_seminar):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -916,6 +990,8 @@ def lihat_daftar_hadir(id_seminar):
 
 #Menampilkan data daftar seminar, fitur search dan fitur filter Verifikasi Presensi - Verfikator
 @app.route("/verifikasi-presensi", methods=["GET"])
+@login_required
+@role_required("verifikator")
 def verifikasi_presensi():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1004,6 +1080,8 @@ def verifikasi_presensi():
     
 #Menampilkan data daftar hadir, fitur search dan fitur sort Lihat Daftar Hadir - Mahasiswa Penyelenggara Seminar
 @app.route("/daftar-hadir/<int:id_seminar>", methods=["GET"])
+@login_required
+@role_required("mahasiswa")
 def daftar_hadir(id_seminar):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1133,6 +1211,8 @@ def daftar_hadir(id_seminar):
     
 #Untuk menghapus data lokasi dari tabel
 @app.route("/lokasi-seminar/<int:id_lokasi>", methods=["DELETE"])
+@login_required
+@role_required("admin")
 def delete_lokasi(id_lokasi):
 
     conn = get_db_connection()
@@ -1182,6 +1262,8 @@ def delete_lokasi(id_lokasi):
 
 #Untuk form edit data lokasi
 @app.route("/lokasi-seminar/<int:id_lokasi>", methods=["PUT"])
+@login_required
+@role_required("admin")
 def update_lokasi(id_lokasi):
 
     data = request.get_json()
@@ -1229,6 +1311,8 @@ def update_lokasi(id_lokasi):
 
 #Menampilkan data lokasi seminar, fitur search dan fitur sort di halaman Kelola Data Lokasi - Admin
 @app.route("/lokasi-seminar", methods=["GET"])
+@login_required
+@role_required("admin")
 def get_lokasi_seminar():
 
     conn = get_db_connection()
@@ -1287,6 +1371,8 @@ def get_lokasi_seminar():
 
 #Untuk form tambah lokasi
 @app.route("/lokasi-seminar", methods=["POST"])
+@login_required
+@role_required("admin")
 def add_lokasi():
 
     data = request.get_json()
@@ -1324,6 +1410,8 @@ def add_lokasi():
 
 #Untuk menghapus data seminar dari tabel
 @app.route("/delete-seminar/<int:id_seminar>", methods=["DELETE"])
+@login_required
+@role_required("admin")
 def delete_seminar(id_seminar):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -1345,6 +1433,8 @@ def delete_seminar(id_seminar):
 
 #Untuk fitur search mahasiswa di form add
 @app.route("/search/mahasiswa", methods=["GET"])
+@login_required
+@role_required("admin")
 def search_mahasiswa():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1375,6 +1465,8 @@ def search_mahasiswa():
 
 #Menampilkan data lokasi untuk masuk ke filter
 @app.route("/filter/lokasi", methods=["GET"])
+@login_required
+@role_required("admin")
 def get_filter_lokasi():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1398,6 +1490,8 @@ def get_filter_lokasi():
 
 #Untuk form edit data seminar
 @app.route("/edit-seminar/<int:id_seminar>", methods=["PUT"])
+@login_required
+@role_required("admin")
 def edit_seminar(id_seminar):
     data = request.json
 
@@ -1442,6 +1536,8 @@ def edit_seminar(id_seminar):
 
 #Menampilkan data seminar, fitur search, fitur sort dan fitur filter di halaman Kelola Data Seminar - Admin
 @app.route("/data-seminar", methods=["GET"])
+@login_required
+@role_required("admin")
 def get_data_seminar():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1591,6 +1687,8 @@ def get_data_seminar():
 
 #Untuk form tambah seminar
 @app.route("/data-seminar", methods=["POST"])
+@login_required
+@role_required("admin")
 def tambah_seminar():
     data = request.json
     
@@ -1635,6 +1733,8 @@ def tambah_seminar():
 
 #Untuk form edit data mahasiswa
 @app.route("/edit-mahasiswa/<int:id_user>", methods=["PUT"])
+@login_required
+@role_required("admin")
 def edit_mahasiswa(id_user):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1703,6 +1803,8 @@ def edit_mahasiswa(id_user):
 
 #Menampilkan data angkatan untuk masuk ke filter
 @app.route("/data-angkatan", methods=["GET"])
+@login_required
+@role_required("admin")
 def get_data_angkatan():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1722,6 +1824,8 @@ def get_data_angkatan():
 
 #Menampilkan data mahasiswa, fitur search, fitur sort dan fitur filter di halaman Kelola Data Mahasiswa - Admin
 @app.route("/data-mahasiswa", methods=["GET"])
+@login_required
+@role_required("admin")
 def get_data_mahasiswa():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -1813,6 +1917,8 @@ def get_data_mahasiswa():
 
 #Menghubungkan data QR Code dengan data seminar
 @app.route("/generate-qr", methods=["POST"])
+@login_required
+@role_required("mahasiswa")
 def generate_qr():
     token = request.headers.get("Authorization")
 
@@ -1925,6 +2031,8 @@ def generate_qr():
 
 #Mengaktifkan QR Code
 @app.route("/activate-qr", methods=["POST"])
+@login_required
+@role_required("mahasiswa")
 def activate_qr():
     data = request.get_json()
 
@@ -1979,6 +2087,8 @@ def activate_qr():
 
 #Menonaktifkan QR Code ketika waktu 10 menit selesai
 @app.route("/deactivate-qr", methods=["POST"])
+@login_required
+@role_required("mahasiswa")
 def deactivate_qr():
     data = request.get_json()
 
@@ -2006,6 +2116,8 @@ def deactivate_qr():
 
 #Menghubungkan scanner ke backend
 @app.route("/scan-qr", methods=["POST"])
+@login_required
+@role_required("mahasiswa")
 def scan_qr():
     #Mengambil token login peserta seminar
     token = request.headers.get("Authorization")
@@ -2223,6 +2335,8 @@ def scan_qr():
     
 #Menghubungkan data di halaman seminar saya (Penyelenggara)
 @app.route("/detail-seminar/<int:id_user>")
+@login_required
+@role_required("mahasiswa")
 def detail_seminar(id_user):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -2284,6 +2398,8 @@ def detail_seminar(id_user):
 
 #Cek apakah mahasiswa yang login memiliki jadwal seminar atau tidak, untuk menyesuaikan tampilan halaman seminar saya
 @app.route("/cek-seminar/<int:id_mahasiswa>")
+@login_required
+@role_required("mahasiswa")
 def cek_seminar(id_mahasiswa):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -2305,8 +2421,6 @@ def cek_seminar(id_mahasiswa):
     })
 
 #Menghubungkan halaman login dengan BE
-SECRET_KEY = "web_seminar_key"
-
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -2348,9 +2462,6 @@ def login():
             "field": "password",
             "message": "Password salah"
         }), 401
-    
-    session["id_user"] = user["id_user"]
-    session["role"] = user["role"]
     
     payload = {
         "id_user": user["id_user"],

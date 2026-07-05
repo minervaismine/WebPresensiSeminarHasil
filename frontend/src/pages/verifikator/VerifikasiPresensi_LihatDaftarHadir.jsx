@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 
 function VerifikasiPresensi_LihatDaftarHadir() {
     const navigate = useNavigate();
@@ -49,8 +49,7 @@ function VerifikasiPresensi_LihatDaftarHadir() {
     }, [currentPage, sortBy, sortOrder, search, filterStatus]);
 
     const fetchDaftarHadir = async () => {
-        const res = await axios.get(
-            `http://localhost:5000/verifikator-lihat-daftar-hadir/${id_seminar}`,
+        const res = await api.get(`/verifikator-lihat-daftar-hadir/${id_seminar}`,
             {
                 params:{
                     page: currentPage,
@@ -81,11 +80,9 @@ function VerifikasiPresensi_LihatDaftarHadir() {
         );
 
         try {
-            await axios.put(
-                `http://localhost:5000/verifikator-update-status-presensi/${idPresensi}`,
+            await api.put(`/verifikator-update-status-presensi/${idPresensi}`,
                 {
-                    status,
-                    id_user_verifikator: idVerifikator
+                    status
                 }
             );
             

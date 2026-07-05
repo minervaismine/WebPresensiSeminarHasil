@@ -4,7 +4,7 @@ import { CircularProgressbar, buildStyles,} from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 import { useEffect, useState } from "react";
 
 function LihatDetail() {
@@ -55,8 +55,7 @@ function LihatDetail() {
 
     const fetchDetail = async () => {
         try {
-            const res = await axios.get(
-                `http://localhost:5000/riwayat-verifikasi/${id_seminar}`,
+            const res = await api.get(`/riwayat-verifikasi/${id_seminar}`,
                 {
                     params: {
                         page: currentPage,

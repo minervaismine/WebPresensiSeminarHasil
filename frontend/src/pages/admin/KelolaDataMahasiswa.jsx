@@ -2,14 +2,13 @@ import "../../styles/admin/KelolaDataMahasiswa.css";
 import { Icon } from '@iconify/react';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 
 function KelolaDataMahasiswa() {
     const navigate = useNavigate();
 
     // Modal
     const [showFormEditStudent, setShowFormEditStudent] = useState(false);
-    const [showFormDeleteStudent, setShowFormDeleteStudent] = useState(false);
     // Tabel
     const [dataMahasiswa, setDataMahasiswa] = useState([]);
     // Pagination
@@ -48,8 +47,7 @@ function KelolaDataMahasiswa() {
 
     const fetchMahasiswa = async (page = 1, searchKeyword = search) => {
         try {
-            const response = await axios.get(
-                "http://localhost:5000/data-mahasiswa",
+            const response = await api.get("/data-mahasiswa",
             {
                 params: {
                     page,
@@ -86,9 +84,7 @@ function KelolaDataMahasiswa() {
 
     const fetchAngkatan = async () => {
         try {
-            const response = await axios.get(
-                "http://localhost:5000/data-angkatan"
-            );
+            const response = await api.get("/data-angkatan");
             setAngkatanList(response.data);
         } catch(error){
             console.log(error);
@@ -116,8 +112,7 @@ function KelolaDataMahasiswa() {
 
     const handleUpdateMahasiswa = async () => {
         try {
-            await axios.put(
-                `http://localhost:5000/edit-mahasiswa/${selectedMahasiswa.id_user}`,
+            await api.put(`/edit-mahasiswa/${selectedMahasiswa.id_user}`,
                 selectedMahasiswa
             );
 
@@ -265,10 +260,6 @@ function KelolaDataMahasiswa() {
                                 <button className="aksi-btn-kelola-data-mahasiswa edit-btn" onClick={() => openEditForm(item)}>
                                     <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-mahasiswa"/>
                                 </button>
-
-                                <button className=" aksi-btn-kelola-data-mahasiswa delete-btn" onClick={() => setShowFormDeleteStudent(true)}>
-                                    <Icon icon="tabler:trash-filled" className="aksi-icon-kelola-data-mahasiswa"/>
-                                </button>
                             </div>
                         </td>
                     </tr>
@@ -332,26 +323,6 @@ function KelolaDataMahasiswa() {
 
                     <div className="edit-btn-wrapper-kelola-data-mahasiswa">
                         <button className="edit-btn-form" onClick={handleUpdateMahasiswa}>Simpan Perubahan</button>
-                    </div>
-                </div>
-            </div>
-        )}
-
-        {/* Modal Delete Data Mahasiswa */}
-        {showFormDeleteStudent && (
-            <div className="modal-overlay" onClick={() => setShowFormDeleteStudent(false)}>
-                <div className="modal-delete-kelola-data-mahasiswa" onClick={(e) => e.stopPropagation()}>
-                    <div className="warning-icon-wrapper-kelola-data-mahasiswa">
-                        <Icon icon="ic:round-warning" className="warning-icon-kelola-data-mahasiswa"/>
-                    </div>
-
-                    <h2 className="modal-delete-title-kelola-data-mahasiswa">Hapus Data</h2>
-
-                    <p className="modal-delete-description-kelola-data-mahasiswa">Apakah Anda yakin ingin menghapus data ini?</p>
-
-                    <div className="btn-wrapper-modal-delete-kelola-data-mahasiswa">
-                        <button className="modal-batal-btn-kelola-data-mahasiswa" onClick={() => setShowFormDeleteStudent(false)}>Batal</button>
-                        <button className="modal-delete-btn-kelola-data-mahasiswa">Hapus</button>
                     </div>
                 </div>
             </div>

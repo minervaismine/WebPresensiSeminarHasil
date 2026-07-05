@@ -2,6 +2,7 @@ import "../../styles/auth/Login.css";
 import { Icon } from '@iconify/react';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 function Login() {
     const [username, setUsername] = useState("");
@@ -34,22 +35,12 @@ function Login() {
         if (hasError) return;
 
         try {
-            const response = await fetch (
-                "http://localhost:5000/login",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        username,
-                        password,
-                    }),
-                }
-            );
+            const response = await api.post("/login", {
+                username,
+                password,
+            });
 
-            const result = await response.json();
+            const result = response.data;
 
             if (!result.success) {
                 //Login gagal di bagian username
@@ -106,7 +97,20 @@ function Login() {
             }
         } catch (error) {
             console.error(error);
-            setPasswordError("Tidak dapat terhubung ke server");
+            
+            if (error.response) {
+                const result = error.response.data;
+
+                if (result.field === "username") {
+                    setUsernameError(result.message);
+                }
+
+                if (result.field === "password") {
+                    setPasswordError(result.message);
+                }
+            } else {
+                setPasswordError("Tidak dapat terhubung ke server");
+            }
         }
     };
 

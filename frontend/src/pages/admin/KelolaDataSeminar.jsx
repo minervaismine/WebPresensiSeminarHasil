@@ -2,7 +2,7 @@ import "../../styles/admin/KelolaDataSeminar.css";
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
@@ -89,8 +89,7 @@ function KelolaDataSeminar() {
 
     const fetchSeminar = async () => {
         try {
-            const response = await axios.get(
-                "http://localhost:5000/data-seminar",
+            const response = await api.get("/data-seminar",
                 {
                     params: {
                         page,
@@ -115,7 +114,7 @@ function KelolaDataSeminar() {
 
     const fetchLokasi = async () => {
         try{
-            const res = await axios.get("http://localhost:5000/filter/lokasi");
+            const res = await api.get("/filter/lokasi");
             setLokasiList(res.data);
         } catch(err) {
             console.log(err);
@@ -130,8 +129,7 @@ function KelolaDataSeminar() {
         }
 
         try {
-            const res = await axios.get(
-                "http://localhost:5000/search/mahasiswa",
+            const res = await api.get("/search/mahasiswa",
                 {
                     params: {
                         search: keyword
@@ -209,8 +207,7 @@ function KelolaDataSeminar() {
         }
 
         try {
-            await axios.post(
-                "http://localhost:5000/data-seminar",
+            await api.post("/data-seminar",
                 {
                     id_mahasiswa: selectedMahasiswa.id_user,
                     id_user_admin: user.id_user,
@@ -240,8 +237,7 @@ function KelolaDataSeminar() {
         }
 
         try {
-            await axios.put(
-                `http://localhost:5000/edit-seminar/${selectedSeminar.id_seminar}`,
+            await api.put(`/edit-seminar/${selectedSeminar.id_seminar}`,
                 {
                     id_mahasiswa: selectedMahasiswa?.id_user || selectedSeminar.id_user,
                     id_lokasi: idLokasi,
@@ -313,8 +309,7 @@ function KelolaDataSeminar() {
         if (!selectedDeleteSeminar) return;
 
         try {
-            await axios.delete(
-                `http://localhost:5000/delete-seminar/${selectedDeleteSeminar.id_seminar}`
+            await api.delete(`/delete-seminar/${selectedDeleteSeminar.id_seminar}`
             );
             alert("Data seminar berhasil dihapus");
 

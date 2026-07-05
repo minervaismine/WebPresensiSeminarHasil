@@ -2,7 +2,7 @@ import "../../styles/admin/LaporanPresensi.css";
 import { Icon } from '@iconify/react';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 
 function LaporanPresensi() {
     const navigate = useNavigate();
@@ -42,8 +42,7 @@ function LaporanPresensi() {
 
     const fetchLaporan = async () => {
         try {
-            const res = await axios.get(
-                "http://localhost:5000/laporan-presensi",
+            const res = await api.get("/laporan-presensi",
                 {
                     params: {
                         page: currentPage,
@@ -68,8 +67,7 @@ function LaporanPresensi() {
 
     const fetchAngkatan = async () => {
         try {
-            const res = await axios.get(
-                "http://localhost:5000/data-angkatan-laporan"
+            const res = await api.get("/data-angkatan-laporan"
             );
 
             setListAngkatan(res.data);
@@ -125,8 +123,7 @@ function LaporanPresensi() {
 
     const handleExport = async () => {
         try {
-            const response = await axios.get(
-                "http://localhost:5000/laporan-presensi/export",
+            const response = await api.get("/laporan-presensi/export",
                 {
                     params: {
                         search: search,

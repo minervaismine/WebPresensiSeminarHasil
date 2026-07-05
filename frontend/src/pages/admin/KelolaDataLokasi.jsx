@@ -2,7 +2,7 @@ import "../../styles/admin/KelolaDataLokasi.css";
 import { Icon } from '@iconify/react';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 
 function ChangeMapView({ center }) {
@@ -74,8 +74,7 @@ function KelolaDataLokasi() {
 
     const fetchLokasi = async () => {
         try {
-            const response = await axios.get(
-                "http://localhost:5000/lokasi-seminar",
+            const response = await api.get("/lokasi-seminar",
                 {
                     params: {
                         page: currentPage,
@@ -96,8 +95,7 @@ function KelolaDataLokasi() {
 
     const handleAddLocation = async () => {
         try {
-            await axios.post(
-                "http://localhost:5000/lokasi-seminar",
+            await api.post("/lokasi-seminar",
                 formData
             );
             fetchLokasi();
@@ -183,8 +181,7 @@ function KelolaDataLokasi() {
 
     const handleUpdateLocation = async () => {
         try {
-            await axios.put(
-                `http://localhost:5000/lokasi-seminar/${selectedLocation.id_lokasi}`,
+            await api.put(`/lokasi-seminar/${selectedLocation.id_lokasi}`,
                 formData
             );
 
@@ -217,9 +214,7 @@ function KelolaDataLokasi() {
 
     const handleDeleteLocation = async () => {
         try {
-            await axios.delete(
-                `http://localhost:5000/lokasi-seminar/${selectedLocation.id_lokasi}`
-            );
+            await api.delete(`/lokasi-seminar/${selectedLocation.id_lokasi}`);
             setShowDeleteLocationModal(false);
             fetchLokasi();
 

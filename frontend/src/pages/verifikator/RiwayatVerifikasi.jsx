@@ -2,7 +2,7 @@ import "../../styles/verifikator/RiwayatVerifikasi.css";
 import { Icon } from '@iconify/react';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -31,8 +31,7 @@ function RiwayatVerifikasi() {
 
     const fetchSeminar = async () => {
         try {
-            const res = await axios.get(
-                "http://localhost:5000/riwayat-verifikasi",
+            const res = await api.get("/riwayat-verifikasi",
                 {
                     params: {
                         search,

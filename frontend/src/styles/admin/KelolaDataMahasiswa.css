@@ -267,9 +267,6 @@
   color: #22C55E;
 }
 
-.delete-btn {
-  color: #EF4444;
-}
 
 .pagination-wrapper-kelola-data-mahasiswa {
   display: flex;
@@ -452,86 +449,4 @@
 
 .edit-btn-form:hover{
   background: #1D4ED8;
-}
-
-.modal-delete-kelola-data-mahasiswa {
-  position: relative;
-  width: 450px;
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  text-align: center;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.warning-icon-wrapper-kelola-data-mahasiswa {
-  width: 55px;
-  height: 55px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #FEE2E2;
-  border-radius: 100%;
-  margin: 0 auto 10px;
-  padding-bottom: 6px;
-}
-
-.warning-icon-kelola-data-mahasiswa {
-  font-size: 40px;
-  color: #EF4444;
-}
-
-.modal-delete-title-kelola-data-mahasiswa {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1E293B; 
-  text-align: center;
-  margin-top: 15px;
-}
-
-.modal-delete-description-kelola-data-mahasiswa {
-  font-family: "Poppins", sans-serif;
-  text-align: center;
-  font-size: 16px;
-  color: #1E293B;
-  margin: 5px 0;
-}
-
-.btn-wrapper-modal-delete-kelola-data-mahasiswa {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 60px 0 60px;
-}
-
-.modal-batal-btn-kelola-data-mahasiswa {
-  border: none;
-  border-radius: 10px;
-  background: #E9EEF6;
-  width: 100px;
-  height: 35px;
-  font-family: "Poppins", sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: #1E293B;
-}
-
-.modal-batal-btn-kelola-data-mahasiswa:hover {
-  background: #D8E2F0;
-}
-
-.modal-delete-btn-kelola-data-mahasiswa {
-  border: none;
-  border-radius: 10px;
-  background: #EF4444;
-  width: 100px;
-  height: 35px;
-  font-family: "Poppins", sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  color: #FFFFFF;
-}
-
-.modal-delete-btn-kelola-data-mahasiswa:hover {
-  background: #DC2626;
 }

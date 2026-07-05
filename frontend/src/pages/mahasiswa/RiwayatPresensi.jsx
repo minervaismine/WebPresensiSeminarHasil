@@ -1,7 +1,7 @@
 import "../../styles/mahasiswa/RiwayatPresensi.css";
 import { Icon } from '@iconify/react';
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -32,8 +32,7 @@ function RiwayatPresensi() {
 
     const fetchRiwayat = async () => {
         try {
-            const res = await axios.get(
-                "http://localhost:5000/riwayat-presensi-mahasiswa",
+            const res = await api.get("/riwayat-presensi-mahasiswa",
                 {
                     params: {
                         search: search,
