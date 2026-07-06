@@ -11,6 +11,8 @@ function RiwayatVerifikasi() {
 
     // Menampilkan data
     const [seminar, setSeminar] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Search
     const [search, setSearch] = useState("");
     //Filter
@@ -30,6 +32,8 @@ function RiwayatVerifikasi() {
     }, [search, status, selectedTanggal, tanggalAwal, tanggalAkhir]);
 
     const fetchSeminar = async () => {
+        setLoading(true);
+
         try {
             const res = await api.get("/riwayat-verifikasi",
                 {
@@ -45,6 +49,8 @@ function RiwayatVerifikasi() {
             setSeminar(res.data.data);
         } catch(err){
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -192,46 +198,52 @@ function RiwayatVerifikasi() {
 
             {/* Daftar Seminar */}
             <div className="seminar-list-riwayat-verifikasi">
-                {seminar.map((item) => {
-                    const status = getStatusVerifikasi (
-                        item.selesai_diproses,
-                        item.total_presensi
-                    );
+                {loading ? (
+                    <p className="loading-state-riwayat-verifikasi">Memuat data seminar...</p>
+                ) : seminar.length === 0 ? (
+                    <p className="empty-state-riwayat-verifikasi">Data seminar tidak ditemukan</p>
+                ) : (
+                    seminar.map((item) => {
+                        const status = getStatusVerifikasi (
+                            item.selesai_diproses,
+                            item.total_presensi
+                        );
 
-                    return (
-                        <div className="seminar-card-riwayat-verifikasi" key={item.id_seminar}>
-                            <div className="card-accent-riwayat-verifikasi"></div>
+                        return (
+                            <div className="seminar-card-riwayat-verifikasi" key={item.id_seminar}>
+                                <div className="card-accent-riwayat-verifikasi"></div>
 
-                            <div className="card-content-riwayat-verifikasi">
-                                <div className="card-header-riwayat-verifikasi">
-                                    <div>
-                                        <h2 className="nama-mahasiswa-riwayat-verifikasi">{item.nama}</h2>
+                                <div className="card-content-riwayat-verifikasi">
+                                    <div className="card-header-riwayat-verifikasi">
+                                        <div>
+                                            <h2 className="nama-mahasiswa-riwayat-verifikasi">{item.nama}</h2>
 
-                                        <div className="informasi-seminar-riwayat-verifikasi">
-                                            <span>{item.tanggal}</span>
-                                            <span>|</span>
-                                            <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
+                                            <div className="informasi-seminar-riwayat-verifikasi">
+                                                <span>{item.tanggal}</span>
+                                                <span>|</span>
+                                                <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
+                                            </div>
                                         </div>
+
+                                        <button className="lihat-detail-btn-riwayat-verifikasi" onClick={() => navigate(`/riwayat-verifikasi-lihat-detail/${item.id_seminar}`)}>Lihat Detail</button>
                                     </div>
 
-                                    <button className="lihat-detail-btn-riwayat-verifikasi" onClick={() => navigate(`/riwayat-verifikasi-lihat-detail/${item.id_seminar}`)}>Lihat Detail</button>
-                                </div>
+                                    <div className="progress-verifikasi">
+                                        <p>
+                                            <strong>Verifikasi:</strong> 
+                                            <span className="angka-progress">{item.selesai_diproses} dari {item.total_presensi} selesai</span>
+                                        </p>
 
-                                <div className="progress-verifikasi">
-                                    <p>
-                                        <strong>Verifikasi:</strong> 
-                                        <span className="angka-progress">{item.selesai_diproses} dari {item.total_presensi} selesai</span>
-                                    </p>
-
-                                    <p>
-                                        <strong>Status:</strong>
-                                        <span className={`status-verifikasi-riwayat ${status.className}`}>{status.text}</span>
-                                    </p>
+                                        <p>
+                                            <strong>Status:</strong>
+                                            <span className={`status-verifikasi-riwayat ${status.className}`}>{status.text}</span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )
-                })}
+                        )
+                    })
+                )}
             </div>
         </div>
     );

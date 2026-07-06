@@ -1,13 +1,14 @@
 import { Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 
 function ProtectedRoute({
     children,
     allowedRoles,
     seminarType = null
 }) {
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const userString = localStorage.getItem("user") || sessionStorage.getItem("user");
+
+    const user = userString ? JSON.parse(userString) : null;
 
     if (!token || !user) {
         return <Navigate to="/" replace />;

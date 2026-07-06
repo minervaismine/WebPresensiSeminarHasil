@@ -257,6 +257,16 @@
   margin: 25px 60px 10px 60px;
 }
 
+.loading-state-kelola-data-seminar,
+.empty-state-kelola-data-seminar {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  font-style: italic;
+  margin: 0;
+}
+
 .table-scrollbar {
   overflow-x: auto;
   padding-bottom: 8px;
@@ -683,6 +693,7 @@
 .item-mahasiswa {
   font-size: 14px;
   text-align: left;
+  cursor: pointer;
 }
 
 .item-mahasiswa p {

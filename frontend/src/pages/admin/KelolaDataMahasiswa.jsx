@@ -11,6 +11,8 @@ function KelolaDataMahasiswa() {
     const [showFormEditStudent, setShowFormEditStudent] = useState(false);
     // Tabel
     const [dataMahasiswa, setDataMahasiswa] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -46,6 +48,8 @@ function KelolaDataMahasiswa() {
     }, []);
 
     const fetchMahasiswa = async (page = 1, searchKeyword = search) => {
+        setLoading(true);
+
         try {
             const response = await api.get("/data-mahasiswa",
             {
@@ -66,6 +70,8 @@ function KelolaDataMahasiswa() {
         setTotalData(response.data.total);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -250,20 +256,30 @@ function KelolaDataMahasiswa() {
                 </tr>
             </thead>
             <tbody>
-                {dataMahasiswa.map((item) => (
-                    <tr key={item.id_user}>
-                        <td className="kolom-nama-kelola-data-mahasiswa">{item.nama}</td>
-                        <td className="kolom-nim-kelola-data-mahasiswa">{item.nim}</td>
-                        <td className="kolom-angkatan-kelola-data-mahasiswa">{item.angkatan}</td>
-                        <td className="kolom-aksi-kelola-data-mahasiswa">
-                            <div className="btn-aksi-wrapper-kelola-data-mahasiswa">
-                                <button className="aksi-btn-kelola-data-mahasiswa edit-btn" onClick={() => openEditForm(item)}>
-                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-mahasiswa"/>
-                                </button>
-                            </div>
-                        </td>
+                {loading ? (
+                    <tr>
+                        <td colSpan="4" className="loading-state-kelola-data-mahasiswa">Memuat daftar mahasiswa...</td>
                     </tr>
-                ))}
+                ) : dataMahasiswa.length === 0 ? (
+                    <tr>
+                        <td colSpan="4" className="empty-state-kelola-data-mahasiswa">Daftar mahasiswa tidak ditemukan</td>
+                    </tr>
+                ) : (
+                    dataMahasiswa.map((item) => (
+                        <tr key={item.id_user}>
+                            <td className="kolom-nama-kelola-data-mahasiswa">{item.nama}</td>
+                            <td className="kolom-nim-kelola-data-mahasiswa">{item.nim}</td>
+                            <td className="kolom-angkatan-kelola-data-mahasiswa">{item.angkatan}</td>
+                            <td className="kolom-aksi-kelola-data-mahasiswa">
+                                <div className="btn-aksi-wrapper-kelola-data-mahasiswa">
+                                    <button className="aksi-btn-kelola-data-mahasiswa edit-btn" onClick={() => openEditForm(item)}>
+                                        <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-mahasiswa"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))
+                )}
             </tbody>
         </table>
 

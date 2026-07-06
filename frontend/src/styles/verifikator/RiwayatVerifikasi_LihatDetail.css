@@ -310,6 +310,16 @@
   margin: 10px 60px;
 }
 
+.loading-state-riwayat-verifikasi-lihat-daftar-hadir,
+.empty-state-riwayat-verifikasi-lihat-daftar-hadir {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  font-style: italic;
+  margin: 0;
+}
+
 .tabel-riwayat-verifikasi thead tr {
   color: #1E293B;
   text-align: center; 

@@ -11,6 +11,8 @@ function VerifikasiPresensi() {
 
     // Menampilkan data
     const [seminar, setSeminar] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Search
     const [search, setSearch] = useState("");
     //Filter
@@ -28,6 +30,8 @@ function VerifikasiPresensi() {
     }, [search, selectedTanggal, tanggalAwal, tanggalAkhir]);
 
     const fetchSeminar = async () => {
+        setLoading(true);
+
         try {
             const res = await api.get("/verifikasi-presensi",
                 {
@@ -43,6 +47,8 @@ function VerifikasiPresensi() {
             setSeminar(res.data.data);
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -136,39 +142,44 @@ function VerifikasiPresensi() {
 
             {/* Daftar Seminar */}
             <div className="seminar-list-verifikasi-presensi">
-                {seminar.map((item) => (
-                    <div className="seminar-card-verifikasi-presensi" key={item.id_seminar}>
-                        <div className="card-accent-verifikasi-presensi"></div>
+                {loading ? (
+                    <p className="loading-state-verifikasi-presensi">Memuat data seminar...</p>
+                ) : seminar.length === 0 ? (
+                    <p className="empty-state-verifikasi-presensi">Data seminar tidak ditemukan</p>
+                ) : (
+                    seminar.map((item) => (
+                        <div className="seminar-card-verifikasi-presensi" key={item.id_seminar}>
+                            <div className="card-accent-verifikasi-presensi"></div>
 
-                        <div className="card-content-verifikasi-presensi">
-                            <div className="card-header-verifikasi-presensi">
-                                <div>
-                                    <h2 className="nama-mahasiswa-verifikasi-presensi">{item.nama}</h2>
-                                    <p className="judul-skripsi-verifikasi-presensi">"{item.judul_penelitian}"</p>
+                            <div className="card-content-verifikasi-presensi">
+                                <div className="card-header-verifikasi-presensi">
+                                    <div>
+                                        <h2 className="nama-mahasiswa-verifikasi-presensi">{item.nama}</h2>
+                                        <p className="judul-skripsi-verifikasi-presensi">"{item.judul_penelitian}"</p>
+                                    </div>
+
+                                    <button className="lihat-daftar-hadir-btn" onClick={() => navigate(`/verifikator-lihat-daftar-hadir/${item.id_seminar}`)}>Lihat Daftar Hadir</button>
                                 </div>
 
-                                <button className="lihat-daftar-hadir-btn" onClick={() => navigate(`/verifikator-lihat-daftar-hadir/${item.id_seminar}`)}>Lihat Daftar Hadir</button>
-                            </div>
+                                <div className="informasi-seminar-verifikasi-presensi">
+                                    <span>{item.tanggal}</span>
+                                    <span>|</span>
+                                    <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
+                                </div>
 
-                            <div className="informasi-seminar-verifikasi-presensi">
-                                <span>{item.tanggal}</span>
-                                <span>|</span>
-                                <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
-                            </div>
+                                <div className="dosen-info-verifikasi-presensi">
+                                    <p><strong>Pembimbing:</strong>{" "} {item.dosen_pembimbing}</p>
 
-                            <div className="dosen-info-verifikasi-presensi">
-                                <p><strong>Pembimbing:</strong>{" "} {item.dosen_pembimbing}</p>
-
-                                <p>
-                                    <strong>Penguji:</strong>{" "} {item.dosen_penguji_1}
-                                    <span className="separator-verifikasi-presensi">|</span>
-                                    {item.dosen_penguji_2}
-                                </p>
+                                    <p>
+                                        <strong>Penguji:</strong>{" "} {item.dosen_penguji_1}
+                                        <span className="separator-verifikasi-presensi">|</span>
+                                        {item.dosen_penguji_2}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))
-                }
+                    ))
+                )}
             </div>
         </div>
     );

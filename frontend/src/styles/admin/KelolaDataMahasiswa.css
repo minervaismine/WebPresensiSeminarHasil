@@ -179,6 +179,16 @@
   min-width: 400px;
 }
 
+.loading-state-kelola-data-mahasiswa,
+.empty-state-kelola-data-mahasiswa {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  font-style: italic;
+  margin: 0;
+}
+
 .tabel-mahasiswa-kelola-data-mahasiswa thead tr {
   color: #1E293B;
   text-align: center; 

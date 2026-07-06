@@ -16,6 +16,8 @@ function VerifikasiPresensi_LihatDaftarHadir() {
 
     // Menampilkan detail berdasarkan id seminar
     const [presensi, setPresensi] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Detail Seminar
     const [seminar, setSeminar] = useState({});
     // Data total peserta
@@ -49,25 +51,34 @@ function VerifikasiPresensi_LihatDaftarHadir() {
     }, [currentPage, sortBy, sortOrder, search, filterStatus]);
 
     const fetchDaftarHadir = async () => {
-        const res = await api.get(`/verifikator-lihat-daftar-hadir/${id_seminar}`,
-            {
-                params:{
-                    page: currentPage,
-                    limit: dataPerPage,
-                    sort_by: sortBy,
-                    sort_order: sortOrder,
-                    search: search,
-                    status_verifikasi: filterStatus
-                }
-            }
-        );
+        setLoading(true);
 
-        setPresensi(res.data.data);
-        setSeminar(res.data.seminar);
-        setTotalPeserta(res.data.total_peserta);
-        setCurrentPage(res.data.pagination.page);
-        setTotalPages(res.data.pagination.total_pages);
-        setTotalData(res.data.pagination.total_data);
+        try {
+            const res = await api.get(`/verifikator-lihat-daftar-hadir/${id_seminar}`,
+                {
+                    params:{
+                        page: currentPage,
+                        limit: dataPerPage,
+                        sort_by: sortBy,
+                        sort_order: sortOrder,
+                        search: search,
+                        status_verifikasi: filterStatus
+                    }
+                }
+            );
+
+            setPresensi(res.data.data);
+            setSeminar(res.data.seminar);
+            setTotalPeserta(res.data.total_peserta);
+            setCurrentPage(res.data.pagination.page);
+            setTotalPages(res.data.pagination.total_pages);
+            setTotalData(res.data.pagination.total_data);
+            setLoading(false);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleStatusChange = async (idPresensi, status) => {
@@ -280,35 +291,45 @@ function VerifikasiPresensi_LihatDaftarHadir() {
                     </tr>
                 </thead>
                 <tbody>
-                    {presensi.map((item) => (
-                        <tr key={item.id_presensi}>
-                            <td className="kolom-nama-verifikator-lihat-daftar-hadir">{item.nama}</td>
-                            <td className="kolom-nim-verifikator-lihat-daftar-hadir">{item.nim}</td>
-                            <td className="kolom-waktu-scan-verifikator-lihat-daftar-hadir">{item.waktu_scan}</td>
-                            <td className="kolom-jarak-lokasi-verifikator-lihat-daftar-hadir">
-                                <span className={`status-lokasi-verifikator-lihat-daftar-hadir ${item.status_lokasi}`}>{item.jarak} m</span>
-                            </td>
-                            <td className="kolom-status-presensi-verifikator-lihat-daftar-hadir">
-                                <div className="custom-dropdown">
-                                    <button className={`dropdown-button ${item.status_verifikasi}`} onClick={() => setOpenDropdown(openDropdown === item.id_presensi ? null : item.id_presensi)}>
-                                        <span>{item.status_verifikasi.charAt(0).toUpperCase() + item.status_verifikasi.slice(1)}</span>
-                                        <Icon icon="icon-park-outline:down" className="status-dropdown-icon"/>
-                                    </button>
-
-                                    {openDropdown === item.id_presensi && (
-                                        <div className="status-dropdown-menu">
-                                            {["pending", "valid", "invalid"].map((status) => (
-                                                <div key={status} className="status-dropdown-item" onClick={() => {handleStatusChange(item.id_presensi, status); setOpenDropdown(null);}}>
-                                                    {status === item.status_verifikasi}
-                                                    {status.charAt(0).toUpperCase() + status.slice(1)}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            </td>
+                    {loading ? (
+                        <tr>
+                            <td colSpan="5" className="loading-state-verifikasi-presensi-lihat-daftar-hadir">Memuat daftar hadir...</td>
                         </tr>
-                    ))}
+                    ) : presensi.length === 0 ? (
+                        <tr>
+                            <td colSpan="5" className="empty-state-verifikasi-presensi-lihat-daftar-hadir">Daftar hadir tidak ditemukan</td>
+                        </tr>
+                    ) : (
+                        presensi.map((item) => (
+                            <tr key={item.id_presensi}>
+                                <td className="kolom-nama-verifikator-lihat-daftar-hadir">{item.nama}</td>
+                                <td className="kolom-nim-verifikator-lihat-daftar-hadir">{item.nim}</td>
+                                <td className="kolom-waktu-scan-verifikator-lihat-daftar-hadir">{item.waktu_scan}</td>
+                                <td className="kolom-jarak-lokasi-verifikator-lihat-daftar-hadir">
+                                    <span className={`status-lokasi-verifikator-lihat-daftar-hadir ${item.status_lokasi}`}>{item.jarak} m</span>
+                                </td>
+                                <td className="kolom-status-presensi-verifikator-lihat-daftar-hadir">
+                                    <div className="custom-dropdown">
+                                        <button className={`dropdown-button ${item.status_verifikasi}`} onClick={() => setOpenDropdown(openDropdown === item.id_presensi ? null : item.id_presensi)}>
+                                            <span>{item.status_verifikasi.charAt(0).toUpperCase() + item.status_verifikasi.slice(1)}</span>
+                                            <Icon icon="icon-park-outline:down" className="status-dropdown-icon"/>
+                                        </button>
+
+                                        {openDropdown === item.id_presensi && (
+                                            <div className="status-dropdown-menu">
+                                                {["pending", "valid", "invalid"].map((status) => (
+                                                    <div key={status} className="status-dropdown-item" onClick={() => {handleStatusChange(item.id_presensi, status); setOpenDropdown(null);}}>
+                                                        {status === item.status_verifikasi}
+                                                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 

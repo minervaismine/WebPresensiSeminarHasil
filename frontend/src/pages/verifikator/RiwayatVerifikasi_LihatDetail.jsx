@@ -23,6 +23,8 @@ function LihatDetail() {
     const progress = totalPeserta > 0 ? (telahDiverifikasi / totalPeserta) * 100 : 0;
     // Tabel
     const [presensi, setPresensi] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -54,6 +56,8 @@ function LihatDetail() {
     }, [search, filterStatus]);
 
     const fetchDetail = async () => {
+        setLoading(true);
+
         try {
             const res = await api.get(`/riwayat-verifikasi/${id_seminar}`,
                 {
@@ -75,6 +79,8 @@ function LihatDetail() {
             setTotalData(res.data.pagination.total_data);
         } catch(err){
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -300,20 +306,30 @@ function LihatDetail() {
                     </tr>
                 </thead>
                 <tbody>
-                    {presensi.map((item) => (
-                        <tr key={item.id_presensi}>
-                            <td className="kolom-nama-riwayat-verifikasi">{item.nama}</td>
-                            <td className="kolom-nim-riwayat-verifikasi">{item.nim}</td>
-                            <td className="kolom-waktu-scan-riwayat-verifikasi">{item.waktu_scan}</td>
-                            <td className="kolom-jarak-lokasi-riwayat-verifikasi">
-                                <span className="status-lokasi-riwayat-verifikasi dekat">5 m</span>
-                            </td>
-                            <td className="kolom-status-presensi-riwayat-verifikasi">
-                                <span className={`badge-status-presensi ${item.status_verifikasi}`}>{formatStatus(item.status_verifikasi)}</span>
-                            </td>
-                            <td className="kolom-waktu-verifikasi">{item.waktu_verifikasi}</td>
+                    {loading ? (
+                        <tr>
+                            <td colSpan="6" className="loading-state-riwayat-verifikasi-lihat-daftar-hadir">Memuat daftar hadir...</td>
                         </tr>
-                    ))}
+                    ) : presensi.length === 0 ? (
+                        <tr>
+                            <td colSpan="6" className="empty-state-riwayat-verifikasi-lihat-daftar-hadir">Daftar hadir tidak ditemukan</td>
+                        </tr>
+                    ) : (
+                        presensi.map((item) => (
+                            <tr key={item.id_presensi}>
+                                <td className="kolom-nama-riwayat-verifikasi">{item.nama}</td>
+                                <td className="kolom-nim-riwayat-verifikasi">{item.nim}</td>
+                                <td className="kolom-waktu-scan-riwayat-verifikasi">{item.waktu_scan}</td>
+                                <td className="kolom-jarak-lokasi-riwayat-verifikasi">
+                                    <span className="status-lokasi-riwayat-verifikasi dekat">5 m</span>
+                                </td>
+                                <td className="kolom-status-presensi-riwayat-verifikasi">
+                                    <span className={`badge-status-presensi ${item.status_verifikasi}`}>{formatStatus(item.status_verifikasi)}</span>
+                                </td>
+                                <td className="kolom-waktu-verifikasi">{item.waktu_verifikasi}</td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 

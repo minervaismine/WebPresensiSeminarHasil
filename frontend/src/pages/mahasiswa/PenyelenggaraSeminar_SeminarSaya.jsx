@@ -17,10 +17,16 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
     useEffect(() => {
         const fetchSeminar = async () => {
-            const user = JSON.parse(localStorage.getItem("user"));
+            const userString = localStorage.getItem("user") || sessionStorage.getItem("user");
+            const user = userString ? JSON.parse(userString) : null;
+
+            if (!user) {
+                navigate("/");
+                return;
+            }
 
             try {
-                const token = localStorage.getItem("token");
+                const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
                 const response = await fetch (
                     `http://127.0.0.1:5000/detail-seminar/${user.id_user}`,
@@ -32,15 +38,15 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 );
 
                 const result = await response.json();
-
                 setSeminarData(result);
+
             } catch (error) {
                 console.error(error);
             }
         };
 
         fetchSeminar();
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         if (!expiredAt) return;
@@ -72,7 +78,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
     }, [expiredAt]);
 
     if (!seminarData) {
-        return <h2 className="loading-page-menu-seminar-saya-penyelenggara">Loading...</h2>;
+        return <h2 className="loading-page-menu-seminar-saya-penyelenggara">Memuat data...</h2>;
     }
 
     const formatTanggal = (tanggal) => {

@@ -33,6 +33,8 @@ function KelolaDataLokasi() {
 
     // Tabel
     const [lokasiList, setLokasiList] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [limit] = useState(10);
@@ -73,6 +75,8 @@ function KelolaDataLokasi() {
     }, [currentPage, search, sortOrder]);
 
     const fetchLokasi = async () => {
+        setLoading(true);
+
         try {
             const response = await api.get("/lokasi-seminar",
                 {
@@ -90,6 +94,8 @@ function KelolaDataLokasi() {
 
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -316,24 +322,34 @@ function KelolaDataLokasi() {
                 </tr>
             </thead>
             <tbody>
-                {lokasiList.map((lokasi) => (
-                    <tr key={lokasi.id_lokasi}>
-                        <td className="kolom-nama-lokasi">{lokasi.nama_lokasi}</td>
-                        <td className="kolom-latitude">{lokasi.latitude}</td>
-                        <td className="kolom-longitude">{lokasi.longitude}</td>
-                        <td className="kolom-aksi-kelola-data-lokasi">
-                            <div className="btn-aksi-wrapper-kelola-data-lokasi">
-                                <button className="aksi-btn-kelola-data-lokasi edit-btn" onClick={() => handleEdit(lokasi)}>
-                                    <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-lokasi"/>
-                                </button>
-
-                                <button className=" aksi-btn-kelola-data-lokasi delete-btn" onClick={() => handleDelete(lokasi)}>
-                                    <Icon icon="tabler:trash-filled" className="aksi-icon-kelola-data-lokasi"/>
-                                </button>
-                            </div>
-                        </td>
+                {loading ? (
+                    <tr>
+                        <td colSpan="4" className="loading-state-kelola-data-lokasi">Memuat daftar lokasi...</td>
                     </tr>
-                ))}
+                ) : lokasiList.length === 0 ? (
+                    <tr>
+                        <td colSpan="4" className="empty-state-kelola-data-lokasi">Daftar lokasi tidak ditemukan</td>
+                    </tr>
+                ) : (
+                    lokasiList.map((lokasi) => (
+                        <tr key={lokasi.id_lokasi}>
+                            <td className="kolom-nama-lokasi">{lokasi.nama_lokasi}</td>
+                            <td className="kolom-latitude">{lokasi.latitude}</td>
+                            <td className="kolom-longitude">{lokasi.longitude}</td>
+                            <td className="kolom-aksi-kelola-data-lokasi">
+                                <div className="btn-aksi-wrapper-kelola-data-lokasi">
+                                    <button className="aksi-btn-kelola-data-lokasi edit-btn" onClick={() => handleEdit(lokasi)}>
+                                        <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-lokasi"/>
+                                    </button>
+
+                                    <button className=" aksi-btn-kelola-data-lokasi delete-btn" onClick={() => handleDelete(lokasi)}>
+                                        <Icon icon="tabler:trash-filled" className="aksi-icon-kelola-data-lokasi"/>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))
+                )}
             </tbody>
         </table>
 

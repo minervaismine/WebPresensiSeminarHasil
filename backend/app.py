@@ -1618,7 +1618,7 @@ def get_data_seminar():
         SELECT
             s.id_seminar,
             s.id_lokasi,
-            s.judul_penelitian,
+            UPPER(s.judul_penelitian) AS judul_penelitian,
             s.tanggal,
             s.waktu_mulai,
             s.waktu_selesai,

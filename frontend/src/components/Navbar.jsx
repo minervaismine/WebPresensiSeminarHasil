@@ -6,8 +6,15 @@ function Navbar() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
+        // Hapus data login dari localStorage
+        localStorage.removeItem("token");
         localStorage.removeItem("user");
 
+        // Hapus data login dari sessionStorage
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user");
+
+        // Kembali ke halaman Login
         navigate("/");
     };
 

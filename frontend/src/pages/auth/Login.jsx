@@ -11,6 +11,8 @@ function Login() {
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
 
+    const [rememberMe, setRememberMe] = useState(false);
+
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -56,42 +58,19 @@ function Login() {
             }
 
             if (result.success) {
+                const storage = rememberMe ? localStorage : sessionStorage;
+                storage.setItem("token", result.token);
+                storage.setItem("user", JSON.stringify(result.user));
+
                 //Login berhasil sebagai mahasiswa
                 if (result.user.role === "mahasiswa") {
-                    localStorage.setItem(
-                        "token",
-                        result.token
-                    );
-                    
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify(result.user)
-                    );
                     navigate("/dashboard-mahasiswa");
                 }
                 //Login berhasil sebagai verifikator
                 else if (result.user.role === "verifikator") {
-                    localStorage.setItem(
-                        "token",
-                        result.token
-                    );
-                    
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify(result.user)
-                    );
                     navigate("/dashboard-verifikator");
                 }
                 else if (result.user.role === "admin") {
-                    localStorage.setItem(
-                        "token",
-                        result.token
-                    );
-                    
-                    localStorage.setItem(
-                        "user",
-                        JSON.stringify(result.user)
-                    );
                     navigate("/dashboard-admin");
                 }
             }
@@ -176,7 +155,7 @@ function Login() {
 
                     {/* Remember Password */}
                     <div className="remember-password">
-                        <input type="checkbox" id="rememberPassword" />
+                        <input type="checkbox" id="rememberPassword" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}/>
                         <label htmlFor="rememberPassword">Remember Password</label>
                     </div>
 

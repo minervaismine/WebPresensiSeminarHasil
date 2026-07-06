@@ -9,6 +9,8 @@ function LaporanPresensi() {
 
     // Tabel
     const [laporan, setLaporan] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -41,6 +43,8 @@ function LaporanPresensi() {
     }, []);
 
     const fetchLaporan = async () => {
+        setLoading(true);
+
         try {
             const res = await api.get("/laporan-presensi",
                 {
@@ -62,6 +66,8 @@ function LaporanPresensi() {
             setTotalData(res.data.pagination.total_data);
         } catch (err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -261,17 +267,27 @@ function LaporanPresensi() {
                     </tr>
                 </thead>
                 <tbody>
-                    {laporan.map((item) => (
-                        <tr key={item.id_user}>
-                            <td className="kolom-nama-laporan-presensi">{item.nama}</td>
-                            <td className="kolom-nim-laporan-presensi">{item.nim}</td>
-                            <td className="kolom-angkatan-laporan-presensi">{item.angkatan}</td>
-                            <td className="kolom-kehadiran-laporan-presensi">{item.kehadiran}</td>
-                            <td className="kolom-status-laporan-presensi">
-                                <span className={`status-presensi-laporan-presensi ${item.status === "Memenuhi" ? "memenuhi" : "belum-memenuhi"}`}>{item.status}</span>
-                            </td>
+                    {loading ? (
+                        <tr>
+                            <td colSpan="5" className="loading-state-laporan">Memuat daftar hadir...</td>
                         </tr>
-                    ))}
+                    ) : laporan.length === 0 ? (
+                        <tr>
+                            <td colSpan="5" className="empty-state-laporan">Daftar hadir tidak ditemukan</td>
+                        </tr>
+                    ) : (
+                        laporan.map((item) => (
+                            <tr key={item.id_user}>
+                                <td className="kolom-nama-laporan-presensi">{item.nama}</td>
+                                <td className="kolom-nim-laporan-presensi">{item.nim}</td>
+                                <td className="kolom-angkatan-laporan-presensi">{item.angkatan}</td>
+                                <td className="kolom-kehadiran-laporan-presensi">{item.kehadiran}</td>
+                                <td className="kolom-status-laporan-presensi">
+                                    <span className={`status-presensi-laporan-presensi ${item.status === "Memenuhi" ? "memenuhi" : "belum-memenuhi"}`}>{item.status}</span>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 

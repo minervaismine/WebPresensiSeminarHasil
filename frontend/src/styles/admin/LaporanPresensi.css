@@ -221,6 +221,16 @@
   min-width: 400px;
 }
 
+.loading-state-laporan,
+.empty-state-laporan {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  font-style: italic;
+  margin: 0;
+}
+
 .tabel-laporan-presensi thead tr {
   color: #1E293B;
   text-align: center; 

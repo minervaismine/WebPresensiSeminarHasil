@@ -10,6 +10,8 @@ function LihatDaftarHadir() {
 
     const { idSeminar } = useParams();
 
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Tabel
     const [daftarHadir, setDaftarHadir] = useState([]);
     // Pagination
@@ -28,15 +30,21 @@ function LihatDaftarHadir() {
     const endData = totalData === 0 ? 0 : Math.min(currentPage * dataPerPage, totalData);
 
     useEffect(() => {
-        fetchDaftarHadir();
+        const timer = setTimeout(() => {
+            fetchDaftarHadir();
+        }, 500);
+
+        return () => clearTimeout(timer);
     }, [currentPage, sortBy, sortOrder, search]);
 
     const fetchDaftarHadir = async (page = 1, searchKeyword = search) => {
         try {
+            setLoading(true);
+
             const res = await api.get(`/daftar-hadir/${idSeminar}`,
                 {
                     params:{
-                        page: currentPage,
+                        page,
                         limit: dataPerPage,
                         sort_by: sortBy,
                         sort_order: sortOrder,
@@ -51,6 +59,8 @@ function LihatDaftarHadir() {
             setTotalData(res.data.pagination.total);
         } catch(err) {
             console.log(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -154,16 +164,26 @@ function LihatDaftarHadir() {
                     </tr>
                 </thead>
                 <tbody>
-                    {daftarHadir.map((item) => (
-                        <tr key={item.id_presensi}>
-                            <td className="kolom-nama-lihat-daftar-hadir">{item.nama}</td>
-                            <td className="kolom-nim-lihat-daftar-hadir">{item.nim}</td>
-                            <td className="kolom-waktu-scan-lihat-daftar-hadir">{item.waktu_scan}</td>
-                            <td className="kolom-jarak-lokasi-lihat-daftar-hadir">
-                                <span className={`status-lokasi ${item.status_lokasi}`}>{item.jarak} m</span>
-                            </td>
+                    {loading ? (
+                        <tr>
+                            <td colSpan="4" className="loading-state-lihat-daftar-hadir">Memuat data...</td>
                         </tr>
-                    ))}
+                    ) : daftarHadir.length === 0 ? (
+                        <tr>
+                            <td colSpan="4" className="empty-state-lihat-daftar-hadir">Tidak ada data</td>
+                        </tr>
+                    ) : (
+                        daftarHadir.map((item) => (
+                            <tr key={item.id_presensi}>
+                                <td className="kolom-nama-lihat-daftar-hadir">{item.nama}</td>
+                                <td className="kolom-nim-lihat-daftar-hadir">{item.nim}</td>
+                                <td className="kolom-waktu-scan-lihat-daftar-hadir">{item.waktu_scan}</td>
+                                <td className="kolom-jarak-lokasi-lihat-daftar-hadir">
+                                    <span className={`status-lokasi ${item.status_lokasi}`}>{item.jarak} m</span>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 

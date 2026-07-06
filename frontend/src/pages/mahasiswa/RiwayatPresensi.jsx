@@ -9,6 +9,8 @@ import "react-datepicker/dist/react-datepicker.css";
 function RiwayatPresensi() {
     const navigate = useNavigate();
 
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Data dalam card statistik kehadiran
     const [statistik, setStatistik] = useState({total_kehadiran: 0, kehadiran_valid: 0, kehadiran_pending: 0});
     // Data dalam card riwayat presensi
@@ -31,6 +33,8 @@ function RiwayatPresensi() {
     }, [search, status, selectedTanggal, tanggalAwal, tanggalAkhir,]);
 
     const fetchRiwayat = async () => {
+        setLoading(true);
+
         try {
             const res = await api.get("/riwayat-presensi-mahasiswa",
                 {
@@ -48,6 +52,8 @@ function RiwayatPresensi() {
             setStatistik(res.data.statistik);
         } catch(err) {
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -220,38 +226,46 @@ function RiwayatPresensi() {
 
             {/* Riwayat Presensi */}
             <div className="riwayat-list">
-                {riwayat.map((item) => (
-                    <div className="riwayat-card" key={item.id_presensi}>
-                        <div className="riwayat-card-accent"></div>
+                {loading ? (
+                    <div className="loading-state-riwayat-presensi">
+                        <p>Memuat data...</p>
+                    </div>
+                ) : riwayat.length === 0 ? (
+                    <h3 className="empty-state-riwayat-presensi">Tidak ada riwayat presensi</h3>
+                ) : (
+                    riwayat.map((item) => (
+                        <div className="riwayat-card" key={item.id_presensi}>
+                            <div className="riwayat-card-accent"></div>
 
-                        <div className="riwayat-card-content">
-                            <div className="riwayat-card-header">
-                                <div>
-                                    <h2 className="riwayat-nama-mahasiswa">{item.nama_mahasiswa}</h2>
-                                    <p className="riwayat-judul-skripsi">"{item.judul_penelitian}"</p>
+                            <div className="riwayat-card-content">
+                                <div className="riwayat-card-header">
+                                    <div>
+                                        <h2 className="riwayat-nama-mahasiswa">{item.nama_mahasiswa}</h2>
+                                        <p className="riwayat-judul-skripsi">"{item.judul_penelitian}"</p>
+                                    </div>
+
+                                    <span className={`riwayat-status-badge ${item.status_verifikasi}`}>{getStatusText(item.status_verifikasi)}</span>
                                 </div>
 
-                                <span className={`riwayat-status-badge ${item.status_verifikasi}`}>{getStatusText(item.status_verifikasi)}</span>
-                            </div>
+                                <div className="riwayat-informasi-seminar">
+                                    <span>{item.tanggal}</span>
+                                    <span>|</span>
+                                    <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
+                                </div>
 
-                            <div className="riwayat-informasi-seminar">
-                                <span>{item.tanggal}</span>
-                                <span>|</span>
-                                <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
-                            </div>
+                                <div className="riwayat-dosen-info">
+                                    <p><strong>Pembimbing:</strong>{" "}{item.dosen_pembimbing}</p>
 
-                            <div className="riwayat-dosen-info">
-                                <p><strong>Pembimbing:</strong>{" "}{item.dosen_pembimbing}</p>
-
-                                <p>
-                                    <strong>Penguji:</strong>{" "}{item.dosen_penguji_1}
-                                    <span className="riwayat-separator">|</span>
-                                    {item.dosen_penguji_2}
-                                </p>
+                                    <p>
+                                        <strong>Penguji:</strong>{" "}{item.dosen_penguji_1}
+                                        <span className="riwayat-separator">|</span>
+                                        {item.dosen_penguji_2}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))} 
+                    ))
+                )}
             </div>
         </div>
     );

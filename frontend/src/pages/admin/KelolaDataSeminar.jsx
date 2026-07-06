@@ -12,6 +12,8 @@ function KelolaDataSeminar() {
     const navigate = useNavigate();
     // Tabel
     const [dataSeminar, setDataSeminar] = useState([]);
+    // Loading
+    const [loading, setLoading] = useState(true);
     // Pagination
     const [page, setPage] = useState(1);
     const [limit] = useState(5);
@@ -109,6 +111,8 @@ function KelolaDataSeminar() {
             setTotalData(response.data.total);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -462,50 +466,60 @@ function KelolaDataSeminar() {
                         </tr>
                     </thead>
                     <tbody>
-                        {dataSeminar.map((item) => (
-                            <tr key={item.id_seminar}>
-                                <td className="kolom-nama-kelola-data-seminar">
-                                    <div className="kolom-nama-content-kelola-data-seminar">
-                                        <p className="nama-mahasiswa-kelola-data-seminar">{item.nama}</p>
-                                        <p className="nim-mahasiswa-kelola-data-seminar">{item.nim}</p>
-                                    </div>
-                                </td>
-                                <td className="kolom-judul">{item.judul_penelitian}</td>
-                                <td className="kolom-jadwal">
-                                    <div className="kolom-jadwal-content">
-                                        <p>{item.tanggal}</p>
-                                        <p>{item.waktu_mulai} - {item.waktu_selesai}</p>
-                                    </div>
-                                </td>
-                                <td className="kolom-lokasi">
-                                    <div className="kolom-lokasi-content">
-                                        <p>{item.nama_lokasi}</p>
-                                        <button className="lihat-peta-btn" onClick={() => {setSelectedLocation({nama_lokasi: item.nama_lokasi, latitude: item.latitude, longitude: item.longitude,}); setShowMapModal(true);}}>
-                                            <Icon icon="weui:location-filled" className="location-icon"/>
-                                            <span>Lihat Peta</span>
-                                        </button>
-                                    </div>
-                                </td>
-                                <td className="kolom-pembimbing">{item.dosen_pembimbing}</td>
-                                <td className="kolom-penguji">
-                                    <div className="kolom-penguji-content">
-                                        <p>{item.dosen_penguji_1}</p>
-                                        <p>{item.dosen_penguji_2}</p>
-                                    </div>
-                                </td>
-                                <td className="kolom-aksi">
-                                    <div className="btn-aksi-wrapper-kelola-data-seminar">
-                                        <button className=" aksi-btn-kelola-data-seminar edit-btn" onClick={() => handleEdit(item)}>
-                                            <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-seminar"/>
-                                        </button>
-
-                                        <button className=" aksi-btn-kelola-data-seminar delete-btn" onClick={() => {setSelectedDeleteSeminar(item); setShowFormDeleteSeminar(true);}}>
-                                            <Icon icon="tabler:trash-filled" className="aksi-icon-kelola-data-seminar"/>
-                                        </button>
-                                    </div>
-                                </td>
+                        {loading ? (
+                            <tr>
+                                <td colSpan="7" className="loading-state-kelola-data-seminar">Memuat daftar seminar...</td>
                             </tr>
-                        ))}
+                        ) : dataSeminar.length === 0 ? (
+                            <tr>
+                                <td colSpan="7" className="empty-state-kelola-data-seminar">Daftar seminar tidak ditemukan</td>
+                            </tr>
+                        ) : (
+                            dataSeminar.map((item) => (
+                                <tr key={item.id_seminar}>
+                                    <td className="kolom-nama-kelola-data-seminar">
+                                        <div className="kolom-nama-content-kelola-data-seminar">
+                                            <p className="nama-mahasiswa-kelola-data-seminar">{item.nama}</p>
+                                            <p className="nim-mahasiswa-kelola-data-seminar">{item.nim}</p>
+                                        </div>
+                                    </td>
+                                    <td className="kolom-judul">{item.judul_penelitian}</td>
+                                    <td className="kolom-jadwal">
+                                        <div className="kolom-jadwal-content">
+                                            <p>{item.tanggal}</p>
+                                            <p>{item.waktu_mulai} - {item.waktu_selesai}</p>
+                                        </div>
+                                    </td>
+                                    <td className="kolom-lokasi">
+                                        <div className="kolom-lokasi-content">
+                                            <p>{item.nama_lokasi}</p>
+                                            <button className="lihat-peta-btn" onClick={() => {setSelectedLocation({nama_lokasi: item.nama_lokasi, latitude: item.latitude, longitude: item.longitude,}); setShowMapModal(true);}}>
+                                                <Icon icon="weui:location-filled" className="location-icon"/>
+                                                <span>Lihat Peta</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td className="kolom-pembimbing">{item.dosen_pembimbing}</td>
+                                    <td className="kolom-penguji">
+                                        <div className="kolom-penguji-content">
+                                            <p>{item.dosen_penguji_1}</p>
+                                            <p>{item.dosen_penguji_2}</p>
+                                        </div>
+                                    </td>
+                                    <td className="kolom-aksi">
+                                        <div className="btn-aksi-wrapper-kelola-data-seminar">
+                                            <button className=" aksi-btn-kelola-data-seminar edit-btn" onClick={() => handleEdit(item)}>
+                                                <Icon icon="boxicons:pencil-filled" className="aksi-icon-kelola-data-seminar"/>
+                                            </button>
+
+                                            <button className=" aksi-btn-kelola-data-seminar delete-btn" onClick={() => {setSelectedDeleteSeminar(item); setShowFormDeleteSeminar(true);}}>
+                                                <Icon icon="tabler:trash-filled" className="aksi-icon-kelola-data-seminar"/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

@@ -242,6 +242,16 @@
   margin-bottom: 20px;
 }
 
+.loading-state-verifikasi-presensi,
+.empty-state-verifikasi-presensi {
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+  font-style: italic;
+  margin: 0;
+}
+
 .seminar-card-verifikasi-presensi {
   position: relative;
   display: flex;

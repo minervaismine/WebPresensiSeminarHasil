@@ -150,6 +150,24 @@
   background-color: rgba(36, 99, 235, 0.22);
 }
 
+.loading-state-lihat-daftar-hadir {
+  text-align: center;
+  padding: 30px;
+  color: #1e293b;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.empty-state-lihat-daftar-hadir {
+  text-align: center;
+  padding: 30px;
+  color: #1e293b;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 500;
+}
+
 .kolom-nama-lihat-daftar-hadir {
   text-align: left;
   width: 50%;

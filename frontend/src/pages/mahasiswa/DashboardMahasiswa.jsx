@@ -10,7 +10,7 @@ function Dashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const data = JSON.parse(localStorage.getItem("user"));
+        const data = JSON.parse(localStorage.getItem("user")) || JSON.parse(sessionStorage.getItem("user"));
         setUser(data);
     }, []);
 
