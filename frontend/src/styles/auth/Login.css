@@ -6,7 +6,8 @@
 }
 
 .sign-in-container {
-  height: 100vh;
+  min-height: 100vh;
+  padding: 20px;
   background: #E9EEF6;
   display: flex;
   justify-content: center;
@@ -14,16 +15,24 @@
 }
 
 .sign-in-card {
-  width: 450px;;
+  width: 100%;
+  max-width: 450px;
   background: white;
   border-radius: 20px;
   padding: 30px;
 }
 
+@media (max-width:480px){
+  .sign-in-card{
+      padding:24px 20px;
+      border-radius:18px;
+  }
+}
+
 .sign-in-card h1 {
   text-align: center;
   color: #1E293B;
-  font-size: 27px;
+  font-size: clamp(22px, 3vw, 27px);
   font-weight: 800;
   margin-bottom: 30px;
   letter-spacing: 0.1px;
@@ -36,7 +45,7 @@
 .form-group-username label, 
 .form-group-password label {
   display: block;
-  font-size: 20px;
+  font-size: clamp(16px,2vw,20px);
   text-align:left;
   font-weight: 700;
   color: #1E293B;
@@ -46,11 +55,13 @@
 .input-wrapper {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .icon-box {
   background: #2463EB;
-  width: 50px;
+  width: 48px;
+  min-width: 48px;
   height: 45px;
   justify-content: center;
   align-items: center;
@@ -66,6 +77,8 @@
 
 .input-wrapper input {
   flex: 1;
+  width: 100%;
+  min-width: 0;
   height: 45px;
   border: 2px solid #2463EB;
   border-left: none;
@@ -77,6 +90,24 @@
 
 .input-wrapper input::placeholder {
   color: #E9EEF6;
+}
+
+@media (max-width:480px){
+    .input-wrapper input{
+        font-size:15px;
+        padding:0 10px;
+    }
+
+    .icon-box{
+        width:44px;
+        min-width:44px;
+        height:44px;
+    }
+
+    .user-icon,
+    .password-icon{
+        font-size:24px;
+    }
 }
 
 .error-message {

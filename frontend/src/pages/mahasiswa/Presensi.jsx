@@ -58,12 +58,24 @@ function Presensi() {
         scannerRef.current = html5QrCode;
 
         html5QrCode.start(
-            {
-                facingMode: "environment"
-            },
+            { facingMode: "environment"},
             {
                 fps: 10,
-                qrbox: 250
+                qrbox: (viewfinderWidth, viewfinderHeight) => {
+                    const size = Math.min(viewfinderWidth, viewfinderHeight);
+
+                    if (window.innerWidth < 480) {
+                        return {
+                            width: size * 0.8,
+                            height: size * 0.8,
+                        };
+                    }
+
+                    return {
+                        width: 250,
+                        height: 250,
+                    };
+                }
             },
             async (decodedText) => {
                 if (isScanningRef.current) return;

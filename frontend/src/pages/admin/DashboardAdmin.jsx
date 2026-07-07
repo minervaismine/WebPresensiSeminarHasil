@@ -28,7 +28,7 @@ function Dashboard() {
                         <div className="card-content-dashboard-admin">
                             <p>Kelola data dan informasi mahasiswa yang ingin mengajukan seminar</p>
                         </div>
-                        <button className="detail-btn" onClick={() => navigate("/kelola-data-mahasiswa")}>Lihat Detail</button>
+                        <button className="detail-btn-admin" onClick={() => navigate("/kelola-data-mahasiswa")}>Lihat Detail</button>
                     </div>
 
                     <div className="menu-card-dashboard-admin">

@@ -139,54 +139,56 @@ function LihatDaftarHadir() {
             </div>
 
             {/* Table */}
-            <table className="tabel-daftar-hadir-penyelenggara-seminar">
-                <thead>
-                    <tr>
-                        <th>
-                            <button className="sort-thead-lihat-daftar-hadir" onClick={() => handleSort("nama")}>
-                                <span>Nama</span>
-                                <Icon icon="uil:sort" className="sort-icon-lihat-daftar-hadir"/>
-                            </button>
-                        </th>
-                        <th>
-                            <button className="sort-thead-lihat-daftar-hadir" onClick={() => handleSort("nim")}>
-                                <span>NIM</span>
-                                <Icon icon="uil:sort" className="sort-icon-lihat-daftar-hadir"/>
-                            </button>
-                        </th>
-                        <th>
-                            <button className="sort-thead-lihat-daftar-hadir" onClick={() => handleSort("waktu_scan")}>
-                                <span>Waktu Scan</span>
-                                <Icon icon="uil:sort" className="sort-icon-lihat-daftar-hadir"/>
-                            </button>
-                        </th>
-                        <th>Jarak Lokasi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {loading ? (
+            <div className="tabel-wrapper-mahasiswa-lihat-daftar-hadir">
+                <table className="tabel-daftar-hadir-penyelenggara-seminar">
+                    <thead>
                         <tr>
-                            <td colSpan="4" className="loading-state-lihat-daftar-hadir">Memuat data...</td>
+                            <th>
+                                <button className="sort-thead-lihat-daftar-hadir" onClick={() => handleSort("nama")}>
+                                    <span>Nama</span>
+                                    <Icon icon="uil:sort" className="sort-icon-lihat-daftar-hadir"/>
+                                </button>
+                            </th>
+                            <th>
+                                <button className="sort-thead-lihat-daftar-hadir" onClick={() => handleSort("nim")}>
+                                    <span>NIM</span>
+                                    <Icon icon="uil:sort" className="sort-icon-lihat-daftar-hadir"/>
+                                </button>
+                            </th>
+                            <th>
+                                <button className="sort-thead-lihat-daftar-hadir" onClick={() => handleSort("waktu_scan")}>
+                                    <span>Waktu Scan</span>
+                                    <Icon icon="uil:sort" className="sort-icon-lihat-daftar-hadir"/>
+                                </button>
+                            </th>
+                            <th>Jarak Lokasi</th>
                         </tr>
-                    ) : daftarHadir.length === 0 ? (
-                        <tr>
-                            <td colSpan="4" className="empty-state-lihat-daftar-hadir">Tidak ada data</td>
-                        </tr>
-                    ) : (
-                        daftarHadir.map((item) => (
-                            <tr key={item.id_presensi}>
-                                <td className="kolom-nama-lihat-daftar-hadir">{item.nama}</td>
-                                <td className="kolom-nim-lihat-daftar-hadir">{item.nim}</td>
-                                <td className="kolom-waktu-scan-lihat-daftar-hadir">{item.waktu_scan}</td>
-                                <td className="kolom-jarak-lokasi-lihat-daftar-hadir">
-                                    <span className={`status-lokasi ${item.status_lokasi}`}>{item.jarak} m</span>
-                                </td>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan="4" className="loading-state-lihat-daftar-hadir">Memuat data...</td>
                             </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
-
+                        ) : daftarHadir.length === 0 ? (
+                            <tr>
+                                <td colSpan="4" className="empty-state-lihat-daftar-hadir">Tidak ada data</td>
+                            </tr>
+                        ) : (
+                            daftarHadir.map((item) => (
+                                <tr key={item.id_presensi}>
+                                    <td className="kolom-nama-lihat-daftar-hadir">{item.nama}</td>
+                                    <td className="kolom-nim-lihat-daftar-hadir">{item.nim}</td>
+                                    <td className="kolom-waktu-scan-lihat-daftar-hadir">{item.waktu_scan}</td>
+                                    <td className="kolom-jarak-lokasi-lihat-daftar-hadir">
+                                        <span className={`status-lokasi ${item.status_lokasi}`}>{item.jarak} m</span>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            
             {/* Pagination */}
             <div className="pagination-wrapper-lihat-daftar-hadir">
                 <p className="page-description-lihat-daftar-hadir">Menampilkan {startData}-{endData} dari {totalData} data</p>

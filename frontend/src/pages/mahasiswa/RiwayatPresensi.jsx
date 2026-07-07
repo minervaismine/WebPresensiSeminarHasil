@@ -241,7 +241,7 @@ function RiwayatPresensi() {
                                 <div className="riwayat-card-header">
                                     <div>
                                         <h2 className="riwayat-nama-mahasiswa">{item.nama_mahasiswa}</h2>
-                                        <p className="riwayat-judul-skripsi">"{item.judul_penelitian}"</p>
+                                        <p className="riwayat-judul-skripsi">"{item.judul_penelitian?.toUpperCase()}"</p>
                                     </div>
 
                                     <span className={`riwayat-status-badge ${item.status_verifikasi}`}>{getStatusText(item.status_verifikasi)}</span>

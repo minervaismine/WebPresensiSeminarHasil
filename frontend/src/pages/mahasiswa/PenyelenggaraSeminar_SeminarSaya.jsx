@@ -236,7 +236,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     <div className="content-seminar-menu-seminar-saya">
                         <h1 className="nama-mahasiswa-menu-seminar-saya">{seminarData.nama}</h1>
                         <span className={`badge-status-seminar-menu-seminar-saya ${statusSeminar.className}`}>{statusSeminar.text}</span>
-                        <h2 className="judul-skripsi-menu-seminar-saya">"{seminarData.judul_penelitian}"</h2>
+                        <h2 className="judul-skripsi-menu-seminar-saya">"{seminarData.judul_penelitian?.toUpperCase()}"</h2>
 
                         <div className="informasi-seminar-wrapper-menu-seminar-saya">
                             <div className="informasi-jadwal-seminar">

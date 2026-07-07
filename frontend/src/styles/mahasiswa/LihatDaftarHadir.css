@@ -96,11 +96,15 @@
   font-weight: 500;
 }
 
+.tabel-wrapper-mahasiswa-lihat-daftar-hadir{
+  padding: 10px 60px;
+}
+
 .tabel-daftar-hadir-penyelenggara-seminar {
   font-family: "Poppins", sans-serif;
   border-collapse: collapse;
-  margin: 10px 60px;
-  min-width: 400px;
+  min-width: 900px;
+  width: 100%;
 }
 
 .tabel-daftar-hadir-penyelenggara-seminar thead tr {
@@ -263,4 +267,153 @@
 .previous-icon-lihat-daftar-hadir,
 .next-icon-lihat-daftar-hadir {
   font-size: 18px;
+}
+
+@media (max-width:900px){
+  .navbar-menu-lihat-daftar-hadir{
+    height:80px;
+    padding:0 20px;
+  }
+
+  .navbar-menu-lihat-daftar-hadir h1{
+    font-size:30px;
+  }
+
+  .back-btn-lihat-daftar-hadir{
+    font-size:17px;
+    gap:8px;
+    padding:0;
+  }
+
+  .back-icon-lihat-daftar-hadir{
+    font-size:28px;
+  }
+
+  .header-wrapper-lihat-daftar-hadir{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:20px;
+    padding:0 20px;
+  }
+
+  .page-title-lihat-daftar-hadir{
+    font-size:30px;
+  }
+
+  .search-bar-lihat-daftar-hadir{
+    width:100%;
+  }
+
+  .search-bar-input-lihat-daftar-hadir{
+    width:100%;
+    font-size:16px;
+  }
+
+  .tabel-wrapper-mahasiswa-lihat-daftar-hadir{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .tabel-daftar-hadir-penyelenggara-seminar{
+    min-width:700px;
+    margin:20px;
+  }
+
+  .sort-thead-lihat-daftar-hadir{
+    font-size:18px;
+  }
+
+  .sort-icon-lihat-daftar-hadir{
+    font-size:18px;
+  }
+
+  .tabel-daftar-hadir-penyelenggara-seminar tbody{
+    font-size:13px;
+  }
+
+  .pagination-wrapper-lihat-daftar-hadir{
+    margin:20px;
+  }
+
+  .pagination-wrapper-lihat-daftar-hadir{
+    flex-direction:column;
+    gap:15px;
+    margin:20px;
+  }
+
+  .page-description-lihat-daftar-hadir{
+    text-align:center;
+  }
+}
+
+@media (max-width:480px){
+  .navbar-menu-lihat-daftar-hadir{
+    height:70px;
+    padding:0 16px;
+  }
+
+  .navbar-menu-lihat-daftar-hadir h1{
+    font-size:22px;
+  }
+
+  .back-btn-lihat-daftar-hadir{
+    font-size:15px;
+    gap:5px;
+  }
+
+  .back-icon-lihat-daftar-hadir{
+    font-size:24px;
+  }
+
+  .header-wrapper-lihat-daftar-hadir{
+    padding:0 16px;
+  }
+
+  .page-title-lihat-daftar-hadir{
+    font-size:24px;
+  }
+
+  .tabel-wrapper-mahasiswa-lihat-daftar-hadir{
+    width:100%;
+    overflow-x:auto;
+  }
+
+  .tabel-daftar-hadir-penyelenggara-seminar{
+    min-width:650px;
+    margin:16px;
+  }
+
+  .sort-thead-lihat-daftar-hadir{
+    font-size:16px;
+  }
+
+  .sort-icon-lihat-daftar-hadir{
+    font-size:16px;
+  }
+
+  .tabel-daftar-hadir-penyelenggara-seminar tbody{
+    font-size:12px;
+  }
+
+  .status-lokasi{
+    width:60px;
+    padding:4px 8px;
+    font-size:12px;
+  }
+
+  .pagination-wrapper-lihat-daftar-hadir{
+    margin:16px;
+  }
+
+  .pagination-lihat-daftar-hadir button{
+    width:32px;
+    height:32px;
+    font-size:13px;
+  }
+
+  .pagination-lihat-daftar-hadir button:first-child,
+  .pagination-lihat-daftar-hadir button:last-child{
+    width:40px;
+  }
 }

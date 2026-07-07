@@ -1,6 +1,6 @@
 .dashboard-verifikator-layout {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   flex-direction: column;
 }
 
@@ -14,7 +14,7 @@
     margin-left: 60px;
     margin-right: 60px;
     text-align: left;
-    font-size: 45px;
+    font-size:clamp(28px,5vw,45px);
     font-weight: 800;
     color: #1E293B;
     letter-spacing: 0.1px;
@@ -25,7 +25,7 @@
     margin-left: 60px;
     margin-right: 60px;
     text-align: left;
-    font-size: 18px;
+    font-size:clamp(15px,2vw,18px);
     color: #4B5563;
     font-family: 'Poppins', sans-serif;
 }
@@ -35,7 +35,7 @@
     margin-left: 60px;
     margin-right: 60px;
     text-align: left;
-    font-size: 45px;
+    font-size:clamp(28px,5vw,45px);
     font-weight: 800;
     color: #1E293B;
     letter-spacing: 0.1px;
@@ -43,11 +43,12 @@
 
 .card-container-dashboard-verifikator {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
     gap: 50px;
     margin-left:60px;
     margin-right: 150px;
     margin-top:20px;
+    margin-bottom: 20px;
 }
 
 .menu-card-dashboard-verifikator {
@@ -57,7 +58,7 @@
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    height:100%;
+    min-height:240px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -72,26 +73,27 @@
     gap: 10px;
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
-    font-size: 20px;
+    font-size:clamp(18px,2vw,20px);
     color: #1E293B;
 }
 
 .check-icon-dashboard-verifikator {
-    font-size: 35px;
+    font-size:clamp(28px,3vw,35px);
     color: #2463EB;
 }
 
 .history-icon-dashboard-verifikator {
-    font-size: 35px;
+    font-size:clamp(28px,3vw,35px);
     color: #16A34A;
 }
 
 .card-content-dashboard-verifikator {
     margin-top: 20px;
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size:clamp(14px,2vw,16px);
     color: #4B5563;
     text-align: justify;
+    flex: 1;
 }
 
 .detail-btn-dashboard-verifikator {
