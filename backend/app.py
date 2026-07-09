@@ -55,6 +55,8 @@ def login_required(f):
     def decorated(*args, ** kwargs):
         token = request.headers.get("Authorization")
 
+        print("Authorization Header:", token)
+
         if not token:
             return jsonify({
                 "success": False,
@@ -64,22 +66,31 @@ def login_required(f):
         try:
             token = token.replace("Bearer ", "")
 
+            print("SECRET_KEY:", SECRET_KEY)
+            print("TOKEN:", token)
+
             payload = jwt.decode(
                 token,
                 SECRET_KEY,
                 algorithms=["HS256"]
             )
+            print("PAYLOAD:", payload)
+
             request.user = payload
 
         except jwt.ExpiredSignatureError:
             return jsonify({
                 "success": False,
+                "where": "login_required",
                 "message": "Token sudah kedaluwarsa"
             }), 401
         
-        except jwt.InvalidTokenError:
+        except jwt.InvalidTokenError as e:
+            print(e)
+
             return jsonify({
                 "success": False,
+                "where": "login_required",
                 "message": "Token tidak valid"
             }), 401
         
@@ -1972,6 +1983,8 @@ def generate_qr():
             algorithm="HS256"
         )
 
+        print("QR YANG DIBUAT:", qr_token)
+
         # Cek apakah QR sudah ada
         cursor.execute("""
             SELECT *
@@ -2135,10 +2148,15 @@ def scan_qr():
 
     qr_token = data.get("qr_code")
 
+    print("QR TOKEN DARI FRONTEND:")
+    print(qr_token)
+
     latitude = data.get("latitude")
     longitude = data.get("longitude")
 
     if not qr_token:
+        print("QR CODE TIDAK DITEMUKAN")
+
         return jsonify({
             "success": False,
             "message": "QR Code tidak ditemukan"
@@ -2146,11 +2164,7 @@ def scan_qr():
     
     try:
         #Decode token login peserta seminar
-        peserta = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=["HS256"]
-        )
+        peserta = request.user
 
         #Mengecek agar hanya mahasiswa yang bisa melakukan presensi
         if peserta["role"] != "mahasiswa":
@@ -2159,6 +2173,8 @@ def scan_qr():
                 "code": "INVALID_ROLE",
                 "message": "Hanya mahasiswa yang dapat melakukan presensi"
             }), 403
+
+        print("QR YANG DITERIMA:", qr_token)
 
         #Decode QR Code
         qr_payload = jwt.decode(
@@ -2194,6 +2210,8 @@ def scan_qr():
             cursor.close()
             conn.close()
 
+            print("QR CODE BELUM DIAKTIFKAN")
+
             return jsonify({
                 "success": False,
                 "code": "QR_NOT_ACTIVE",
@@ -2218,6 +2236,8 @@ def scan_qr():
             cursor.close()
             conn.close()
 
+            print("PENYELENGGARA TIDAK DAPAT MELAKUKAN PRESENSI")
+
             return jsonify({
                 "success": False,
                 "code": "PENYELENGGARA",
@@ -2230,6 +2250,8 @@ def scan_qr():
         if qr["expired_at"] is not None and now > qr["expired_at"]:
             cursor.close()
             conn.close()
+
+            print("QR CODE SUDAH KEDALUWARSA")
 
             return jsonify({
             "success": False,
@@ -2252,6 +2274,8 @@ def scan_qr():
         if existing:
             cursor.close()
             conn.close()
+
+            print("ANDA SUDAH MELAKUKAN PRESENSI")
 
             return jsonify({
                 "success": False,
@@ -2278,6 +2302,8 @@ def scan_qr():
         if jarak > lokasi["radius"]:
             cursor.close()
             conn.close()
+
+            print("ANDA BERADA DI LUAR AREA SEMINAR")
 
             return jsonify({
                 "success": False,
@@ -2323,13 +2349,17 @@ def scan_qr():
         return jsonify({
             "success": False,
             "code": "QR_EXPIRED",
+            "where": "scan_qr",
             "message": "QR Code sudah kedaluwarsa"
         }), 401
     
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as e:
+        print("QR ERROR:", e)
+
         return jsonify({
             "success": False,
             "code": "QR_INVALID",
+            "where": "scan_qr",
             "message": "QR Code tidak valid"
         }), 401
     

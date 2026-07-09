@@ -39,7 +39,7 @@ function Dashboard() {
                         <div className="card-content-dashboard-admin">
                             <p>Kelola data dan informasi lokasi seminar</p>
                         </div>
-                        <button className="detail-btn" onClick={() => navigate("/kelola-data-lokasi")}>Lihat Detail</button>
+                        <button className="detail-btn-admin" onClick={() => navigate("/kelola-data-lokasi")}>Lihat Detail</button>
                     </div>
 
                     <div className="menu-card-dashboard-admin">
@@ -50,7 +50,7 @@ function Dashboard() {
                         <div className="card-content-dashboard-admin">
                             <p>Kelola data dan informasi seminar yang akan diajukan</p>
                         </div>
-                        <button className="detail-btn" onClick={() => navigate("/kelola-data-seminar")}>Lihat Detail</button>
+                        <button className="detail-btn-admin" onClick={() => navigate("/kelola-data-seminar")}>Lihat Detail</button>
                     </div>
 
                     <div className="menu-card-dashboard-admin">
@@ -61,7 +61,7 @@ function Dashboard() {
                         <div className="card-content-dashboard-admin">
                             <p>Lihat dan rekap data presensi peserta seminar secara lengkap</p>
                         </div>
-                        <button className="detail-btn" onClick={() => navigate("/laporan-presensi")}>Lihat Detail</button>
+                        <button className="detail-btn-admin" onClick={() => navigate("/laporan-presensi")}>Lihat Detail</button>
                     </div>
                 </div>
             </div>

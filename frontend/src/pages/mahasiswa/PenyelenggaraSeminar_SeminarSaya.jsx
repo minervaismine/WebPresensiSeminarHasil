@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
 import { Icon } from '@iconify/react';
+import api from "../../api/axios";
 
 function PenyelenggaraSeminar_SeminarSaya() {
     const navigate = useNavigate();
@@ -28,8 +29,8 @@ function PenyelenggaraSeminar_SeminarSaya() {
             try {
                 const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
-                const response = await fetch (
-                    `http://127.0.0.1:5000/detail-seminar/${user.id_user}`,
+                const response = await api.get (
+                    `/detail-seminar/${user.id_user}`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -37,8 +38,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     }
                 );
 
-                const result = await response.json();
-                setSeminarData(result);
+                setSeminarData(response.data);
 
             } catch (error) {
                 console.error(error);
@@ -101,6 +101,18 @@ function PenyelenggaraSeminar_SeminarSaya() {
     }
 
     const getStatusSeminar = () => {
+        if (
+            !seminarData ||
+            !seminarData.waktu_mulai ||
+            !seminarData.waktu_selesai ||
+            !seminarData.tanggal
+        ) {
+            return {
+                text: "-",
+                className: "",
+            };
+        }
+
         const sekarang = new Date();
 
         const [jamMulai, menitMulai] = seminarData.waktu_mulai.split(":");
@@ -108,16 +120,16 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
         const waktuMulai = new Date(seminarData.tanggal);
         waktuMulai.setHours(
-            parseInt(jamMulai),
-            parseInt(menitMulai),
+            Number(jamMulai),
+            Number(menitMulai),
             0,
             0
         );
 
         const waktuSelesai = new Date(seminarData.tanggal);
         waktuSelesai.setHours(
-            parseInt(jamSelesai),
-            parseInt(menitSelesai),
+            Number(jamSelesai),
+            Number(menitSelesai),
             0,
             0
         );
@@ -148,27 +160,19 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
             console.log(token);
 
-            const response = await fetch(
-                "http://127.0.0.1:5000/generate-qr",
+            const response = await api.post(
+                "/generate-qr",
+                {},
                 {
-                    method: "POST",
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
                     }
                 }
             );
 
-            const result = await response.json();
+            console.log(response.data);
 
-            if (!response.ok) {
-                alert(result.message);
-                return;
-            }
-
-            console.log(response.status);
-            console.log(result);
-
-            setQrCode(result.qr_code);
+            setQrCode(response.data.qr_code);
             setShowQRModal(true);
         } catch (error) {
             console.error(error);
@@ -179,34 +183,33 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
     const activateQRCode = async () => {
         try {
-            const response = await fetch(
-                "http://127.0.0.1:5000/activate-qr",
+            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+            const response = await api.post(
+                "/activate-qr",
                 {
-                    method: "POST",
+                    id_seminar: seminarData.id_seminar
+                },
+                {
                     headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id_seminar: seminarData.id_seminar
-                    })
+                        Authorization: `Bearer ${token}`
+                    }
                 }
             );
 
-            const result = await response.json();
+            console.log(response.data);
 
-            console.log(result);
-
-            if (!response.ok) {
-                alert(result.message);
-                return;
-            }
-
-            setExpiredAt(result.expired_at);
+            setExpiredAt(response.data.expired_at);
             setIsActivated(true);
 
-            alert(result.message);
+            alert(response.data.message);
         } catch(err) {
             console.log(err);
+
+            if (err.response) {
+                console.log(err.response.data);
+                alert(err.response.data.message);
+            }
         }
     };
 
@@ -236,7 +239,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     <div className="content-seminar-menu-seminar-saya">
                         <h1 className="nama-mahasiswa-menu-seminar-saya">{seminarData.nama}</h1>
                         <span className={`badge-status-seminar-menu-seminar-saya ${statusSeminar.className}`}>{statusSeminar.text}</span>
-                        <h2 className="judul-skripsi-menu-seminar-saya">"{seminarData.judul_penelitian?.toUpperCase()}"</h2>
+                        <h2 className="judul-skripsi-menu-seminar-saya">"{seminarData.judul_penelitian}"</h2>
 
                         <div className="informasi-seminar-wrapper-menu-seminar-saya">
                             <div className="informasi-jadwal-seminar">

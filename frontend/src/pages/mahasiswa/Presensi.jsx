@@ -3,6 +3,7 @@ import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 function Presensi() {
     const navigate = useNavigate();
@@ -86,27 +87,24 @@ function Presensi() {
                     scannerRef.current = null;
                     setCameraStarted(false);
 
-                    const token = localStorage.getItem("token");
+                    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+                    console.log("TOKEN:", token);
                     const location = await getCurrentLocation();
 
-                    const response = await fetch (
-                        "http://127.0.0.1:5000/scan-qr",
+                    const response = await api.post(
+                        "/scan-qr",
                         {
-                            method: "POST",
+                            qr_code: decodedText,
+                            latitude: location.latitude,
+                            longitude: location.longitude
+                        },
+                        {
                             headers: {
-                                "Content-Type": "application/json",
                                 Authorization: `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                qr_code: decodedText,
-                                latitude: location.latitude,
-                                longitude: location.longitude
-                            })
+                            }
                         }
                     );
-
-                    const result = await response.json();
-                    console.log(result);
+                    const result = response.data;
 
                     if (result.success) {
                         navigate("/presensi-berhasil", {
@@ -128,7 +126,7 @@ function Presensi() {
                             }
                         });
                     }
-                } catch(err) {
+                } catch (err) {
                     console.log(err);
 
                     try {
@@ -138,15 +136,33 @@ function Presensi() {
                     scannerRef.current = null;
                     setCameraStarted(false);
 
-                    navigate("/presensi-gagal", {
-                        state: {
-                            code: "SERVER_ERROR"
+                    if (err.response) {
+                        const result = err.response.data;
+
+                        if (
+                            result.code === "PENYELENGGARA" ||
+                            result.code === "INVALID_ROLE" ||
+                            result.code === "ALREADY_ATTENDED"
+                        ) {
+                            navigate("/presensi-gagal-role", {
+                                state: {
+                                    code: result.code
+                                }
+                            });
+                        } else {
+                            navigate("/presensi-gagal", {
+                                state: {
+                                    code: result.code
+                                }
+                            });
                         }
-                    });
-                } finally {
-                    scannerRef.current = null;
-                    setCameraStarted(false);
-                    isScanningRef.current = false;
+                    } else {
+                        navigate("/presensi-gagal", {
+                            state: {
+                                code: "SERVER_ERROR"
+                            }
+                        });
+                    }
                 }
             },
             (error) => {
