@@ -1926,6 +1926,67 @@ def get_data_mahasiswa():
         "total_pages": (total_data + limit - 1) // limit
     })
 
+#Mengecek status QR Code apakah aktif atau tidak
+@app.route("/qr-status/<int:id_seminar>", methods=["GET"])
+@login_required
+@role_required("mahasiswa")
+def qr_status(id_seminar):
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT
+            qr_code,
+            status_qr, 
+            expired_at
+        FROM 
+            qr_codes
+        WHERE id_seminar = %s
+    """, (id_seminar,))
+
+    qr = cursor.fetchone()
+
+    now = datetime.now()
+
+    if qr:
+        if qr["status_qr"] == "active":
+            if qr["expired_at"] is None:
+                qr["status_qr"] = "inactive"
+            elif qr["expired_at"] <= now:
+                cursor.execute("""
+                    UPDATE qr_codes
+                    SET
+                        status_qr='inactive',
+                        activated_at=NULL,
+                        expired_at=NULL
+                    WHERE id_seminar=%s
+                """,(id_seminar,))
+
+                conn.commit()
+
+                qr["status_qr"] = "inactive"
+                qr["expired_at"] = None
+
+        cursor.close()
+        conn.close()
+
+    if not qr:
+        return jsonify({
+            "success": False,
+            "message": "QR belum dibuat"
+        }), 404
+
+    return jsonify({
+        "success": True,
+        "qr_code": qr["qr_code"],
+        "status_qr": qr["status_qr"],
+        "expired_at":
+            qr["expired_at"].isoformat()
+            if qr["expired_at"]
+            else None
+    }), 200
+
 #Menghubungkan data QR Code dengan data seminar
 @app.route("/generate-qr", methods=["POST"])
 @login_required
@@ -1994,30 +2055,49 @@ def generate_qr():
 
         existing_qr = cursor.fetchone()
 
-        #Kalau QR belum ada, masukkan data ke tabel qr_codes
-        if existing_qr is None:
-            cursor.execute("""
-                INSERT INTO qr_codes (
-                    id_seminar,
-                    qr_code
-                )
-                VALUES (%s, %s)    
-            """,
-            (
-                seminar["id_seminar"], qr_token
-            ))
-        else:
+        # Kalau QR belum ada, masukkan data ke tabel qr_codes
+        if existing_qr:
+            # Kalau QR masih aktif
+            if (
+                existing_qr["status_qr"] == "active"
+                and existing_qr["expired_at"]
+                and existing_qr["expired_at"] > datetime.now()
+            ):
+                cursor.close()
+                conn.close()
+
+                return jsonify({
+                    "success": True,
+                    "qr_code": existing_qr["qr_code"],
+                    "status_qr": "active",
+                    "expired_at": existing_qr["expired_at"].isoformat()
+                })
+            
+            # QR sudah ada tapi inactive/expired
             cursor.execute("""
                 UPDATE qr_codes
                 SET
-                    qr_code = %s,
-                    status_qr = 'inactive',
-                    activated_at = NULL,
-                        expired_at = NULL
-                WHERE id_seminar = %s
-            """,
-            (
-                qr_token, seminar["id_seminar"]
+                    qr_code=%s,
+                    status_qr='inactive',
+                    activated_at=NULL,
+                    expired_at=NULL
+                WHERE id_seminar=%s
+            """, (
+                qr_token,
+                seminar["id_seminar"]
+            ))
+        else:
+            # QR belum ada
+            cursor.execute("""
+                INSERT INTO qr_codes(
+                    id_seminar,
+                    qr_code,
+                    status_qr
+                )
+                VALUES(%s,%s,'inactive')
+            """, (
+                seminar["id_seminar"],
+                qr_token
             ))
 
         conn.commit()
@@ -2027,7 +2107,9 @@ def generate_qr():
 
         return jsonify({
             "success": True,
-            "qr_code": qr_token
+            "qr_code": qr_token,
+            "status_qr": "inactive",
+            "expired_at": None
         }), 200
     
     except jwt.ExpiredSignatureError:

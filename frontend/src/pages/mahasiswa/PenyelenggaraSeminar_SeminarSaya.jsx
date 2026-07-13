@@ -58,11 +58,13 @@ function PenyelenggaraSeminar_SeminarSaya() {
             const different = expire - now;
 
             if (different <= 0) {
+                clearInterval(timer);
+
                 setCountdown("00:00");
                 setIsExpired(true);
                 setIsActivated(false);
+                setExpiredAt(null);
                 
-                clearInterval(timer);
                 return;
             }
 
@@ -158,8 +160,6 @@ function PenyelenggaraSeminar_SeminarSaya() {
         try {
             const token = localStorage.getItem("token");
 
-            console.log(token);
-
             const response = await api.post(
                 "/generate-qr",
                 {},
@@ -170,10 +170,13 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 }
             );
 
-            console.log(response.data);
-
             setQrCode(response.data.qr_code);
-            setShowQRModal(true);
+            setExpiredAt(response.data.expired_at);
+
+            // RESET STATE
+            setCountdown("10:00");
+            setIsActivated(false);
+            setIsExpired(false);
         } catch (error) {
             console.error(error);
         }
@@ -201,6 +204,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
             setExpiredAt(response.data.expired_at);
             setIsActivated(true);
+            setIsExpired(false);
 
             alert(response.data.message);
         } catch(err) {
@@ -213,11 +217,38 @@ function PenyelenggaraSeminar_SeminarSaya() {
         }
     };
 
+    const openQRModal = async () => {
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+        try {
+            const status = await api.get(
+                `/qr-status/${seminarData.id_seminar}`,
+                {
+                    headers:{
+                        Authorization:`Bearer ${token}`
+                    }
+                }
+            );
+            console.log("DATA QR STATUS:", status.data);
+
+            if (status.data.status_qr === "active") {
+                setQrCode(status.data.qr_code);
+                setExpiredAt(status.data.expired_at);
+                setIsActivated(true);
+                setIsExpired(false);
+            } else {
+                await generateQRCode();
+            }
+
+            setShowQRModal(true);
+        } catch(err) {
+            await generateQRCode();
+            setShowQRModal(true);
+        }
+    };
+
     const closeQRModal = () => {
         setShowQRModal(false);
-        setCountdown("10:00");
-        setIsExpired(false);
-        setQrCode("");
     };
 
     return (
@@ -276,7 +307,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
                     <div className="actions-btn-menu-seminar-saya">
                         <button className="lihat-daftar-hadir-btn-penyelenggara-seminar" onClick={() => navigate(`/lihat-daftar-hadir/${seminarData.id_seminar}`)}>Lihat Daftar Hadir</button>
-                        <button className="generate-qr-code-btn-penyelenggara-seminar" onClick={generateQRCode} disabled={showQRModal}>Generate QR Code</button>
+                        <button className="generate-qr-code-btn-penyelenggara-seminar" onClick={openQRModal} disabled={showQRModal}>Generate QR Code</button>
                     </div>
                 </div>
 
