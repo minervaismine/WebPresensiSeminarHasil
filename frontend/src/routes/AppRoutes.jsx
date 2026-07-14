@@ -16,7 +16,6 @@ import VerifikasiPresensi_LihatDaftarHadir from "../pages/verifikator/Verifikasi
 import RiwayatVerifikasi from "../pages/verifikator/RiwayatVerifikasi";
 import RiwayatVerifikasi_LihatDetail from "../pages/verifikator/RiwayatVerifikasi_LihatDetail";
 import DashboardAdmin from "../pages/admin/DashboardAdmin";
-import KelolaDataMahasiswa from "../pages/admin/KelolaDataMahasiswa";
 import KelolaDataLokasi from "../pages/admin/KelolaDataLokasi";
 import KelolaDataSeminar from "../pages/admin/KelolaDataSeminar";
 import LaporanPresensi from "../pages/admin/LaporanPresensi";
@@ -47,7 +46,6 @@ function AppRoutes() {
       
       {/* Admin */}
       <Route path="/dashboard-admin" element={<ProtectedRoute allowedRoles={["admin"]}><DashboardAdmin /></ProtectedRoute>}/>
-      <Route path="/kelola-data-mahasiswa" element={<ProtectedRoute allowedRoles={["admin"]}><KelolaDataMahasiswa /></ProtectedRoute>}/>
       <Route path="/kelola-data-seminar" element={<ProtectedRoute allowedRoles={["admin"]}><KelolaDataSeminar /></ProtectedRoute>}/>
       <Route path="/kelola-data-lokasi" element={<ProtectedRoute allowedRoles={["admin"]}><KelolaDataLokasi /></ProtectedRoute>}/>
       <Route path="/laporan-presensi" element={<ProtectedRoute allowedRoles={["admin"]}><LaporanPresensi /></ProtectedRoute>}/>

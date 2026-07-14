@@ -1742,190 +1742,6 @@ def tambah_seminar():
 
     return jsonify({"message": "Berhasil"})
 
-#Untuk form edit data mahasiswa
-@app.route("/edit-mahasiswa/<int:id_user>", methods=["PUT"])
-@login_required
-@role_required("admin")
-def edit_mahasiswa(id_user):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    data = request.json
-
-    nama = data["nama"]
-    nim = data["nim"]
-    angkatan = data["angkatan"]
-
-    try:
-        #Mengecek apakah data mahasiswa ada
-        cursor.execute(
-            "SELECT * FROM mahasiswa WHERE id_user=%s",
-            (id_user,)
-        )
-
-        if not cursor.fetchone():
-            return jsonify({
-                "message": "Data mahasiswa tidak ditemukan"
-            }), 404
-        
-        #Mengecek apakah NIM sudah dipakai mahasiswa lain
-        cursor.execute(
-            """
-            SELECT id_user
-            FROM mahasiswa
-            WHERE nim=%s AND id_user<>%s
-            """,
-            (nim, id_user)
-        )
-
-        if cursor.fetchone():
-            return jsonify({
-                "message": "NIM sudah digunakan oleh mahasiswa lain"
-            }), 400
-        
-        #Update data
-        cursor.execute(
-            """
-            UPDATE mahasiswa
-            SET
-                nama=%s,
-                nim=%s,
-                angkatan=%s
-            WHERE id_user=%s
-            """,
-            (nama, nim, angkatan, id_user)
-        )
-
-        conn.commit()
-
-        return jsonify({
-            "message": "Data mahasiswa berhasil diperbarui"
-        }), 200
-    
-    except Exception as e:
-        conn.rollback()
-        return jsonify({
-            "message": str(e)
-        }), 500
-    
-    finally:
-        cursor.close()
-        conn.close()
-
-#Menampilkan data angkatan untuk masuk ke filter
-@app.route("/data-angkatan", methods=["GET"])
-@login_required
-@role_required("admin")
-def get_data_angkatan():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    cursor.execute("""
-        SELECT DISTINCT angkatan
-        FROM mahasiswa
-        ORDER BY angkatan asc
-    """)
-
-    data = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return jsonify(data)
-
-#Menampilkan data mahasiswa, fitur search, fitur sort dan fitur filter di halaman Kelola Data Mahasiswa - Admin
-@app.route("/data-mahasiswa", methods=["GET"])
-@login_required
-@role_required("admin")
-def get_data_mahasiswa():
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    #Pagination
-    page = int(request.args.get("page", 1))
-    limit = int(request.args.get("limit", 10))
-    offset = (page - 1) * limit
-
-    #Search
-    search = request.args.get("search", "").strip()
-    keyword = f"%{search}%"
-
-    #Parameter sorting
-    sort_by = request.args.get("sort_by", "nama")
-    sort_order = request.args.get("sort_order", "asc").lower()
-
-    #Validasi agar aman dari SQL Injection
-    allowed_columns = ["nama", "nim", "angkatan"]
-    allowed_orders = ["asc", "desc"]
-
-    if sort_by not in allowed_columns:
-        sort_by = "nama"
-    
-    if sort_order not in allowed_orders:
-        sort_order = "asc"
-
-    #Filter angkatan
-    angkatan = request.args.get("angkatan", "")
-    angkatan_list = []
-
-    if angkatan:
-        angkatan_list = angkatan.split(",")
-
-    where_clause = []
-    params = []
-
-    if search:
-        where_clause.append("(nama LIKE %s OR nim LIKE %s)")
-        params.extend([keyword, keyword])
-
-    if angkatan_list:
-        placeholders = ",".join(["%s"] * len(angkatan_list))
-        where_clause.append(f"angkatan IN ({placeholders})")
-        params.extend(angkatan_list)
-
-    where_sql = ""
-    if where_clause:
-        where_sql = "WHERE " + " AND ".join(where_clause)
-    
-    count_query = f"""
-        SELECT COUNT(*) AS total
-        FROM mahasiswa
-        {where_sql}
-    """
-
-    cursor.execute(count_query, tuple(params))
-    total_data = cursor.fetchone()["total"]
-
-    #Ambil data
-    data_query = f"""
-        SELECT
-            id_user,
-            nama,
-            nim,
-            angkatan
-        FROM mahasiswa
-        {where_sql}
-        ORDER BY {sort_by} {sort_order.upper()}
-        LIMIT %s OFFSET %s
-    """
-
-    data_params = params.copy()
-    data_params.extend([limit, offset])
-
-    cursor.execute(data_query, tuple(data_params))
-    mahasiswa = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return jsonify({
-        "data": mahasiswa,
-        "total": total_data,
-        "page": page,
-        "limit": limit,
-        "total_pages": (total_data + limit - 1) // limit
-    })
-
 #Mengecek status QR Code apakah aktif atau tidak
 @app.route("/qr-status/<int:id_seminar>", methods=["GET"])
 @login_required
@@ -2079,6 +1895,7 @@ def generate_qr():
                 SET
                     qr_code=%s,
                     status_qr='inactive',
+                    generated_at=NOW(),
                     activated_at=NULL,
                     expired_at=NULL
                 WHERE id_seminar=%s
@@ -2092,9 +1909,10 @@ def generate_qr():
                 INSERT INTO qr_codes(
                     id_seminar,
                     qr_code,
-                    status_qr
+                    status_qr,
+                    generated_at
                 )
-                VALUES(%s,%s,'inactive')
+                VALUES(%s,%s,'inactive', NOW())
             """, (
                 seminar["id_seminar"],
                 qr_token

@@ -22,17 +22,6 @@ function Dashboard() {
                 <div className="card-dashboard-admin-container">
                     <div className="menu-card-dashboard-admin">
                         <div className="card-header-dashboard-admin">
-                            <Icon icon="ph:student-fill" className="student-dashboard-admin-icon" />
-                            <span>Kelola Data Mahasiswa</span>
-                        </div>
-                        <div className="card-content-dashboard-admin">
-                            <p>Kelola data dan informasi mahasiswa yang ingin mengajukan seminar</p>
-                        </div>
-                        <button className="detail-btn-admin" onClick={() => navigate("/kelola-data-mahasiswa")}>Lihat Detail</button>
-                    </div>
-
-                    <div className="menu-card-dashboard-admin">
-                        <div className="card-header-dashboard-admin">
                             <Icon icon="tdesign:location-filled" className="location-dashboard-admin-icon" />
                             <span>Kelola Data Lokasi</span>
                         </div>
