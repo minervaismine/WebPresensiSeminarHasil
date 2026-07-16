@@ -37,7 +37,7 @@ function LihatDaftarHadir() {
         return () => clearTimeout(timer);
     }, [currentPage, sortBy, sortOrder, search]);
 
-    const fetchDaftarHadir = async (page = 1, searchKeyword = search) => {
+    const fetchDaftarHadir = async (page = currentPage, searchKeyword = search) => {
         try {
             setLoading(true);
 

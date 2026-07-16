@@ -28,7 +28,7 @@ function Dashboard() {
                         <div className="card-content-dashboard-verifikator">
                             <p>Lihat dan verifikasi data presensi peserta seminar</p>
                         </div>
-                        <button className="detail-btn" onClick={() => navigate("/verifikasi-presensi")}>Lihat Detail</button>
+                        <button className="detail-btn-dashboard-verifikator" onClick={() => navigate("/verifikasi-presensi")}>Lihat Detail</button>
                     </div>
 
                     <div className="menu-card-dashboard-verifikator">
