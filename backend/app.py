@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from config import get_db_connection
@@ -10,13 +12,15 @@ from io import BytesIO
 from flask import send_file
 from functools import wraps
 
+load_dotenv()
+
 app = Flask(__name__)
 
-app.secret_key = "web_seminar_key"
+app.secret_key = os.getenv("SECRET_KEY")
 
-SECRET_KEY = "web_seminar_key"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+CORS(app, supports_credentials=True, origins=["http://localhost:5173", "https://web-presensi-seminar-hasil-nvvz.vercel.app"])
 
 try:
     locale.setlocale(locale.LC_TIME, "id_ID.UTF-8")   # Linux/Mac
