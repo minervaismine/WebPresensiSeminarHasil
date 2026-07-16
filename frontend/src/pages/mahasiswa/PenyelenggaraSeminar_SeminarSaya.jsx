@@ -212,7 +212,15 @@ function PenyelenggaraSeminar_SeminarSaya() {
             console.log(response.data);
 
             if (response.data.expired_at) {
-                setExpiredAt(new Date(response.data.expired_at));
+                const expire = new Date(response.data.expired_at);
+
+                console.log("NOW      :", new Date());
+                console.log("EXPIRE   :", expire);
+                console.log("NOW(ms)  :", Date.now());
+                console.log("EXP(ms)  :", expire.getTime());
+                console.log("SELISIH  :", expire.getTime() - Date.now());
+
+                setExpiredAt(expire);
             } else {
                 setExpiredAt(null);
             }
