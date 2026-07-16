@@ -214,6 +214,11 @@ function PenyelenggaraSeminar_SeminarSaya() {
             if (response.data.expired_at) {
                 const expire = new Date(response.data.expired_at);
 
+                console.log("String backend :", response.data.expired_at);
+                console.log("expire object  :", expire);
+                console.log("expire ISO     :", expire.toISOString());
+                console.log("Timezone offset:", new Date().getTimezoneOffset());
+
                 console.log("NOW      :", new Date());
                 console.log("EXPIRE   :", expire);
                 console.log("NOW(ms)  :", Date.now());
