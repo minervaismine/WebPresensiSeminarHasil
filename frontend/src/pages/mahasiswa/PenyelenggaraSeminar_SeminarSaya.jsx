@@ -49,13 +49,15 @@ function PenyelenggaraSeminar_SeminarSaya() {
     }, [navigate]);
 
     useEffect(() => {
-        if (!expiredAt) return;
+        if (!expiredAt) {
+            setCountdown("10:00");
+            setIsExpired(false);
+            return;
+        }
 
         const timer = setInterval(() => {
             const now = new Date();
-            const expire = new Date(expiredAt);
-
-            const different = expire - now;
+            const different = expiredAt - now;
 
             if (different <= 0) {
                 clearInterval(timer);
@@ -64,7 +66,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 setIsExpired(true);
                 setIsActivated(false);
                 setExpiredAt(null);
-                
+
                 return;
             }
 
@@ -271,6 +273,11 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
     const closeQRModal = () => {
         setShowQRModal(false);
+        setQrCode("");
+        setExpiredAt(null);
+        setCountdown("10:00");
+        setIsActivated(false);
+        setIsExpired(false);
     };
 
     return (
