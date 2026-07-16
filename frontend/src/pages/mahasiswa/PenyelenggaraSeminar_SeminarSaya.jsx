@@ -251,7 +251,13 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 setQrCode(status.data.qr_code);
 
                 if (status.data.expired_at) {
-                    setExpiredAt(new Date(status.data.expired_at));
+                    const expire = new Date(status.data.expired_at);
+
+                    console.log("NOW :", new Date());
+                    console.log("EXPIRE :", expire);
+                    console.log("SELISIH :", expire.getTime() - Date.now());
+
+                    setExpiredAt(expire);
                 } else {
                     setExpiredAt(null);
                 }
