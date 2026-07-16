@@ -201,6 +201,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
             );
 
             console.log(response.data);
+            console.log("expired_at =", response.data.expired_at);
 
             setExpiredAt(response.data.expired_at);
             setIsActivated(true);
