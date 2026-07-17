@@ -62,11 +62,44 @@ function KelolaDataLokasi() {
 
     const [position, setPosition] = useState([-5.1326225660413165, 119.48684562754943]);
 
+    const [formData, setFormData] = useState({
+        nama_lokasi: "",
+        latitude: "",
+        longitude: "",
+        radius: 20
+    });
+
+    const [errors, setErrors] = useState({
+        nama_lokasi: "",
+        latitude: "",
+        longitude: ""
+    });
+
+    const handleInputChange = (fieldName, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [fieldName]: value
+        }));
+
+        if (errors[fieldName]) {
+            setErrors(prev => ({
+                ...prev,
+                [fieldName]: ""
+            }));
+        }
+    }
+
     useEffect(() => {
         setFormData(prev => ({
             ...prev,
             latitude: position[0],
             longitude: position[1]
+        }));
+
+        setErrors(prev => ({
+            ...prev,
+            latitude: "",
+            longitude: ""
         }));
     }, [position]);
     
@@ -173,19 +206,6 @@ function KelolaDataLokasi() {
         setSortOrder(prev => prev === "asc" ? "desc" : "asc");
         setCurrentPage(1);
     };
-
-    const [formData, setFormData] = useState({
-        nama_lokasi: "",
-        latitude: "",
-        longitude: "",
-        radius: 20
-    });
-
-    const [errors, setErrors] = useState({
-        nama_lokasi: "",
-        latitude: "",
-        longitude: ""
-    });
   
     const openAddModal = () => {
         setFormData({
