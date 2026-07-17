@@ -79,12 +79,12 @@
 
 .location-dashboard-admin-icon {
     font-size:clamp(28px,3vw,35px);
-    color:#DC2626;
+    color:#1D4ED8;;
 }
 
 .clipboard-dashboard-admin-icon {
     font-size:clamp(28px,3vw,35px);
-    color: #F7C80D;
+    color: #DC2626;
 }
 
 .history-dashboard-admin-icon {
