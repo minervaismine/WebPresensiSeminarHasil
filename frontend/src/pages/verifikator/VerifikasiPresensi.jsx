@@ -60,6 +60,15 @@ function VerifikasiPresensi() {
         setTanggalAkhir(null);
     };
 
+    const formatTanggal = (tanggal) => {
+        return new Date(tanggal).toLocaleDateString("id-ID", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+    };
+
     return (
         <div className="page-menu-verifikasi-presensi-layout">
             {/* Navbar */}
@@ -162,7 +171,7 @@ function VerifikasiPresensi() {
                                 </div>
 
                                 <div className="informasi-seminar-verifikasi-presensi">
-                                    <span>{item.tanggal}</span>
+                                    <span>{formatTanggal(item.tanggal)}</span>
                                     <span>|</span>
                                     <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
                                 </div>
