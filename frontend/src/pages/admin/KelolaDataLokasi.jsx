@@ -100,14 +100,32 @@ function KelolaDataLokasi() {
     };
 
     const handleAddLocation = async () => {
+        const newErrors = {};
+
+        if (!formData.nama_lokasi.trim()) {
+            newErrors.nama_lokasi = "Nama lokasi wajib diisi!";
+        }
+
+        if (!formData.latitude) {
+            newErrors.latitude = "Latitude wajib diisi.";
+        }
+
+        if (!formData.longitude) {
+            newErrors.longitude = "Longitude wajib diisi.";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        setErrors({});
+
         try {
-            await api.post("/lokasi-seminar",
-                formData
-            );
+            await api.post("/lokasi-seminar", formData);
+
             fetchLokasi();
-
             setShowAddLocationModal(false);
-
         } catch (err) {
             console.log(err);
         }
@@ -408,17 +426,20 @@ function KelolaDataLokasi() {
                     <div className="form-group-nama-lokasi">
                         <label>Nama Lokasi</label>
                         <input type="text" placeholder="Masukkan lokasi/ruangan seminar" value={formData.nama_lokasi} onChange={(e) => setFormData({...formData, nama_lokasi: e.target.value})}/>
+                        {errors.nama_lokasi && (<p className="error-text">{errors.nama_lokasi}</p>)}
                     </div>
 
                     <div className="map-form-row-add-lokasi">
                         <div className="form-group-latitude">
                             <label>Latitude</label>
                             <input type="text" placeholder="Masukkan titik latitude" value={formData.latitude} onChange={(e) => setFormData({...formData, latitude: e.target.value})}/>
+                            {errors.latitude && (<p className="error-text">{errors.latitude}</p>)}
                         </div>
 
                         <div className="form-group-longitude">
                             <label>Longitude</label>
                             <input type="text" placeholder="Masukkan titik longitude" value={formData.longitude} onChange={(e) => setFormData({...formData, longitude: e.target.value})}/>
+                            {errors.longitude && (<p className="error-text">{errors.longitude}</p>)}
                         </div>
                     </div>
 

@@ -436,6 +436,13 @@
   font-size: 18px;
 }
 
+.error-text{
+  color:#dc3545;
+  font-size:14px;
+  margin-top:4px;
+  font-style: italic;
+}
+
 .warning-icon-wrapper-kelola-data-lokasi {
   width: 55px;
   height: 55px;
