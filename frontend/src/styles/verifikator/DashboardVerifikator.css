@@ -42,23 +42,29 @@
 }
 
 .card-container-dashboard-verifikator {
-    display: grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px, 360px));
+    /* display: grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px, 1fr));
     gap: 50px;
     margin-left:60px;
     margin-right: 150px;
     margin-top:20px;
-    margin-bottom: 20px;
+    margin-bottom: 20px; */
+
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin: 20px 60px;
 }
 
 .menu-card-dashboard-verifikator {
+    width: 420px;
+    min-height:240px;
     background: #FFFFFF;
     border-radius: 20px;
     padding: 25px;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    min-height:240px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
