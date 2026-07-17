@@ -169,6 +169,25 @@ function VerifikasiPresensi_LihatDaftarHadir() {
         setCurrentPage(1);
     };
 
+    const formatTanggal = (tanggal) => {
+        return new Date(tanggal).toLocaleDateString("id-ID", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+    };
+
+    const formatWaktuScan = (waktu) => {
+        return new Date(waktu).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+
     return (
         <div className="page-menu-verifikator-lihat-daftar-hadir-layout">
             {/* Navbar */}
@@ -188,7 +207,7 @@ function VerifikasiPresensi_LihatDaftarHadir() {
                     <div className="content-seminar-verifikator-lihat-daftar-hadir">
                         <h1 className="nama-mahasiswa-verifikator-lihat-daftar-hadir">{seminar.nama}</h1>
                         <div className="jadwal-seminar-verifikator-lihat-daftar-hadir">
-                            <span>{seminar.tanggal}</span>
+                            <span>{formatTanggal(seminar.tanggal)}</span>
                             <span>|</span>
                             <span>{seminar.waktu_mulai} - {seminar.waktu_selesai}</span>
                         </div>
@@ -304,7 +323,7 @@ function VerifikasiPresensi_LihatDaftarHadir() {
                             <tr key={item.id_presensi}>
                                 <td className="kolom-nama-verifikator-lihat-daftar-hadir">{item.nama}</td>
                                 <td className="kolom-nim-verifikator-lihat-daftar-hadir">{item.nim}</td>
-                                <td className="kolom-waktu-scan-verifikator-lihat-daftar-hadir">{item.waktu_scan}</td>
+                                <td className="kolom-waktu-scan-verifikator-lihat-daftar-hadir">{formatWaktuScan(item.waktu_scan)}</td>
                                 <td className="kolom-jarak-lokasi-verifikator-lihat-daftar-hadir">
                                     <span className={`status-lokasi-verifikator-lihat-daftar-hadir ${item.status_lokasi}`}>{item.jarak} m</span>
                                 </td>

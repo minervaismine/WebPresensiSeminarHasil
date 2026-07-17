@@ -42,14 +42,6 @@
 }
 
 .card-container-dashboard-verifikator {
-    /* display: grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px, 1fr));
-    gap: 50px;
-    margin-left:60px;
-    margin-right: 150px;
-    margin-top:20px;
-    margin-bottom: 20px; */
-
     display: flex;
     gap: 30px;
     flex-wrap: wrap;
