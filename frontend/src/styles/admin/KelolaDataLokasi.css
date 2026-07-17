@@ -438,10 +438,12 @@
 
 .error-text{
   color:#dc3545;
-  font-size:14px;
+  font-size:13px;
   margin-top:4px;
-  font-style: italic;
-  text-align: left;
+  font-style:italic;
+  display:block;
+  width:100%;
+  text-align:right;
 }
 
 .warning-icon-wrapper-kelola-data-lokasi {
