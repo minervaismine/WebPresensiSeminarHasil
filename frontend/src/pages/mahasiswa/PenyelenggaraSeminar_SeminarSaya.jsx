@@ -264,11 +264,17 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 setQrCode(status.data.qr_code);
 
                 if (status.data.expired_at) {
+                    console.log("STRING DARI BACKEND :", status.data.expired_at);
+
                     const expire = new Date(status.data.expired_at);
 
-                    console.log("NOW :", new Date());
-                    console.log("EXPIRE :", expire);
-                    console.log("SELISIH :", expire.getTime() - Date.now());
+                    console.log("DATE OBJECT :", expire);
+                    console.log("TOSTRING    :", expire.toString());
+                    console.log("TOISO       :", expire.toISOString());
+                    console.log("GETTIME     :", expire.getTime());
+
+                    console.log("NOW         :", new Date());
+                    console.log("SELISIH     :", expire.getTime() - Date.now());
 
                     setExpiredAt(expire);
                 } else {
