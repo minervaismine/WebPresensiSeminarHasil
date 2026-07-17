@@ -174,13 +174,15 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
             setQrCode(response.data.qr_code);
 
-            if (response.data.expired_at) {
-                setExpiredAt(new Date(response.data.expired_at));
+            if (response.data.expired_at && response.data.server_time) {
+                const serverExpire = new Date(response.data.expired_at).getTime();
+                const serverNow = new Date(response.data.server_time).getTime();
+                const remainingMs = serverExpire - serverNow;
+
+                setExpiredAt(new Date(Date.now() + remainingMs));
             } else {
                 setExpiredAt(null);
             }
-
-            console.log("expired_at generate:", response.data.expired_at);
 
             // RESET STATE
             setCountdown("10:00");
@@ -209,28 +211,15 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 }
             );
 
-            console.log(response.data);
+            if (response.data.expired_at && response.data.server_time) {
+                const serverExpire = new Date(response.data.expired_at).getTime();
+                const serverNow = new Date(response.data.server_time).getTime();
+                const remainingMs = serverExpire - serverNow;
 
-            if (response.data.expired_at) {
-                const expire = new Date(response.data.expired_at);
-
-                console.log("String backend :", response.data.expired_at);
-                console.log("expire object  :", expire);
-                console.log("expire ISO     :", expire.toISOString());
-                console.log("Timezone offset:", new Date().getTimezoneOffset());
-
-                console.log("NOW      :", new Date());
-                console.log("EXPIRE   :", expire);
-                console.log("NOW(ms)  :", Date.now());
-                console.log("EXP(ms)  :", expire.getTime());
-                console.log("SELISIH  :", expire.getTime() - Date.now());
-
-                setExpiredAt(expire);
+                setExpiredAt(new Date(Date.now() + remainingMs));
             } else {
                 setExpiredAt(null);
             }
-
-            console.log("expired_at dari activate:", response.data.expired_at);
 
             setIsActivated(true);
             setIsExpired(false);
@@ -258,30 +247,22 @@ function PenyelenggaraSeminar_SeminarSaya() {
                     }
                 }
             );
-            console.log("DATA QR STATUS:", status.data);
 
             if (status.data.status_qr === "active") {
                 setQrCode(status.data.qr_code);
 
-                if (status.data.expired_at) {
-                    console.log("STRING DARI BACKEND :", status.data.expired_at);
+                if (status.data.expired_at && status.data.server_time) {
 
                     const expire = new Date(status.data.expired_at);
 
-                    console.log("DATE OBJECT :", expire);
-                    console.log("TOSTRING    :", expire.toString());
-                    console.log("TOISO       :", expire.toISOString());
-                    console.log("GETTIME     :", expire.getTime());
+                    const serverExpire = new Date(status.data.expired_at).getTime();
+                    const serverNow = new Date(status.data.server_time).getTime();
+                    const remainingMs = serverExpire - serverNow;
 
-                    console.log("NOW         :", new Date());
-                    console.log("SELISIH     :", expire.getTime() - Date.now());
-
-                    setExpiredAt(expire);
+                    setExpiredAt(new Date(Date.now() + remainingMs));
                 } else {
                     setExpiredAt(null);
                 }
-
-                console.log("expired_at dari backend:", status.data.expired_at);
 
                 setIsActivated(true);
                 setIsExpired(false);
