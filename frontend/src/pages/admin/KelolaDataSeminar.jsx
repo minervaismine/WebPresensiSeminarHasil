@@ -695,10 +695,10 @@ function KelolaDataSeminar() {
                                 <Icon icon="icon-park-outline:down" className="dropdown-icon-lokasi-seminar"/>
                             </div>
                             
-                            <button type="button" className="map-picker-btn" disabled={!idLokasi} onClick={() => setShowMapModal (true)}>Lihat Peta</button>
-                            
-                            {errors.lokasi && (<p className="error-text-seminar">{errors.lokasi}</p>)}
+                            <button type="button" className="map-picker-btn" disabled={!idLokasi} onClick={() => setShowMapModal (true)}>Lihat Peta</button>    
                         </div>
+
+                        {errors.lokasi && (<p className="error-text-seminar">{errors.lokasi}</p>)}
                     </div>
 
                     <div className="form-group-pembimbing">
