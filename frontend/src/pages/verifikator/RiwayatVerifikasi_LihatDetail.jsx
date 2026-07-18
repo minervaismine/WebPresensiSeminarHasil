@@ -147,7 +147,11 @@ function LihatDetail() {
     };
 
     const formatTanggal = (tanggal) => {
+        if (!tanggal) return "-";
+
         const date = new Date(tanggal);
+
+        if (isNaN(date.getTime())) return "-";
 
         const tanggalFormat = date.toLocaleDateString("id-ID", {
             day: "2-digit",
