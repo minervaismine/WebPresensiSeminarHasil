@@ -147,13 +147,21 @@ function LihatDetail() {
     };
 
     const formatTanggal = (tanggal) => {
-        return new Date(tanggal).toLocaleString("id-ID", {
+        const date = new Date(tanggal);
+
+        const tanggalFormat = date.toLocaleDateString("id-ID", {
             day: "2-digit",
             month: "long",
             year: "numeric",
+        });
+
+        const jamFormat = date.toLocaleTimeString("id-ID", {
             hour: "2-digit",
             minute: "2-digit",
+            hour12: false,
         });
+
+        return `${tanggalFormat}, ${jamFormat}`;
     };
 
     return (
