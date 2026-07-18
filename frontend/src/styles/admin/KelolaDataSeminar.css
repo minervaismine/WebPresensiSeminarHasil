@@ -610,6 +610,11 @@
   padding-right: 8px;
 }
 
+.add-seminar-input-wrapper {
+  display:flex;
+  flex-direction:column;
+}
+
 .form-group-search-mahasiswa {
   display: flex;
   flex-direction: column;
@@ -749,6 +754,12 @@
   color: #1E293B;
 }
 
+.jadwal-input-wrapper{
+  display:flex;
+  flex-direction:column;
+  width:300px;
+}
+
 .datepicker-input-seminar {
   padding: 0 15px;
   height: 35px;
@@ -844,9 +855,8 @@
   color:#dc3545;
   font-size:13px;
   margin-top:4px;
+  margin-left: 15px;
   font-style:italic;
-  display:block;
-  width:100%;
   text-align:right;
 }
 

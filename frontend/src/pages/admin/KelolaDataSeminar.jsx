@@ -333,6 +333,8 @@ function KelolaDataSeminar() {
     };
 
     const resetForm = () => {
+        setErrors({});
+
         setIsEdit(false);
         setSelectedSeminar(null);
         setSelectedMahasiswa(null);
@@ -347,6 +349,11 @@ function KelolaDataSeminar() {
         setDosenPenguji1("");
         setDosenPenguji2("");
     };
+
+    const openForm = () => {
+        resetForm();
+        setShowFormAddSeminar(true);
+    }
 
     const handleDeleteSeminar = async () => {
         if (!selectedDeleteSeminar) return;
@@ -614,7 +621,7 @@ function KelolaDataSeminar() {
                             <div className="form-search-mahasiswa-wrapper">
                                 <div className="search-bar-form">
                                     <Icon icon="radix-icons:magnifying-glass" className="search-form-icon"/>
-                                    <input className="search-form-input" type="search" placeholder="Cari mahasiswa atau NIM" value={searchMahasiswa} onChange={(e) => {const value = e.target.value; setSearchMahasiswa(value); fetchMahasiswa(value); setSelectedMahasiswa(null);}}></input>
+                                    <input className="search-form-input" type="search" placeholder="Cari mahasiswa atau NIM" value={searchMahasiswa} onChange={(e) => {const value = e.target.value; setSearchMahasiswa(value); fetchMahasiswa(value); clearError("mahasiswa"); setSelectedMahasiswa(null);}}></input>
                                 </div>
                                 {errors.mahasiswa && (<p className="error-text-seminar">{errors.mahasiswa}</p>)}
 
@@ -634,8 +641,11 @@ function KelolaDataSeminar() {
 
                         <div className="form-group-judul">
                             <label>Judul Penelitian</label>
-                            <input type="text" placeholder="Masukkan judul skripsi mahasiswa" value={judulPenelitian} onChange={(e) => {setJudulPenelitian(e.target.value); clearError("judul");}}/>
-                            {errors.judul && (<p className="error-text-seminar">{errors.judul}</p>)}
+
+                            <div className="add-seminar-input-wrapper">
+                                <input type="text" placeholder="Masukkan judul skripsi mahasiswa" value={judulPenelitian} onChange={(e) => {setJudulPenelitian(e.target.value); clearError("judul");}}/>
+                                {errors.judul && (<p className="error-text-seminar">{errors.judul}</p>)}
+                            </div>
                         </div>
 
                         <div className="form-group-jadwal">
@@ -643,20 +653,29 @@ function KelolaDataSeminar() {
 
                             <div className="jadwal-row">
                                 <label>Tanggal</label>
-                                <DatePicker selected={tanggal} onChange={(date) => {setTanggal(date); clearError("tanggal");}} dateFormat="dd/MM/yyyy" placeholderText="Pilih tanggal (DD/MM/YY)" className="datepicker-input-seminar"/>
-                                {errors.tanggal && (<p className="error-text-seminar">{errors.tanggal}</p>)}
+
+                                <div className="jadwal-input-wrapper">
+                                    <DatePicker selected={tanggal} onChange={(date) => {setTanggal(date); clearError("tanggal");}} dateFormat="dd/MM/yyyy" placeholderText="Pilih tanggal (DD/MM/YY)" className="datepicker-input-seminar"/>
+                                    {errors.tanggal && (<p className="error-text-seminar">{errors.tanggal}</p>)}
+                                </div>
                             </div>
 
                             <div className="jadwal-row">
                                 <label>Waktu Mulai</label>
-                                <DatePicker selected={waktuMulai} onChange={(time) => {setWaktuMulai(time); clearError("waktuMulai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam mulai" className="datepicker-input-seminar"/>
-                                {errors.waktuMulai && (<p className="error-text-seminar">{errors.waktuMulai}</p>)}
+                                
+                                <div className="jadwal-input-wrapper">
+                                    <DatePicker selected={waktuMulai} onChange={(time) => {setWaktuMulai(time); clearError("waktuMulai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam mulai" className="datepicker-input-seminar"/>
+                                    {errors.waktuMulai && (<p className="error-text-seminar">{errors.waktuMulai}</p>)}
+                                </div>
                             </div>
 
                             <div className="jadwal-row">
                                 <label>Waktu Selesai</label>
-                                <DatePicker selected={waktuSelesai} onChange={(time) => {setWaktuSelesai(time); clearError("waktuSelesai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam selesai" className="datepicker-input-seminar"/>
-                                {errors.waktuSelesai && (<p className="error-text-seminar">{errors.waktuSelesai}</p>)}
+
+                                <div className="jadwal-input-wrapper">
+                                    <DatePicker selected={waktuSelesai} onChange={(time) => {setWaktuSelesai(time); clearError("waktuSelesai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam selesai" className="datepicker-input-seminar"/>
+                                    {errors.waktuSelesai && (<p className="error-text-seminar">{errors.waktuSelesai}</p>)}
+                                </div>
                             </div>
                         </div>
 
@@ -673,9 +692,10 @@ function KelolaDataSeminar() {
                                             </option>
                                         ))}
                                     </select>
-                                    {errors.lokasi && (<p className="error-text-seminar">{errors.lokasi}</p>)}
-
+                                    
                                     <Icon icon="icon-park-outline:down" className="dropdown-icon-lokasi-seminar"/>
+
+                                    {errors.lokasi && (<p className="error-text-seminar">{errors.lokasi}</p>)}
                                 </div>
                                 <button type="button" className="map-picker-btn" disabled={!idLokasi} onClick={() => setShowMapModal (true)}>Lihat Peta</button>
                             </div>
@@ -683,16 +703,22 @@ function KelolaDataSeminar() {
 
                         <div className="form-group-pembimbing">
                             <label>Dosen Pembimbing</label>
-                            <input type="text" placeholder="Masukkan nama dosen pembimbing" value={dosenPembimbing} onChange={(e) => {setDosenPembimbing(e.target.value); clearError("pembimbing");}}/>
-                            {errors.pembimbing && (<p className="error-text-seminar">{errors.pembimbing}</p>)}
+
+                            <div className="add-seminar-input-wrapper">
+                                <input type="text" placeholder="Masukkan nama dosen pembimbing" value={dosenPembimbing} onChange={(e) => {setDosenPembimbing(e.target.value); clearError("pembimbing");}}/>
+                                {errors.pembimbing && (<p className="error-text-seminar">{errors.pembimbing}</p>)}
+                            </div>
                         </div>
 
                         <div className="form-group-penguji">
                             <label>Dosen Penguji</label>
 
-                            <div className="penguji-input-wrapper">
+                            <div className="add-seminar-input-wrapper">
                                 <input type="text" placeholder="Masukkan nama dosen penguji 1" value={dosenPenguji1} onChange={(e) => {setDosenPenguji1(e.target.value); clearError("penguji1");}}/>
                                 {errors.penguji1 && (<p className="error-text-seminar">{errors.penguji1}</p>)}
+                            </div>    
+                                
+                            <div className="add-seminar-input-wrapper">    
                                 <input type="text" placeholder="Masukkan nama dosen penguji 2" value={dosenPenguji2} onChange={(e) => {setDosenPenguji2(e.target.value); clearError("penguji2");}}/>
                                 {errors.penguji2 && (<p className="error-text-seminar">{errors.penguji2}</p>)}
                             </div>
