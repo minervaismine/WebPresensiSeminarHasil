@@ -114,6 +114,16 @@ function LihatDaftarHadir() {
         setCurrentPage(1);
     };
 
+    const formatTanggal = (tanggal) => {
+        return new Date(tanggal).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+
     return (
         <div className="page-lihat-daftar-hadir-layout">
             {/* Navbar */}
@@ -178,7 +188,7 @@ function LihatDaftarHadir() {
                                 <tr key={item.id_presensi}>
                                     <td className="kolom-nama-lihat-daftar-hadir">{item.nama}</td>
                                     <td className="kolom-nim-lihat-daftar-hadir">{item.nim}</td>
-                                    <td className="kolom-waktu-scan-lihat-daftar-hadir">{item.waktu_scan}</td>
+                                    <td className="kolom-waktu-scan-lihat-daftar-hadir">{formatTanggal(item.waktu_scan)}</td>
                                     <td className="kolom-jarak-lokasi-lihat-daftar-hadir">
                                         <span className={`status-lokasi ${item.status_lokasi}`}>{item.jarak} m</span>
                                     </td>

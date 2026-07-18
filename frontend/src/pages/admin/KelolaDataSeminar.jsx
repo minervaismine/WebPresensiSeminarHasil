@@ -380,6 +380,15 @@ function KelolaDataSeminar() {
         setIdLokasi(Number(e.target.value));
     };
 
+    const formatTanggal = (tanggal) => {
+        return new Date(tanggal).toLocaleDateString("id-ID", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        });
+    };
+
     return (
     <div className="page-menu-kelola-data-seminar-layout">
         {/* Navbar */}
@@ -532,7 +541,7 @@ function KelolaDataSeminar() {
                                     <td className="kolom-judul">{item.judul_penelitian}</td>
                                     <td className="kolom-jadwal">
                                         <div className="kolom-jadwal-content">
-                                            <p>{item.tanggal}</p>
+                                            <p>{formatTanggal(item.tanggal)}</p>
                                             <p>{item.waktu_mulai} - {item.waktu_selesai}</p>
                                         </div>
                                     </td>

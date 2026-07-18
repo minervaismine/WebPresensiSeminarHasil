@@ -90,6 +90,16 @@ function RiwayatVerifikasi() {
         setTanggalAkhir(null);
     };
 
+    const formatTanggal = (tanggal) => {
+    return new Date(tanggal).toLocaleString("id-ID", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+};
+
     return (
         <div className="page-menu-riwayat-verifikasi-layout">
             {/* Navbar */}
@@ -219,7 +229,7 @@ function RiwayatVerifikasi() {
                                             <h2 className="nama-mahasiswa-riwayat-verifikasi">{item.nama}</h2>
 
                                             <div className="informasi-seminar-riwayat-verifikasi">
-                                                <span>{item.tanggal}</span>
+                                                <span>{formatTanggal(item.tanggal)}</span>
                                                 <span>|</span>
                                                 <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
                                             </div>

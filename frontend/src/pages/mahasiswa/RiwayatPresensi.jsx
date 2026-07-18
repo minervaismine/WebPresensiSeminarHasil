@@ -80,6 +80,16 @@ function RiwayatPresensi() {
         setPage(1);
     };
 
+    const formatTanggal = (tanggal) => {
+        return new Date(tanggal).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+
     return (
         <div className="page-menu-riwayat-presensi-layout">
             {/* Navbar */}
@@ -248,7 +258,7 @@ function RiwayatPresensi() {
                                 </div>
 
                                 <div className="riwayat-informasi-seminar">
-                                    <span>{item.tanggal}</span>
+                                    <span>{formatTanggal(item.tanggal)}</span>
                                     <span>|</span>
                                     <span>{item.waktu_mulai} - {item.waktu_selesai}</span>
                                 </div>

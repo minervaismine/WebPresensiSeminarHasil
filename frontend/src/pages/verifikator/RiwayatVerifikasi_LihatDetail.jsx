@@ -146,6 +146,16 @@ function LihatDetail() {
         setCurrentPage(1);
     };
 
+    const formatTanggal = (tanggal) => {
+        return new Date(tanggal).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    };
+
     return (
         <div className="page-menu-lihat-detail-layout">
             {/* Navbar */}
@@ -319,14 +329,14 @@ function LihatDetail() {
                             <tr key={item.id_presensi}>
                                 <td className="kolom-nama-riwayat-verifikasi">{item.nama}</td>
                                 <td className="kolom-nim-riwayat-verifikasi">{item.nim}</td>
-                                <td className="kolom-waktu-scan-riwayat-verifikasi">{item.waktu_scan}</td>
+                                <td className="kolom-waktu-scan-riwayat-verifikasi">{formatTanggal(item.waktu_scan)}</td>
                                 <td className="kolom-jarak-lokasi-riwayat-verifikasi">
                                     <span className="status-lokasi-riwayat-verifikasi dekat">5 m</span>
                                 </td>
                                 <td className="kolom-status-presensi-riwayat-verifikasi">
                                     <span className={`badge-status-presensi ${item.status_verifikasi}`}>{formatStatus(item.status_verifikasi)}</span>
                                 </td>
-                                <td className="kolom-waktu-verifikasi">{item.waktu_verifikasi}</td>
+                                <td className="kolom-waktu-verifikasi">{formatTanggal(item.waktu_verifikasi)}</td>
                             </tr>
                         ))
                     )}
