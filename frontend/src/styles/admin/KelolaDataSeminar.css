@@ -561,7 +561,9 @@
 .form-add-seminar {
   position: relative;
   width: 500px;
-  max-width: 90vh;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
   background: white;
   border-radius: 20px;
   padding: 20px;
@@ -601,13 +603,6 @@
   cursor: pointer;
   font-size: 25px;
   color: #1E293B;
-}
-
-.form-content-add-scroll {
-  overflow-y: auto;
-  flex: 1;
-  margin-top: 15px;
-  padding-right: 8px;
 }
 
 .add-seminar-input-wrapper {
@@ -804,11 +799,16 @@
   pointer-events: none;
 }
 
-.map-picker-wrapper {
+.lihat-peta-btn-wrapper {
   display: flex;
+  align-items: flex-start;
+}
+
+.map-picker-wrapper {
   justify-content: space-between;
-  align-items: center;
   gap: 20px;
+  height: 35px;
+  white-space: nowrap;
 }
 
 .map-picker-wrapper select {

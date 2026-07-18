@@ -615,121 +615,122 @@ function KelolaDataSeminar() {
                         </button>
                     </div>
 
-                    <div className="form-content-add-scroll">
-                        <div className="form-group-search-mahasiswa">
-                            <label>Mahasiswa</label>
-                            <div className="form-search-mahasiswa-wrapper">
-                                <div className="search-bar-form">
-                                    <Icon icon="radix-icons:magnifying-glass" className="search-form-icon"/>
-                                    <input className="search-form-input" type="search" placeholder="Cari mahasiswa atau NIM" value={searchMahasiswa} onChange={(e) => {const value = e.target.value; setSearchMahasiswa(value); fetchMahasiswa(value); clearError("mahasiswa"); setSelectedMahasiswa(null);}}></input>
-                                </div>
-                                {errors.mahasiswa && (<p className="error-text-seminar">{errors.mahasiswa}</p>)}
-
-                                {searchMahasiswa.trim() !== "" &&
-                                    mahasiswaList.length > 0 && (
-                                        <div className="dropdown-mahasiswa-list">
-                                            {mahasiswaList.map((m) => (
-                                                <div key={m.id_user} className="item-mahasiswa" onClick={() => {setSelectedMahasiswa(m); setSearchMahasiswa(`${m.nama} (${m.nim})`); setMahasiswaList([]); clearError("mahasiswa");}}>
-                                                    <b>{m.nama}</b>
-                                                    <p>{m.nim}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                    <div className="form-group-search-mahasiswa">
+                        <label>Mahasiswa</label>
+                        <div className="form-search-mahasiswa-wrapper">
+                            <div className="search-bar-form">
+                                <Icon icon="radix-icons:magnifying-glass" className="search-form-icon"/>
+                                <input className="search-form-input" type="search" placeholder="Cari mahasiswa atau NIM" value={searchMahasiswa} onChange={(e) => {const value = e.target.value; setSearchMahasiswa(value); fetchMahasiswa(value); clearError("mahasiswa"); setSelectedMahasiswa(null);}}></input>
                             </div>
-                        </div>
+                            {errors.mahasiswa && (<p className="error-text-seminar">{errors.mahasiswa}</p>)}
 
-                        <div className="form-group-judul">
-                            <label>Judul Penelitian</label>
-
-                            <div className="add-seminar-input-wrapper">
-                                <input type="text" placeholder="Masukkan judul skripsi mahasiswa" value={judulPenelitian} onChange={(e) => {setJudulPenelitian(e.target.value); clearError("judul");}}/>
-                                {errors.judul && (<p className="error-text-seminar">{errors.judul}</p>)}
-                            </div>
-                        </div>
-
-                        <div className="form-group-jadwal">
-                            <label className="jadwal-title">Jadwal Seminar</label>
-
-                            <div className="jadwal-row">
-                                <label>Tanggal</label>
-
-                                <div className="jadwal-input-wrapper">
-                                    <DatePicker selected={tanggal} onChange={(date) => {setTanggal(date); clearError("tanggal");}} dateFormat="dd/MM/yyyy" placeholderText="Pilih tanggal (DD/MM/YY)" className="datepicker-input-seminar"/>
-                                    {errors.tanggal && (<p className="error-text-seminar">{errors.tanggal}</p>)}
-                                </div>
-                            </div>
-
-                            <div className="jadwal-row">
-                                <label>Waktu Mulai</label>
-                                
-                                <div className="jadwal-input-wrapper">
-                                    <DatePicker selected={waktuMulai} onChange={(time) => {setWaktuMulai(time); clearError("waktuMulai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam mulai" className="datepicker-input-seminar"/>
-                                    {errors.waktuMulai && (<p className="error-text-seminar">{errors.waktuMulai}</p>)}
-                                </div>
-                            </div>
-
-                            <div className="jadwal-row">
-                                <label>Waktu Selesai</label>
-
-                                <div className="jadwal-input-wrapper">
-                                    <DatePicker selected={waktuSelesai} onChange={(time) => {setWaktuSelesai(time); clearError("waktuSelesai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam selesai" className="datepicker-input-seminar"/>
-                                    {errors.waktuSelesai && (<p className="error-text-seminar">{errors.waktuSelesai}</p>)}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="form-group-lokasi">
-                            <label className="lokasi-title">Lokasi Seminar</label>
-                            <div className="map-picker-wrapper">
-                                <div className="custom-select-wrapper">
-                                    <select value={idLokasi} onChange={(e) => {handleChangeLocation(e); clearError("lokasi");}} className="custom-select-lokasi">
-                                        <option value="">Pilih Lokasi</option>
-
-                                        {lokasiList.map((lokasi) => (
-                                            <option key={lokasi.id_lokasi} value={lokasi.id_lokasi}>
-                                                {lokasi.nama_lokasi}
-                                            </option>
+                            {searchMahasiswa.trim() !== "" &&
+                                mahasiswaList.length > 0 && (
+                                    <div className="dropdown-mahasiswa-list">
+                                        {mahasiswaList.map((m) => (
+                                            <div key={m.id_user} className="item-mahasiswa" onClick={() => {setSelectedMahasiswa(m); setSearchMahasiswa(`${m.nama} (${m.nim})`); setMahasiswaList([]); clearError("mahasiswa");}}>
+                                                <b>{m.nama}</b>
+                                                <p>{m.nim}</p>
+                                            </div>
                                         ))}
-                                    </select>
-                                    
-                                    <Icon icon="icon-park-outline:down" className="dropdown-icon-lokasi-seminar"/>
+                                    </div>
+                                )}
+                        </div>
+                    </div>
 
-                                    {errors.lokasi && (<p className="error-text-seminar">{errors.lokasi}</p>)}
-                                </div>
+                    <div className="form-group-judul">
+                        <label>Judul Penelitian</label>
+
+                        <div className="add-seminar-input-wrapper">
+                            <input type="text" placeholder="Masukkan judul skripsi mahasiswa" value={judulPenelitian} onChange={(e) => {setJudulPenelitian(e.target.value); clearError("judul");}}/>
+                            {errors.judul && (<p className="error-text-seminar">{errors.judul}</p>)}
+                        </div>
+                    </div>
+
+                    <div className="form-group-jadwal">
+                        <label className="jadwal-title">Jadwal Seminar</label>
+
+                        <div className="jadwal-row">
+                            <label>Tanggal</label>
+
+                            <div className="jadwal-input-wrapper">
+                                <DatePicker selected={tanggal} onChange={(date) => {setTanggal(date); clearError("tanggal");}} dateFormat="dd/MM/yyyy" placeholderText="Pilih tanggal (DD/MM/YY)" className="datepicker-input-seminar"/>
+                                {errors.tanggal && (<p className="error-text-seminar">{errors.tanggal}</p>)}
+                            </div>
+                        </div>
+
+                        <div className="jadwal-row">
+                            <label>Waktu Mulai</label>
+                            
+                            <div className="jadwal-input-wrapper">
+                                <DatePicker selected={waktuMulai} onChange={(time) => {setWaktuMulai(time); clearError("waktuMulai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam mulai" className="datepicker-input-seminar"/>
+                                {errors.waktuMulai && (<p className="error-text-seminar">{errors.waktuMulai}</p>)}
+                            </div>
+                        </div>
+
+                        <div className="jadwal-row">
+                            <label>Waktu Selesai</label>
+
+                            <div className="jadwal-input-wrapper">
+                                <DatePicker selected={waktuSelesai} onChange={(time) => {setWaktuSelesai(time); clearError("waktuSelesai");}} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Jam" dateFormat="HH:mm" placeholderText="Pilih jam selesai" className="datepicker-input-seminar"/>
+                                {errors.waktuSelesai && (<p className="error-text-seminar">{errors.waktuSelesai}</p>)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="form-group-lokasi">
+                        <label className="lokasi-title">Lokasi Seminar</label>
+                        <div className="map-picker-wrapper">
+                            <div className="custom-select-wrapper">
+                                <select value={idLokasi} onChange={(e) => {handleChangeLocation(e); clearError("lokasi");}} className="custom-select-lokasi">
+                                    <option value="">Pilih Lokasi</option>
+
+                                    {lokasiList.map((lokasi) => (
+                                        <option key={lokasi.id_lokasi} value={lokasi.id_lokasi}>
+                                            {lokasi.nama_lokasi}
+                                        </option>
+                                    ))}
+                                </select>
+                                
+                                <Icon icon="icon-park-outline:down" className="dropdown-icon-lokasi-seminar"/>
+                            </div>
+
+                            <div className="lihat-peta-btn-wrapper">
                                 <button type="button" className="map-picker-btn" disabled={!idLokasi} onClick={() => setShowMapModal (true)}>Lihat Peta</button>
                             </div>
+
+                            {errors.lokasi && (<p className="error-text-seminar">{errors.lokasi}</p>)}
                         </div>
+                    </div>
 
-                        <div className="form-group-pembimbing">
-                            <label>Dosen Pembimbing</label>
+                    <div className="form-group-pembimbing">
+                        <label>Dosen Pembimbing</label>
 
-                            <div className="add-seminar-input-wrapper">
-                                <input type="text" placeholder="Masukkan nama dosen pembimbing" value={dosenPembimbing} onChange={(e) => {setDosenPembimbing(e.target.value); clearError("pembimbing");}}/>
-                                {errors.pembimbing && (<p className="error-text-seminar">{errors.pembimbing}</p>)}
-                            </div>
+                        <div className="add-seminar-input-wrapper">
+                            <input type="text" placeholder="Masukkan nama dosen pembimbing" value={dosenPembimbing} onChange={(e) => {setDosenPembimbing(e.target.value); clearError("pembimbing");}}/>
+                            {errors.pembimbing && (<p className="error-text-seminar">{errors.pembimbing}</p>)}
                         </div>
+                    </div>
 
-                        <div className="form-group-penguji">
-                            <label>Dosen Penguji</label>
+                    <div className="form-group-penguji">
+                        <label>Dosen Penguji</label>
 
-                            <div className="add-seminar-input-wrapper">
-                                <input type="text" placeholder="Masukkan nama dosen penguji 1" value={dosenPenguji1} onChange={(e) => {setDosenPenguji1(e.target.value); clearError("penguji1");}}/>
-                                {errors.penguji1 && (<p className="error-text-seminar">{errors.penguji1}</p>)}
-                            </div>    
-                                
-                            <div className="add-seminar-input-wrapper">    
-                                <input type="text" placeholder="Masukkan nama dosen penguji 2" value={dosenPenguji2} onChange={(e) => {setDosenPenguji2(e.target.value); clearError("penguji2");}}/>
-                                {errors.penguji2 && (<p className="error-text-seminar">{errors.penguji2}</p>)}
-                            </div>
+                        <div className="add-seminar-input-wrapper">
+                            <input type="text" placeholder="Masukkan nama dosen penguji 1" value={dosenPenguji1} onChange={(e) => {setDosenPenguji1(e.target.value); clearError("penguji1");}}/>
+                            {errors.penguji1 && (<p className="error-text-seminar">{errors.penguji1}</p>)}
+                        </div>    
+                            
+                        <div className="add-seminar-input-wrapper">    
+                            <input type="text" placeholder="Masukkan nama dosen penguji 2" value={dosenPenguji2} onChange={(e) => {setDosenPenguji2(e.target.value); clearError("penguji2");}}/>
+                            {errors.penguji2 && (<p className="error-text-seminar">{errors.penguji2}</p>)}
                         </div>
+                    </div>
 
-                        <div className="add-btn-wrapper">
-                            <button className="add-btn-form" onClick={isEdit ? handleUpdateSeminar : handleTambahSeminar}>
-                                <Icon icon="mingcute:add-fill" className="add-icon-form"/>
-                                <span>{isEdit ? "Simpan Perubahan" : "Tambah Seminar"}</span>
-                            </button>
-                        </div>
+                    <div className="add-btn-wrapper">
+                        <button className="add-btn-form" onClick={isEdit ? handleUpdateSeminar : handleTambahSeminar}>
+                            <Icon icon="mingcute:add-fill" className="add-icon-form"/>
+                            <span>{isEdit ? "Simpan Perubahan" : "Tambah Seminar"}</span>
+                        </button>
                     </div>
                 </div>
             </div>
