@@ -799,12 +799,9 @@
   pointer-events: none;
 }
 
-.lihat-peta-btn-wrapper {
+.map-picker-wrapper {
   display: flex;
   align-items: flex-start;
-}
-
-.map-picker-wrapper {
   justify-content: space-between;
   gap: 20px;
   height: 35px;
