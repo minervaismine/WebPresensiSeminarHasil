@@ -561,11 +561,14 @@
 .form-add-seminar {
   position: relative;
   width: 500px;
+  max-width: 90vh;
   background: white;
   border-radius: 20px;
   padding: 20px;
   text-align: center;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
 }
 
 .form-header-wrapper {
@@ -598,6 +601,13 @@
   cursor: pointer;
   font-size: 25px;
   color: #1E293B;
+}
+
+.form-content-add-scroll {
+  overflow-y: auto;
+  flex: 1;
+  margin-top: 15px;
+  padding-right: 8px;
 }
 
 .form-group-search-mahasiswa {
@@ -828,6 +838,16 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.error-text-seminar {
+  color:#dc3545;
+  font-size:13px;
+  margin-top:4px;
+  font-style:italic;
+  display:block;
+  width:100%;
+  text-align:right;
 }
 
 .add-btn-wrapper {
