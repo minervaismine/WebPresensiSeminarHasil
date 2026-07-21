@@ -305,6 +305,16 @@ function KelolaDataSeminar() {
     const handleEdit = (seminar) => {
         console.log("seminar =", seminar);
         console.log("tanggal =", seminar.tanggal);
+        console.log("waktuMulaiAsli =", seminar.waktu_mulai_asli);
+        console.log("waktuSelesaiAsli =", seminar.waktu_selesai_asli);
+
+        console.log(
+            new Date(`1970-01-01T${seminar.waktu_mulai_asli}`)
+        );
+
+        console.log(
+            new Date(`1970-01-01T${seminar.waktu_selesai_asli}`)
+        );
 
         const date = new Date(seminar.tanggal);
 
