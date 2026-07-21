@@ -303,18 +303,17 @@ function KelolaDataSeminar() {
     };
 
     const handleEdit = (seminar) => {
-        console.log(seminar);
+        console.log("seminar =", seminar);
+        console.log("tanggal =", seminar.tanggal);
 
-        console.log("tanggal", seminar.tanggal);
-        console.log("mulai", seminar.waktu_mulai_asli);
-        console.log("selesai", seminar.waktu_selesai_asli);
+        const date = new Date(seminar.tanggal);
 
-        console.log(new Date(seminar.tanggal));
-        console.log(new Date(`1970-01-01T${seminar.waktu_mulai_asli}`));
-        console.log(new Date(`1970-01-01T${seminar.waktu_selesai_asli}`));
-        
+        console.log(date);
+        console.log(isNaN(date.getTime()));
+
         setIsEdit(true);
         setSelectedSeminar(seminar);
+        setTanggal(date);
 
         setSelectedMahasiswa({
             id_user: seminar.id_user,
