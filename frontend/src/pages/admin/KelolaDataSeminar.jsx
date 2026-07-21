@@ -305,11 +305,11 @@ function KelolaDataSeminar() {
     const handleEdit = (seminar) => {
         console.log(seminar);
 
-        console.log("tanggal", seminar.tanggal_asli);
+        console.log("tanggal", seminar.tanggal);
         console.log("mulai", seminar.waktu_mulai_asli);
         console.log("selesai", seminar.waktu_selesai_asli);
 
-        console.log(new Date(seminar.tanggal_asli));
+        console.log(new Date(seminar.tanggal));
         console.log(new Date(`1970-01-01T${seminar.waktu_mulai_asli}`));
         console.log(new Date(`1970-01-01T${seminar.waktu_selesai_asli}`));
         
