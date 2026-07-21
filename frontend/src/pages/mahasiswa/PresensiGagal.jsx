@@ -14,12 +14,20 @@ function PresensiGagal() {
         case "QR_NOT_FOUND":
             message = "QR Code tidak ditemukan";
             break;
-
+        case "LOCATION_MISSING":
+            message = "Pastikan izin GPS/Lokasi di HP Anda sudah aktif";
+            break;
+        case "OUT_OF_RADIUS":
+            message = "Anda berada di luar area seminar";
+            break;
         case "QR_NOT_ACTIVE":
             message = "QR Code belum diaktifkan";
             break;
         case "QR_EXPIRED":
             message = "QR Code sudah kedaluwarsa";
+            break;
+        case "INVALID_SEMINAR_LOCATION":
+            message = "Data koordinat lokasi seminar di database belum diatur";
             break;
         case "QR_INVALID":
             message = "QR Code tidak valid";
