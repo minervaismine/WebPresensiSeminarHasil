@@ -225,7 +225,8 @@ function KelolaDataLokasi() {
     };
   
     const openAddModal = () => {
-        setPosition(position);
+        const defaultPosition = [-5.1326225660413165, 119.48684562754943];
+        setPosition(defaultPosition);
 
         setFormData({
             nama_lokasi: "",
