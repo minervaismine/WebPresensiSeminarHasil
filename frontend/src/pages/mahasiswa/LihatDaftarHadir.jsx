@@ -32,7 +32,7 @@ function LihatDaftarHadir() {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchDaftarHadir();
-        }, 500);
+        }, 300);
 
         return () => clearTimeout(timer);
     }, [currentPage, sortBy, sortOrder, search]);
@@ -148,7 +148,7 @@ function LihatDaftarHadir() {
             <div className="header-wrapper-lihat-daftar-hadir">
                 <h1 className="page-title-lihat-daftar-hadir">Daftar Hadir</h1>
 
-                <form>
+                <form onSubmit={(e) => e.preventDefault()}>
                     <div className="search-bar-lihat-daftar-hadir">
                         <Icon icon="radix-icons:magnifying-glass" className="search-daftar-hadir-icon"/>
                         <input className="search-bar-input-lihat-daftar-hadir" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => {setSearch(e.target.value); setCurrentPage(1);}}></input>
