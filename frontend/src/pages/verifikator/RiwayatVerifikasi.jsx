@@ -25,7 +25,7 @@ function RiwayatVerifikasi() {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchSeminar();
-        }, 500);
+        }, 200);
 
         return () => clearTimeout(timer);
 
@@ -116,7 +116,7 @@ function RiwayatVerifikasi() {
                 <h1 className="daftar-seminar-title-riwayat-verifikasi">Daftar Seminar</h1>
 
                 <div className="search-filter-riwayat-verifikasi">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
                         <div className="search-bar-riwayat-verifikasi">
                             <Icon icon="radix-icons:magnifying-glass" className="search-icon-riwayat-verifikasi"/>
                             <input className="search-bar-input-riwayat-verifikasi" type="search" placeholder="Cari mahasiswa" value={search} onChange={(e) => setSearch(e.target.value)}></input>

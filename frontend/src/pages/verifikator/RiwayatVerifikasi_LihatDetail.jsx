@@ -46,7 +46,7 @@ function LihatDetail() {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchDetail();
-        }, 500);
+        }, 200);
 
         return () => clearTimeout(timer);
     }, [id_seminar, currentPage, sortBy, sortOrder, search, filterStatus]);
@@ -248,7 +248,7 @@ function LihatDetail() {
                 <h1 className="daftar-hadir-title">Daftar Hadir</h1>
 
                 <div className="search-filter-lihat-detail">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
                         <div className="search-bar-lihat-detail">
                             <Icon icon="radix-icons:magnifying-glass" className="search-icon-lihat-detail"/>
                             <input className="search-bar-input-lihat-detail" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => setSearch(e.target.value)}></input>
