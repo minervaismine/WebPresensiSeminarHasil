@@ -43,10 +43,17 @@ function Presensi() {
                         longitude: position.coords.longitude
                     });
                 },
-                (err) => reject(err),
+                (err) => {
+                    let msg = "Gagal mengambil lokasi GPS.";
+                    if (err.code === err.TIMEOUT) msg = "Waktu pengambilan GPS habis (Timeout). Pastikan Anda berada di area terbuka.";
+                    if (err.code === err.PERMISSION_DENIED) msg = "Izin GPS ditolak oleh HP/Browser Anda.";
+                    
+                    reject({ code: "LOCATION_ERROR", message: msg });
+                },
                 {
                     enableHighAccuracy: true,
-                    timeout: 10000
+                    timeout: 20000,
+                    maximumAge: 10000
                 }
             );
         });
@@ -88,11 +95,10 @@ function Presensi() {
                     setCameraStarted(false);
 
                     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-                    console.log("TOKEN:", token);
+                    
                     const location = await getCurrentLocation();
 
-                    const response = await api.post(
-                        "/scan-qr",
+                    const response = await api.post("/scan-qr",
                         {
                             qr_code: decodedText,
                             latitude: location.latitude,
@@ -112,57 +118,36 @@ function Presensi() {
                         });
                         return;
                     }
-
-                    if (result.code === "PENYELENGGARA" || result.code === "INVALID_ROLE" || result.code === "ALREADY_ATTENDED") {
-                        navigate("/presensi-gagal-role", {
-                            state: {
-                                code: result.code,
-                                message: result.message
-                            }
-                        });
-                    } else {
-                        navigate("/presensi-gagal", {
-                            state: {
-                                code: result.code,
-                                message: result.message
-                            }
-                        });
-                    }
                 } catch (err) {
-                    console.log(err);
+                    console.error ("DEBUG ERROR PRESENSI:", err);
 
                     try {
-                        await html5QrCode.stop();
+                        if (scannerRef.current) await html5QrCode.stop();
                     } catch {}
-
+                    
                     scannerRef.current = null;
                     setCameraStarted(false);
 
                     if (err.response) {
                         const result = err.response.data;
+                        const roleCodes = ["PENYELENGGARA", "INVALID_ROLE", "ALREADY_ATTENDED"];
 
-                        if (
-                            result.code === "PENYELENGGARA" ||
-                            result.code === "INVALID_ROLE" ||
-                            result.code === "ALREADY_ATTENDED"
-                        ) {
-                            navigate("/presensi-gagal-role", {
-                                state: {
-                                    code: result.code
-                                }
-                            });
+                        if (roleCodes.includes(result.code)) {
+                            navigate("/presensi-gagal-role", { state: { code: result.code, message: result.message } });
                         } else {
-                            navigate("/presensi-gagal", {
-                                state: {
-                                    code: result.code
-                                }
-                            });
+                            // Termasuk OUT_OF_RADIUS, QR_EXPIRED, dll
+                            navigate("/presensi-gagal", { state: { code: result.code, message: result.message } });
                         }
-                    } else {
+                    }
+                    else if (err.code === "LOCATION_ERROR" || err.code === "LOCATION_UNSUPPORTED") {
                         navigate("/presensi-gagal", {
-                            state: {
-                                code: "SERVER_ERROR"
-                            }
+                            state: { code: "LOCATION_FAILED", message: err.message }
+                        });
+                    }
+
+                    else {
+                        navigate("/presensi-gagal", {
+                            state: { code: "UNKNOWN_ERROR", message: "Terjadi kesalahan sistem pada perangkat." }
                         });
                     }
                 }
