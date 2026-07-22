@@ -212,11 +212,10 @@ function KelolaDataSeminar() {
         setPage(1);
     };
 
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
     const handleTambahSeminar = async () => {
-        console.log("Objek User Lengkap:", JSON.stringify(user, null, 2));
-        const adminId = user?.id_user || user?.data?.id_user || user?.user?.id_user || user?.id;
+        const adminId = user?.id_user;
 
         const newErrors = {};
 
