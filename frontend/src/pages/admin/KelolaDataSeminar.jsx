@@ -256,7 +256,7 @@ function KelolaDataSeminar() {
             await api.post("/data-seminar",
                 {
                     id_mahasiswa: selectedMahasiswa.id_user,
-                    id_user_admin: user.id_user,
+                    id_user_admin: adminId,
                     id_lokasi: idLokasi,
                     judul_penelitian: judulPenelitian,
                     tanggal: format(tanggal, "yyyy-MM-dd"),
