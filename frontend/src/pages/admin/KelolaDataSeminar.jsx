@@ -221,7 +221,7 @@ function KelolaDataSeminar() {
 
         if (!selectedMahasiswa) {
             newErrors.mahasiswa = "Mahasiswa wajib dipilih";
-        } else if (selectedMahasiswa.memiliki_seminar) {
+        } else if (Boolean(selectedMahasiswa.memiliki_seminar)) {
             newErrors.mahasiswa = "Mahasiswa ini sudah memiliki jadwal seminar!";
         }
 
