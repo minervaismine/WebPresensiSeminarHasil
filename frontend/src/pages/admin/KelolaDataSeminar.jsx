@@ -215,6 +215,9 @@ function KelolaDataSeminar() {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     const handleTambahSeminar = async () => {
+        console.log("Objek user saat ini:", user); 
+        console.log("ID Admin:", user?.id_user);
+
         const newErrors = {};
 
         if (!selectedMahasiswa)
