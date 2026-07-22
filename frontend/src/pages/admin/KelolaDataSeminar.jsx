@@ -215,8 +215,8 @@ function KelolaDataSeminar() {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     const handleTambahSeminar = async () => {
-        console.log("Objek user saat ini:", user); 
-        console.log("ID Admin:", user?.id_user);
+        console.log("Objek User Lengkap:", user);
+        const adminId = user?.id_user || user?.data?.id_user || user?.user?.id_user || user?.id;
 
         const newErrors = {};
 
