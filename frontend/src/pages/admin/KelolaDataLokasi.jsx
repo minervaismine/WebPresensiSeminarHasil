@@ -79,7 +79,7 @@ function KelolaDataLokasi() {
         nama_lokasi: "",
         latitude: "",
         longitude: "",
-        radius: 20
+        radius: 50
     });
 
     const [errors, setErrors] = useState({
@@ -225,12 +225,21 @@ function KelolaDataLokasi() {
     };
   
     const openAddModal = () => {
+        setPosition(position);
+
         setFormData({
             nama_lokasi: "",
             latitude: "",
             longitude: "",
-            radius: 20
+            radius: 50
         });
+
+        setErrors({
+            nama_lokasi: "",
+            latitude: "",
+            longitude: ""
+        });
+
         setShowAddLocationModal(true);
     };
 
