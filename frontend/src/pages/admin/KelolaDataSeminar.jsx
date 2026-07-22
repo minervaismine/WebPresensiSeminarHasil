@@ -219,8 +219,12 @@ function KelolaDataSeminar() {
 
         const newErrors = {};
 
-        if (!selectedMahasiswa)
+        if (!selectedMahasiswa) {
             newErrors.mahasiswa = "Mahasiswa wajib dipilih";
+        } else if (selectedMahasiswa.memiliki_seminar) {
+            // Cek jika mahasiswa sudah memiliki seminar
+            newErrors.mahasiswa = "Mahasiswa ini sudah memiliki jadwal seminar!";
+        }
 
         if (!judulPenelitian.trim())
             newErrors.judul = "Judul penelitian wajib diisi";
