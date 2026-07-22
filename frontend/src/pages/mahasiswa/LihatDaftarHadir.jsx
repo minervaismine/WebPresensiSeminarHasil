@@ -32,7 +32,7 @@ function LihatDaftarHadir() {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchDaftarHadir();
-        }, 300);
+        }, 200);
 
         return () => clearTimeout(timer);
     }, [currentPage, sortBy, sortOrder, search]);
