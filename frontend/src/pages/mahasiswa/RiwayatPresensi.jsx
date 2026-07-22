@@ -28,7 +28,7 @@ function RiwayatPresensi() {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchRiwayat();
-        }, 500);
+        }, 200);
 
         return () => clearTimeout(timer);
     }, [search, status, selectedTanggal, tanggalAwal, tanggalAkhir,]);
@@ -145,7 +145,7 @@ function RiwayatPresensi() {
                 <h1 className="riwayat-presensi-title">Riwayat Presensi</h1>
 
                 <div className="search-filter-riwayat-presensi">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
                         <div className="search-bar-riwayat-presensi">
                             <Icon icon="radix-icons:magnifying-glass" className="search-icon-riwayat-presensi"/>
                             <input className="search-bar-input-riwayat-presensi" type="search" placeholder="Cari mahasiswa, judul atau dosen" value={search} onChange={(e) => setSearch(e.target.value)}></input>

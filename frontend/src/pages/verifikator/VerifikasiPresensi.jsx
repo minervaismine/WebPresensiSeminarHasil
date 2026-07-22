@@ -24,7 +24,7 @@ function VerifikasiPresensi() {
     useEffect(() => {
         const timer = setTimeout(() => {
             fetchSeminar();
-        }, 500);
+        }, 200);
 
         return () => clearTimeout(timer);
     }, [search, selectedTanggal, tanggalAwal, tanggalAkhir]);
@@ -86,7 +86,7 @@ function VerifikasiPresensi() {
                 <h1 className="daftar-seminar-title-verifikasi-presensi">Daftar Seminar</h1>
 
                 <div className="search-filter-verifikasi-presensi">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
                         <div className="search-bar-verifikasi-presensi">
                             <Icon icon="radix-icons:magnifying-glass" className="search-icon-verifikasi-presensi"/>
                             <input className="search-bar-input-verifikasi-presensi" type="search" value={search} onChange={(e) => {setSearch(e.target.value)}} placeholder="Cari mahasiswa"></input>
