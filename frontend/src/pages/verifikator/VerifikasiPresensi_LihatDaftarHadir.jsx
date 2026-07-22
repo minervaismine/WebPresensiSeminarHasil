@@ -170,7 +170,11 @@ function VerifikasiPresensi_LihatDaftarHadir() {
     };
 
     const formatTanggal = (tanggal) => {
-        return new Date(tanggal).toLocaleDateString("id-ID", {
+        if (!tanggal) return "-";
+        const d = new Date(tanggal);
+        if (isNaN(d.getTime())) return "-";
+        
+        return d.toLocaleDateString("id-ID", {
             weekday: "long",
             day: "numeric",
             month: "long",
