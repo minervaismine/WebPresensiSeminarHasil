@@ -160,7 +160,12 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
     const generateQRCode = async () => {
         try {
-            const token = localStorage.getItem("token");
+            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+            if (!token) {
+                alert("Token tidak ditemukan. Silakan login kembali.");
+                return;
+            }
 
             const response = await api.post(
                 "/generate-qr",
@@ -172,24 +177,27 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 }
             );
 
-            setQrCode(response.data.qr_code);
+            if (response.data && response.data.qr_code) {
+                setQrCode(response.data.qr_code);
 
-            if (response.data.expired_at && response.data.server_time) {
-                const serverExpire = new Date(response.data.expired_at).getTime();
-                const serverNow = new Date(response.data.server_time).getTime();
-                const remainingMs = serverExpire - serverNow;
+                if (response.data.expired_at && response.data.server_time) {
+                    const serverExpire = new Date(response.data.expired_at).getTime();
+                    const serverNow = new Date(response.data.server_time).getTime();
+                    const remainingMs = serverExpire - serverNow;
 
-                setExpiredAt(new Date(Date.now() + remainingMs));
-            } else {
-                setExpiredAt(null);
-            }
+                    setExpiredAt(new Date(Date.now() + remainingMs));
+                } else {
+                    setExpiredAt(null);
+                }
 
-            // RESET STATE
-            setCountdown("10:00");
-            setIsActivated(false);
-            setIsExpired(false);
+                // RESET STATE
+                setCountdown("10:00");
+                setIsActivated(false);
+                setIsExpired(false);
+            } 
         } catch (error) {
-            console.error(error);
+            console.error("Gagal generate QR Code:", error);
+            alert(error.response?.data?.message || "Gagal membuat QR Code");
         }
     };
 
