@@ -116,14 +116,6 @@ function Presensi() {
                     scannerRef.current = null;
                     setCameraStarted(false);
 
-                    const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-                    
-                    if (!token) {
-                        alert("Sesi login Anda tidak ditemukan. Silakan login kembali.");
-                        navigate("/login");
-                        return;
-                    }
-
                     const location = userLocationRef.current;
 
                     if (!location) {
@@ -135,13 +127,8 @@ function Presensi() {
                             qr_code: decodedText,
                             latitude: location.latitude,
                             longitude: location.longitude
-                        },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        }
-                    );
+                        });
+
                     const result = response.data;
 
                     if (result.success) {
@@ -159,6 +146,12 @@ function Presensi() {
                     
                     scannerRef.current = null;
                     setCameraStarted(false);
+
+                    if (err.response && err.response.status === 401) {
+                        alert("Sesi login Anda telah berakhir. Silakan login kembali.");
+                        navigate("/");
+                        return;
+                    }
 
                     if (err.response) {
                         const result = err.response.data;
