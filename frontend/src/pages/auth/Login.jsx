@@ -23,12 +23,12 @@ function Login() {
 
         let hasError = false;
 
-        //Jika username kosong
+        // Validasi jika username kosong
         if (!username.trim()) {
             setUsernameError("Username wajib diisi");
             hasError = true;
         }
-        //Jika password kosong
+        // Validasi jika password kosong
         if (!password.trim()) {
             setPasswordError("Password wajib diisi");
             hasError = true;
@@ -44,48 +44,38 @@ function Login() {
 
             const result = response.data;
 
-            if (!result.success) {
-                //Login gagal di bagian username
-                if (result.field === "username") {
-                    setUsernameError(result.message);
-                }
-                //Login gagal di bagian password
-                if (result.field === "password") {
-                    setPasswordError(result.message);
-                }
-
-                return;
-            }
-
+            // Jika login berhasil (HTTP Status 200)
             if (result.success) {
                 const storage = rememberMe ? localStorage : sessionStorage;
-                storage.setItem("token", result.token);
+
                 storage.setItem("user", JSON.stringify(result.user));
 
-                //Login berhasil sebagai mahasiswa
+                // Login berhasil sebagai mahasiswa
                 if (result.user.role === "mahasiswa") {
                     navigate("/dashboard-mahasiswa");
                 }
-                //Login berhasil sebagai verifikator
+                // Login berhasil sebagai verifikator
                 else if (result.user.role === "verifikator") {
                     navigate("/dashboard-verifikator");
                 }
+                // Login berhasil sebagai admin
                 else if (result.user.role === "admin") {
                     navigate("/dashboard-admin");
                 }
             }
         } catch (error) {
-            console.error(error);
-            
-            if (error.response) {
+            console.error("Login error:", error);
+
+            // Karena Backend mengembalikan status HTTP 401/400 saat login gagal, Axios otomatis mengalihkan eksekusi ke blok CATCH ini:
+            if (error.response && error.response.data) {
                 const result = error.response.data;
 
                 if (result.field === "username") {
                     setUsernameError(result.message);
-                }
-
-                if (result.field === "password") {
+                } else if (result.field === "password") {
                     setPasswordError(result.message);
+                } else {
+                    setPasswordError(result.message || "Gagal melakukan login.");
                 }
             } else {
                 setPasswordError("Tidak dapat terhubung ke server");
