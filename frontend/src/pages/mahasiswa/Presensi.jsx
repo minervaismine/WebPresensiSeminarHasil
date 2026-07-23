@@ -9,14 +9,12 @@ function Presensi() {
     const navigate = useNavigate();
 
     const [cameraStarted, setCameraStarted] = useState(false);
+
+    const [loadingLocation, setLoadingLocation] = useState(false);
+
     const scannerRef = useRef(null);
     const isScanningRef = useRef(false);
-
     const userLocationRef = useRef(null);
-
-    const startCamera = async () => {
-        setCameraStarted(true);
-    };
 
     const getCurrentLocation = () => {
         return new Promise((resolve, reject) => {
@@ -82,6 +80,8 @@ function Presensi() {
     useEffect(() => {
         if (!cameraStarted) return;
 
+        isScanningRef.current = false;
+
         const html5QrCode = new Html5Qrcode("reader");
         scannerRef.current = html5QrCode;
 
@@ -114,8 +114,14 @@ function Presensi() {
                     scannerRef.current = null;
                     setCameraStarted(false);
 
-                    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+                    const token = sessionStorage.getItem("token") || localStorage.getItem("token");
                     
+                    if (!token) {
+                        alert("Sesi login Anda tidak ditemukan. Silakan login kembali.");
+                        navigate("/login");
+                        return;
+                    }
+
                     const location = userLocationRef.current;
 
                     if (!location) {
