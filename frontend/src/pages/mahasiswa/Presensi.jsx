@@ -49,13 +49,14 @@ function Presensi() {
     const startCamera = async () => {
         try {
             setLoadingLocation(true);
+
+            // 1. Aktikfan kamera dahulu
+            setCameraStarted(true);
             
-            // 1. Dapatkan lokasi saat user KLIK tombol (User Gesture)
+            // 2. Ambil lokasi
             const location = await getCurrentLocation();
             userLocationRef.current = location;
             
-            // 2. Setelah lokasi dapat, baru aktifkan kamera
-            setCameraStarted(true);
         } catch (err) {
             console.error("Gagal mendapatkan lokasi:", err);
             alert(err.message || "Harap izinkan akses lokasi GPS untuk melakukan presensi.");
