@@ -53,15 +53,15 @@ function Login() {
                 const userRole = String(result.user.role).trim().toLowerCase();
 
                 // Login berhasil sebagai mahasiswa
-                if (result.user.role === "mahasiswa") {
+                if (userRole === "mahasiswa") {
                     navigate("/dashboard-mahasiswa");
                 }
                 // Login berhasil sebagai verifikator
-                else if (result.user.role === "verifikator") {
+                else if (userRole === "verifikator") {
                     navigate("/dashboard-verifikator");
                 }
                 // Login berhasil sebagai admin
-                else if (result.user.role === "admin") {
+                else if (userRole === "admin") {
                     navigate("/dashboard-admin");
                 }
             }
