@@ -54,6 +54,8 @@ function Presensi() {
             const location = await getCurrentLocation();
             userLocationRef.current = location;
 
+            alert(`Koordinat HP Anda:\nLatitude: ${location.latitude}\nLongitude: ${location.longitude}`);
+
             // 1. Aktikfan kamera dahulu
             setCameraStarted(true);
         } catch (err) {
