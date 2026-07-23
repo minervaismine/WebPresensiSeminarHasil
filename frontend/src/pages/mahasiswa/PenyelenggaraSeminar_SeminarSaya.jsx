@@ -40,8 +40,9 @@ function PenyelenggaraSeminar_SeminarSaya() {
 
     useEffect(() => {
         if (!expiredAt) {
-            setCountdown("10:00");
-            setIsExpired(false);
+            if (!isExpired) {
+                setCountdown("10:00");
+            }
             return;
         }
 
@@ -55,7 +56,6 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 setCountdown("00:00");
                 setIsExpired(true);
                 setIsActivated(false);
-                setExpiredAt(null);
 
                 return;
             }
@@ -217,20 +217,24 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 setQrCode(status.data.qr_code);
 
                 if (status.data.expired_at && status.data.server_time) {
-
-                    const expire = new Date(status.data.expired_at);
-
                     const serverExpire = new Date(status.data.expired_at).getTime();
                     const serverNow = new Date(status.data.server_time).getTime();
                     const remainingMs = serverExpire - serverNow;
 
-                    setExpiredAt(new Date(Date.now() + remainingMs));
+                    // Jika waktu sisa masih ada
+                    if (remainingMs > 0) {
+                        setExpiredAt(new Date(Date.now() + remainingMs));
+                        setIsActivated(true);
+                        setIsExpired(false);
+                    } else {
+                        // Jika di DB tercatat active tapi sebenarnya sudah lewat expired_at
+                        await generateQRCode();
+                    }
                 } else {
                     setExpiredAt(null);
+                    setIsActivated(true);
+                    setIsExpired(false);
                 }
-
-                setIsActivated(true);
-                setIsExpired(false);
             } else {
                 await generateQRCode();
             }
