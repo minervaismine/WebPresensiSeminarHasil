@@ -179,10 +179,30 @@ function KelolaDataLokasi() {
             fetchLokasi();
             setShowAddLocationModal(false);
 
-            alert("🎉 Lokasi seminar berhasil ditambahkan!");
+            alert("Lokasi seminar berhasil ditambahkan!");
         } catch (err) {
             console.log(err);
-            alert("❌ Terjadi kesalahan saat menyimpan data.");
+
+            // Menangkap error dari backend
+            if (err.response && err.response.data) {
+                const { message, field } = err.response.data;
+
+                // Memasukkan pesan error ke bawah input form masing-masing jika diperlukan
+                if (field === "nama_lokasi") {
+                    setErrors(prev => ({ ...prev, nama_lokasi: message }));
+                } else if (field === "koordinat") {
+                    setErrors(prev => ({ 
+                        ...prev, 
+                        latitude: message, 
+                        longitude: message 
+                    }));
+                }
+
+                // Tampilkan alert pemberitahuan duplikasi
+                alert(`Gagal Menambahkan: ${message}`);
+            } else {
+                alert("Terjadi kesalahan saat menyimpan data.");
+            }
         }
     };
 
