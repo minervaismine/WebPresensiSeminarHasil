@@ -183,12 +183,8 @@ function KelolaDataLokasi() {
         } catch (err) {
             console.log(err);
 
-            // Menangkap error dari backend
-            if (err.response && err.response.data) {
-                const { message, field } = err.response.data;
-
-                // Tampilkan alert pemberitahuan duplikasi
-                alert(`Gagal Menambahkan: ${message}`);
+            if (err.response && err.response.data && err.response.data.message) {
+                alert(`Gagal Menambahkan: ${err.response.data.message}`);
             } else {
                 alert("Terjadi kesalahan saat menyimpan data.");
             }
