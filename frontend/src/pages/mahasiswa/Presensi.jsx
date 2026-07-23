@@ -39,8 +39,8 @@ function Presensi() {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 20000,
-                    maximumAge: 10000
+                    timeout: 10000,
+                    maximumAge: 0
                 }
             );
         });
