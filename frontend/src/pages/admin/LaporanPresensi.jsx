@@ -180,7 +180,7 @@ function LaporanPresensi() {
                 </button>
 
                 <div className="search-filter-laporan-presensi">
-                    <form>
+                    <form onSubmit={(e) => e.preventDefault()}>
                         <div className="search-bar-laporan-presensi">
                             <Icon icon="radix-icons:magnifying-glass" className="search-icon-laporan-presensi"/>
                             <input className="search-bar-input-laporan-presensi" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => {setSearch(e.target.value); setCurrentPage(1);}}></input>

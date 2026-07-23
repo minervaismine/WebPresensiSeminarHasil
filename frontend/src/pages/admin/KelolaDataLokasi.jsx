@@ -402,7 +402,7 @@ function KelolaDataLokasi() {
                 <span>Tambah Lokasi Seminar</span>
             </button>
             
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
                 <div className="search-bar-kelola-data-lokasi">
                     <Icon icon="radix-icons:magnifying-glass" className="search-icon-kelola-data-lokasi"/>
                     <input className="search-bar-input-kelola-data-lokasi" type="search" placeholder="Cari nama lokasi" value={search} onChange={(e) => {setSearch(e.target.value); setCurrentPage(1);}}></input>

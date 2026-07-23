@@ -414,7 +414,7 @@ function KelolaDataSeminar() {
             </button>
 
             <div className="search-filter-kelola-data-seminar">
-                <form>
+                <form onSubmit={(e) => e.preventDefault()}>
                     <div className="search-bar-kelola-data-seminar">
                         <Icon icon="radix-icons:magnifying-glass" className="search-seminar-icon"/>
                         <input className="search-bar-input-kelola-data-seminar" type="search" placeholder="Cari mahasiswa atau NIM" value={search} onChange={(e) => setSearch(e.target.value)}></input>
