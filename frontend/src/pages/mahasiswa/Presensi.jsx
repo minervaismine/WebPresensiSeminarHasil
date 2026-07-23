@@ -12,22 +12,11 @@ function Presensi() {
     const scannerRef = useRef(null);
     const isScanningRef = useRef(false);
 
+    const userLocationRef = useRef(null);
+
     const startCamera = async () => {
         setCameraStarted(true);
     };
-
-    useEffect(() => {
-        return () => {
-            if (scannerRef.current) {
-                scannerRef.current
-                .stop()
-                .catch(() => {})
-                .finally(() => {
-                    scannerRef.current = null;
-                });
-            }
-        };
-    }, []);
 
     const getCurrentLocation = () => {
         return new Promise((resolve, reject) => {
@@ -58,6 +47,37 @@ function Presensi() {
             );
         });
     };
+
+    const startCamera = async () => {
+        try {
+            setLoadingLocation(true);
+            
+            // 1. Dapatkan lokasi saat user KLIK tombol (User Gesture)
+            const location = await getCurrentLocation();
+            userLocationRef.current = location;
+            
+            // 2. Setelah lokasi dapat, baru aktifkan kamera
+            setCameraStarted(true);
+        } catch (err) {
+            console.error("Gagal mendapatkan lokasi:", err);
+            alert(err.message || "Harap izinkan akses lokasi GPS untuk melakukan presensi.");
+        } finally {
+            setLoadingLocation(false);
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            if (scannerRef.current) {
+                scannerRef.current
+                .stop()
+                .catch(() => {})
+                .finally(() => {
+                    scannerRef.current = null;
+                });
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (!cameraStarted) return;
@@ -96,7 +116,11 @@ function Presensi() {
 
                     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
                     
-                    const location = await getCurrentLocation();
+                    const location = userLocationRef.current;
+
+                    if (!location) {
+                        throw { code: "LOCATION_ERROR", message: "Data lokasi GPS belum siap." };
+                    }
 
                     const response = await api.post("/scan-qr",
                         {
@@ -153,7 +177,7 @@ function Presensi() {
                 }
             },
             (error) => {
-                //Abaikan error scan
+                //Abaikan error per frame
             } 
         );
     }, [cameraStarted]);
