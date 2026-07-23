@@ -27,17 +27,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
             }
 
             try {
-                const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-
-                const response = await api.get (
-                    `/detail-seminar/${user.id_user}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                );
-
+                const response = await api.get (`/detail-seminar/${user.id_user}`);
                 setSeminarData(response.data);
 
             } catch (error) {
@@ -158,24 +148,11 @@ function PenyelenggaraSeminar_SeminarSaya() {
         };
     };
 
+    const statusSeminar = getStatusSeminar();
+
     const generateQRCode = async () => {
         try {
-            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-
-            if (!token) {
-                alert("Token tidak ditemukan. Silakan login kembali.");
-                return;
-            }
-
-            const response = await api.post(
-                "/generate-qr",
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                }
-            );
+            const response = await api.post("/generate-qr");
 
             if (response.data && response.data.qr_code) {
                 setQrCode(response.data.qr_code);
@@ -201,23 +178,12 @@ function PenyelenggaraSeminar_SeminarSaya() {
         }
     };
 
-    const statusSeminar = getStatusSeminar();
-
     const activateQRCode = async () => {
         try {
-            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-
-            const response = await api.post(
-                "/activate-qr",
+            const response = await api.post("/activate-qr",
                 {
                     id_seminar: seminarData.id_seminar
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+                });
 
             if (response.data.expired_at && response.data.server_time) {
                 const serverExpire = new Date(response.data.expired_at).getTime();
@@ -244,17 +210,8 @@ function PenyelenggaraSeminar_SeminarSaya() {
     };
 
     const openQRModal = async () => {
-        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-
         try {
-            const status = await api.get(
-                `/qr-status/${seminarData.id_seminar}`,
-                {
-                    headers:{
-                        Authorization:`Bearer ${token}`
-                    }
-                }
-            );
+            const status = await api.get(`/qr-status/${seminarData.id_seminar}`);
 
             if (status.data.status_qr === "active") {
                 setQrCode(status.data.qr_code);
