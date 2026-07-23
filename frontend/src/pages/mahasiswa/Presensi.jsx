@@ -39,7 +39,7 @@ function Presensi() {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 20000,
+                    timeout: 15000,
                     maximumAge: 0
                 }
             );
@@ -49,14 +49,13 @@ function Presensi() {
     const startCamera = async () => {
         try {
             setLoadingLocation(true);
-
-            // 1. Aktikfan kamera dahulu
-            setCameraStarted(true);
             
             // 2. Ambil lokasi
             const location = await getCurrentLocation();
             userLocationRef.current = location;
-            
+
+            // 1. Aktikfan kamera dahulu
+            setCameraStarted(true);
         } catch (err) {
             console.error("Gagal mendapatkan lokasi:", err);
             alert(err.message || "Harap izinkan akses lokasi GPS untuk melakukan presensi.");
