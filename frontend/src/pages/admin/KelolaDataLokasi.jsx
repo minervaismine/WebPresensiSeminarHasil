@@ -283,7 +283,7 @@ function KelolaDataLokasi() {
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            alert("⚠️ Gagal Mengubah: Pastikan semua data lokasi telah terisi dengan benar!");
+            alert("Gagal Mengubah: Pastikan semua data lokasi telah terisi dengan benar!");
             return;
         }
 
@@ -291,10 +291,16 @@ function KelolaDataLokasi() {
             await api.put(`/lokasi-seminar/${selectedLocation.id_lokasi}`, formData);
             fetchLokasi();
             setShowEditLocationModal(false);
-            alert("✏️ Perubahan data lokasi berhasil disimpan!");
+            alert("Perubahan data lokasi berhasil disimpan!");
         } catch(err) {
             console.log(err);
-            alert("❌ Terjadi kesalahan saat mengubah data.");
+
+            // Menampilkan pesan error jika terdapat data duplikat
+            if (err.response && err.response.data && err.response.data.message) {
+                alert(`Gagal Mengubah: ${err.response.data.message}`);
+            } else {
+                alert("Terjadi kesalahan saat mengubah data.");
+            }
         }
     };
 
