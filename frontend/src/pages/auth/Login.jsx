@@ -49,6 +49,9 @@ function Login() {
                 const storage = rememberMe ? localStorage : sessionStorage;
 
                 storage.setItem("user", JSON.stringify(result.user));
+                storage.setItem("token", result.token);
+
+                const userRole = String(result.user.role).trim().toLowerCase();
 
                 // Login berhasil sebagai mahasiswa
                 if (result.user.role === "mahasiswa") {
