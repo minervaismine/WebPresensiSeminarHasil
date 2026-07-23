@@ -63,6 +63,8 @@ function Login() {
                 // Login berhasil sebagai admin
                 else if (userRole === "admin") {
                     navigate("/dashboard-admin");
+                } else {
+                    console.warn("Role tidak dikenali:", userRole);
                 }
             }
         } catch (error) {
