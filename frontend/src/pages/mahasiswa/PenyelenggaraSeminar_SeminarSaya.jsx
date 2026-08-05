@@ -41,7 +41,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
     useEffect(() => {
         if (!expiredAt) {
             if (!isExpired) {
-                setCountdown("10:00");
+                setCountdown("05:00");
             }
             return;
         }
@@ -168,7 +168,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
                 }
 
                 // RESET STATE
-                setCountdown("10:00");
+                setCountdown("05:00");
                 setIsActivated(false);
                 setIsExpired(false);
             } 
