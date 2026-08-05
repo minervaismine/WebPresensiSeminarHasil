@@ -343,7 +343,7 @@ function LihatDetail() {
                                 <td className="kolom-nim-riwayat-verifikasi">{item.nim}</td>
                                 <td className="kolom-waktu-scan-riwayat-verifikasi">{formatTanggal(item.waktu_scan)}</td>
                                 <td className="kolom-jarak-lokasi-riwayat-verifikasi">
-                                    <span className="status-lokasi-riwayat-verifikasi dekat">5 m</span>
+                                    <span className={`status-lokasi-riwayat-verifikasi ${item.status_lokasi}`}>{item.jarak} m</span>
                                 </td>
                                 <td className="kolom-status-presensi-riwayat-verifikasi">
                                     <span className={`badge-status-presensi ${item.status_verifikasi}`}>{formatStatus(item.status_verifikasi)}</span>
