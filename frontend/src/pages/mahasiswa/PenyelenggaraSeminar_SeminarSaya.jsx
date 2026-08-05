@@ -12,7 +12,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
     const [seminarData, setSeminarData] = useState(null);
     const [qrCode, setQrCode] = useState("");
     const [expiredAt, setExpiredAt] = useState(null);
-    const [countdown, setCountdown] = useState("10:00");
+    const [countdown, setCountdown] = useState("05:00");
     const [isExpired, setIsExpired] = useState(false);
     const [isActivated, setIsActivated] = useState(false);
 
