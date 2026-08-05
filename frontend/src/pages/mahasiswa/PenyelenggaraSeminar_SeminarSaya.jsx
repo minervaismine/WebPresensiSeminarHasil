@@ -250,7 +250,7 @@ function PenyelenggaraSeminar_SeminarSaya() {
         setShowQRModal(false);
         setQrCode("");
         setExpiredAt(null);
-        setCountdown("10:00");
+        setCountdown("05:00");
         setIsActivated(false);
         setIsExpired(false);
     };
