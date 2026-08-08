@@ -116,3 +116,23 @@
 .detail-btn-mahasiswa:hover {
   background: #1D4ED8;
 }
+
+@media (max-width:768px) {
+    .dashboard-mahasiswa-title {
+        margin-left: 30px;
+        margin-right: 30px;
+        text-align: left;
+    }
+
+    .dashboard-mahasiswa-description {
+        margin-left: 30px;
+        margin-right: 30px;
+        text-align: justify;
+    }
+
+    .menu-title {
+        margin-left: 30px;
+        margin-right: 30px;
+        text-align: left;
+    }
+}
