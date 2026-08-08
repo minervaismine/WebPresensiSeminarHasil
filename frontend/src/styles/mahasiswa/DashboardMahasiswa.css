@@ -30,10 +30,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
-.menu-title {
+.menu-title-dashboard-mahasiswa {
     margin-top: 50px;
-    /* margin-left: 60px;
-    margin-right: 60px; */
+    margin-left: 60px;
+    margin-right: 60px;
     text-align: left;
     font-size:clamp(28px,5vw,45px);
     font-weight: 800;
@@ -130,7 +130,7 @@
         text-align: justify;
     }
 
-    .menu-title {
+    .menu-title-dashboard-mahasiswa {
         margin-left: 30px;
         margin-right: 30px;
         text-align: left;

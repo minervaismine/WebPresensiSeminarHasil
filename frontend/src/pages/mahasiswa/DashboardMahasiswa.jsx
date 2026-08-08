@@ -1,8 +1,8 @@
+import "../../styles/mahasiswa/DashboardMahasiswa.css";
 import Navbar from "../../components/Navbar";
 import { Icon } from '@iconify/react';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/mahasiswa/DashboardMahasiswa.css";
 
 function Dashboard() {
     const [user, setUser] = useState(null);
@@ -34,7 +34,7 @@ function Dashboard() {
                 <p className="dashboard-mahasiswa-description">Aplikasi ini digunakan sebagai presensi online sekaligus memantau kehadiran mahasiswa dalam mengikuti seminar, sebagai syarat mengajukan seminar hasil. Syarat minimal yang harus dipenuhi adalah minimal 3 kali mengikuti seminar.</p>
             
                 {/* Menu */}
-                <h1 className="menu-title">Menu</h1>
+                <h1 className="menu-title-dashboard-mahasiswa">Menu</h1>
 
                 {/* Card */}
                 <div className="card-mahasiswa-container">
