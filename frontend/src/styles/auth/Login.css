@@ -54,15 +54,15 @@
 
 .input-wrapper {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
+  height: 45px;
 }
 
 .icon-box {
   background: #2463EB;
   width: 48px;
   min-width: 48px;
-  height: 45px;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -79,7 +79,6 @@
   flex: 1;
   width: 100%;
   min-width: 0;
-  height: 45px;
   border: 2px solid #2463EB;
   border-left: none;
   padding: 0 12px;
@@ -93,6 +92,10 @@
 }
 
 @media (max-width:480px){
+    .input-wrapper {
+      height: 44px;
+    }
+
     .input-wrapper input{
         font-size:15px;
         padding:0 10px;
@@ -101,7 +104,6 @@
     .icon-box{
         width:44px;
         min-width:44px;
-        height:44px;
     }
 
     .user-icon,
