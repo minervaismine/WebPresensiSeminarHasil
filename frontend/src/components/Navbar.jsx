@@ -20,11 +20,14 @@ function Navbar() {
 
     return(
         <nav className="navbar">
-            <h1>MONITORING SEMINAR</h1>
-
+            <div className="nama-navbar">
+                <span>MONITORING</span>
+                <span>SEMINAR</span>
+            </div>
+            
             <button className="logout-btn" onClick={handleLogout}>
                 <Icon icon="majesticons:logout" className="logout-icon"/>
-                <span>Logout</span>
+                <span className="logout-text">Logout</span>
             </button>
         </nav>
     );
