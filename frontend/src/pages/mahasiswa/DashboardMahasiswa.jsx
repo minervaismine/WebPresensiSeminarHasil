@@ -1,8 +1,8 @@
-import "../../styles/mahasiswa/DashboardMahasiswa.css";
 import Navbar from "../../components/Navbar";
 import { Icon } from '@iconify/react';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "../../styles/mahasiswa/DashboardMahasiswa.css";
 
 function Dashboard() {
     const [user, setUser] = useState(null);
