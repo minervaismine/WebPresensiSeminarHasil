@@ -74,7 +74,6 @@
 
 @media (max-width:576px){
     .navbar{
-        padding:14px 16px;
         align-items:center;
     }
 
@@ -83,10 +82,13 @@
         gap: 0px;
         font-size: 20px;
         line-height: 1.1;
+        margin-left: 30px;
+        align-items: flex-start;
     }
 
     .logout-btn{
         padding:10px;
+        margin-right: 30px;
     }
 
     .logout-text{
