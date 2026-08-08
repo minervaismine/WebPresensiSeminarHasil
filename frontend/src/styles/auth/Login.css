@@ -91,27 +91,6 @@
   color: #E9EEF6;
 }
 
-@media (max-width:480px){
-    .input-wrapper {
-      height: 44px;
-    }
-
-    .input-wrapper input{
-        font-size:15px;
-        padding:0 10px;
-    }
-
-    .icon-box{
-        width:44px;
-        min-width:44px;
-    }
-
-    .user-icon,
-    .password-icon{
-        font-size:24px;
-    }
-}
-
 .error-message {
   margin-top: 5px;
   display: flex;
@@ -194,4 +173,25 @@
   line-height: 1.4;
   text-align: left;
   margin: 0;
+}
+
+@media (max-width:480px){
+    .input-wrapper {
+      height: 44px;
+    }
+
+    .input-wrapper input{
+        font-size:15px;
+        padding:0 10px;
+    }
+
+    .icon-box{
+        width:44px;
+        min-width:44px;
+    }
+
+    .user-icon,
+    .password-icon{
+        font-size:24px;
+    }
 }
