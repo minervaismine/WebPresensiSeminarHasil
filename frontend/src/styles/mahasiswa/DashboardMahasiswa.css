@@ -32,8 +32,8 @@
 
 .menu-title {
     margin-top: 50px;
-    margin-left: 60px;
-    margin-right: 60px;
+    /* margin-left: 60px;
+    margin-right: 60px; */
     text-align: left;
     font-size:clamp(28px,5vw,45px);
     font-weight: 800;
