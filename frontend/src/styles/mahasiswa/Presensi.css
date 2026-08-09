@@ -164,14 +164,12 @@
         font-size:22px;
     }
 
-    .back-btn-menu-presensi{
-        padding:0;
-        font-size:16px;
-        gap:5px;
-    }
-
     .back-btn-menu-presensi-icon{
         font-size:24px;
+    }
+
+    .back-btn-menu-presensi span{
+        display:none;
     }
 
     .presensi-content{

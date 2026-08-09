@@ -208,7 +208,7 @@ function Presensi() {
                     )}
                 </div>
 
-                <p className="scanner-info">Arahkan kamera ke QR Code untuk melakukan absensi</p>
+                <p className="scanner-info">Arahkan kamera ke QR Code untuk melakukan presensi</p>
             </div>
         </div>
     );
