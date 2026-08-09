@@ -298,12 +298,11 @@
 
   .page-title-lihat-daftar-hadir{
     font-size:30px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 
   .search-bar-lihat-daftar-hadir{
     width:100%;
-    margin-bottom:10px;
   }
 
   .search-bar-input-lihat-daftar-hadir{
@@ -319,6 +318,8 @@
     width:100%;
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   .tabel-daftar-hadir-penyelenggara-seminar{
@@ -374,15 +375,19 @@
 
   .header-wrapper-lihat-daftar-hadir{
     margin-left: 16px;
+    margin-right: 16px;
   }
 
   .page-title-lihat-daftar-hadir{
     font-size:24px;
+    margin-bottom: 5px;
   }
 
   .tabel-wrapper-mahasiswa-lihat-daftar-hadir{
     width:100%;
     overflow-x:auto;
+    margin-left: 16px;
+    margin-right: 16px;
   }
 
   .tabel-daftar-hadir-penyelenggara-seminar{
