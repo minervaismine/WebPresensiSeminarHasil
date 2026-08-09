@@ -598,6 +598,11 @@
     font-size: 14px;
   }
 
+  .riwayat-status-badge {
+    font-size: 14px;
+    padding: 3px 20px;
+  }
+
   .riwayat-informasi-seminar {
     flex-wrap: wrap;
     gap: 4px 8px;
