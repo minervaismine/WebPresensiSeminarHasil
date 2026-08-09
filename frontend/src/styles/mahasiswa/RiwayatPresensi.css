@@ -387,13 +387,15 @@
 }
 
 .riwayat-status-badge {
+  box-sizing: border-box;
   padding: 3px 30px;
   border-radius: 8px;
   font-family: "Poppins", sans-serif;
   font-size: 16px;
   font-weight: 500;
-  width: 110px;
-  display: flex;
+  width: fit-content;
+  min-width: 90px;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
 }
@@ -525,6 +527,11 @@
   .datepicker-filter-riwayat-presensi{
     width:100%;
   }
+
+  .riwayat-card {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
 }
 
 @media (max-width:500px){
@@ -566,5 +573,42 @@
   .riwayat-list{
     margin-left: 0px;
     margin-right: 0px;
+  }
+
+  .riwayat-card {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .riwayat-card-content {
+    padding: 16px;
+  }
+
+  .riwayat-card-header {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .riwayat-nama-mahasiswa {
+    font-size: 18px;
+  }
+
+  .riwayat-judul-skripsi {
+    font-size: 14px;
+  }
+
+  .riwayat-informasi-seminar {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    font-size: 13px;
+  }
+
+  .riwayat-dosen-info {
+    font-size: 13px;
+  }
+
+  .riwayat-separator {
+    margin: 0 6px;
   }
 }
