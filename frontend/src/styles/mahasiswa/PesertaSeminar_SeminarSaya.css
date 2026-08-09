@@ -82,3 +82,59 @@
   font-style:italic;
   margin-top: 10px;
 }
+
+@media (max-width:768px){
+  .navbar-menu-seminar-saya-peserta{
+    height:80px;
+    padding:0 20px;
+  }
+
+  .navbar-menu-seminar-saya-peserta h1{
+    font-size:30px;
+  }
+
+  .back-btn-menu-seminar-saya-peserta{
+    font-size:18px;
+    gap:8px;
+  }
+
+  .back-btn-menu-seminar-saya-peserta-icon{
+    font-size:28px;
+  }
+}
+
+@media (max-width:500px){
+  .navbar-menu-seminar-saya-peserta{
+    height:70px;
+    padding:0 16px;
+  }
+
+  .navbar-menu-seminar-saya-peserta h1{
+    font-size:22px;
+  }
+
+  .back-btn-menu-seminar-saya-peserta-icon{
+    font-size:24px;
+    padding: 16px;
+  }
+
+  .back-btn-menu-seminar-saya-peserta span{
+    display: none;
+  }
+
+  .no-calendar-icon{
+    font-size: 170px;
+  }
+
+  .empty-state-content {
+    padding: 0 16px;
+  }
+
+  .empty-state-content h1 {
+    font-size: 22px;
+  }
+
+  .empty-state-content p {
+    font-size: 17px;
+  }
+}

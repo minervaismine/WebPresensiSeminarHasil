@@ -490,14 +490,9 @@
     font-size:22px;
   }
 
-  /* .back-btn-menu-seminar-saya-penyelenggara{
-    padding:0;
-    font-size:15px;
-    gap:5px;
-  } */
-
   .back-btn-menu-seminar-saya-penyelenggara-icon{
     font-size:24px;
+    padding: 16px;
   }
 
   .back-btn-menu-seminar-saya-penyelenggara span{
