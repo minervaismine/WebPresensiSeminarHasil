@@ -97,3 +97,43 @@
 .kembali-ke-dashboard-btn:hover {
   background: #1D4ED8;
 }
+
+@media (max-width:500px){
+  .navbar-presensi-gagal-role{
+    height:70px;
+    padding:0 16px;
+  }
+
+  .navbar-presensi-gagal-role h1{
+    font-size:22px;
+  }
+
+  .back-btn-presensi-gagal-role-icon{
+    font-size:24px;
+  }
+
+  .back-btn-presensi-gagal-role span{
+    display: none;
+  }
+
+  .fail-icon {
+    font-size: 150px;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  .presensi-gagal-role-content {
+    width: 100%;
+    padding: 0 30px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .presensi-gagal-role-content h1 {
+    font-size: 30px;
+  }
+
+  .presensi-gagal-role-content p {
+    font-size: 16px;
+  }
+}
