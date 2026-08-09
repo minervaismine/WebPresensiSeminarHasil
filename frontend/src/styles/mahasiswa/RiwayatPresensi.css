@@ -512,11 +512,9 @@
     width:100%;
     left:0;
     right:auto;
-
     display:flex;
     flex-direction:column;
     gap:20px;
-
     box-sizing:border-box;
   }
 
@@ -529,9 +527,22 @@
   }
 }
 
-@media (max-width:480px){
+@media (max-width:500px){
   .navbar-menu-riwayat-presensi{
-    padding:0 20px;
+    height:70px;
+    padding:0 16px;
+  }
+
+  .navbar-menu-riwayat-presensi h1{
+    font-size:22px;
+  }
+
+  .back-icon-riwayat-presensi{
+    font-size:24px;
+  }
+
+  .back-btn-riwayat-presensi span{
+    display: none;
   }
 
   .stat-card-riwayat-presensi{
@@ -550,5 +561,10 @@
   .search-bar-input-riwayat-presensi{
     width:100%;
     font-size:16px;
+  }
+
+  .riwayat-list{
+    margin-left: 20px;
+    margin-right: 20px;
   }
 }
