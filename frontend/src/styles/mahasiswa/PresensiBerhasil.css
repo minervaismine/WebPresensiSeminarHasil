@@ -1,6 +1,6 @@
 .page-presensi-berhasil-layout {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   flex-direction: column;
 }
 
@@ -34,14 +34,14 @@
 }
 
 .navbar-presensi-berhasil h1 {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
-    font-size: 40px;
-    font-weight: 800;
-    letter-spacing: 0.1px;
-    color: #1E293B;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  color: #1E293B;
 }
 
 .presensi-berhasil-container {
@@ -86,14 +86,54 @@
 }
 
 .lihat-riwayat-presensi-btn {
-    background: #2463EB;
-    color: #FFFFFF;
-    font-family: "Poppins", sans-serif;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 50px;
+  background: #2463EB;
+  color: #FFFFFF;
+  font-family: "Poppins", sans-serif;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 50px;
 }
 
 .lihat-riwayat-presensi-btn:hover {
-    background: #1D4ED8;
+  background: #1D4ED8;
+}
+
+@media (max-width:500px){
+  .navbar-presensi-berhasil{
+    height:70px;
+    padding:0 16px;
+  }
+
+  .navbar-presensi-berhasil h1{
+    font-size:22px;
+  }
+
+  .back-icon-lihat-daftar-hadir{
+    font-size:24px;
+  }
+
+  .back-btn-lihat-daftar-hadir span{
+    display: none;
+  }
+
+  .success-icon {
+    font-size: 150px;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  .presensi-berhasil-content {
+    width: 100%;
+    padding: 0 30px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .presensi-berhasil-content h1 {
+    font-size: 30px;
+  }
+
+  .presensi-berhasil-content p {
+    font-size: 16px;
+  }
 }
