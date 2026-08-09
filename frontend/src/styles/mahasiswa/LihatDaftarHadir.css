@@ -280,9 +280,8 @@
   }
 
   .back-btn-lihat-daftar-hadir{
-    font-size:17px;
+    font-size:18px;
     gap:8px;
-    padding:0;
   }
 
   .back-icon-lihat-daftar-hadir{
@@ -294,18 +293,25 @@
     align-items:flex-start;
     gap:20px;
     padding:0 20px;
+    margin-left: 30px;
   }
 
   .page-title-lihat-daftar-hadir{
     font-size:30px;
+    margin-bottom: 10px;
   }
 
   .search-bar-lihat-daftar-hadir{
     width:100%;
+    margin-bottom:10px;
   }
 
   .search-bar-input-lihat-daftar-hadir{
     width:100%;
+    font-size:16px;
+  }
+
+  .search-bar-input-lihat-daftar-hadir::placeholder{
     font-size:16px;
   }
 
@@ -344,10 +350,11 @@
 
   .page-description-lihat-daftar-hadir{
     text-align:center;
+    margin-bottom: 10px;
   }
 }
 
-@media (max-width:480px){
+@media (max-width:500px){
   .navbar-menu-lihat-daftar-hadir{
     height:70px;
     padding:0 16px;
@@ -357,13 +364,12 @@
     font-size:22px;
   }
 
-  .back-btn-lihat-daftar-hadir{
-    font-size:15px;
-    gap:5px;
-  }
-
   .back-icon-lihat-daftar-hadir{
     font-size:24px;
+  }
+
+  .back-btn-lihat-daftar-hadir span{
+    display: none;
   }
 
   .header-wrapper-lihat-daftar-hadir{
@@ -415,5 +421,10 @@
   .pagination-lihat-daftar-hadir button:first-child,
   .pagination-lihat-daftar-hadir button:last-child{
     width:40px;
+  }
+
+  .page-description-lihat-daftar-hadir{
+    font-size:12px;
+    margin-bottom: 10px;
   }
 }
